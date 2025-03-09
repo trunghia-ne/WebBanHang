@@ -17,6 +17,18 @@ document.addEventListener("DOMContentLoaded", function () {
             autoWidth: false,
             paging: true,
             pageLength: 10,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: "pdfHtml5",
+                    text: "Xuất PDF",
+                    className: "btn btn-danger",
+                    title: "Danh Sách Tài Khoản",
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4],
+                    },
+                },
+        ],
             columns: [
                 { data: "id" }, // ID tài khoản
                 { data: "username" }, // Tên người dùng

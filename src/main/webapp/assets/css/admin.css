@@ -768,6 +768,7 @@ form label {
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
+  margin-right: 110px;
 }
 
 .sort-button:hover {
@@ -2547,3 +2548,4 @@ table {
   border-radius: 5px;
   cursor: pointer;
 }
+

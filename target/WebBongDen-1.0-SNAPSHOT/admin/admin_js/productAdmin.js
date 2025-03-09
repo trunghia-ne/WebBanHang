@@ -47,6 +47,58 @@ document.addEventListener("DOMContentLoaded", function () {
             autoWidth: false,
             paging: true,
             pageLength: 10,
+            dom: "Bfrtip",
+            buttons: [
+                {
+                    extend: "pdfHtml5",
+                    text: "Xuất PDF",
+                    className: "btn btn-danger",
+                    title: "Danh Sách Sản Phẩm",
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5],
+                    },
+                    customize: async function (doc) {
+                        let imagePromises = [];
+                        let imageMap = {}; // Lưu trữ ảnh đã chuyển sang base64
+                        let rows = $("#product-table tbody tr");
+
+                        // Duyệt qua từng dòng để lấy ảnh và chuyển thành base64
+                        rows.each(function (index, row) {
+                            let imgElement = $(row).find("td:eq(1) img");
+                            let imgSrc = imgElement.attr("src");
+
+                            if (imgSrc) {
+                                imagePromises.push(
+                                    toDataURL(imgSrc)
+                                        .then((base64) => {
+                                            imageMap[imgSrc] = base64;
+                                        })
+                                        .catch((err) => {
+                                            console.log("Lỗi chuyển đổi ảnh:", err);
+                                        })
+                                );
+                            }
+                        });
+
+                        // Chờ tất cả ảnh được tải về base64
+                        await Promise.all(imagePromises);
+
+                        // Cập nhật dữ liệu trong PDF
+                        doc.content[1].table.body.forEach((row, index) => {
+                            let imgElement = rows.eq(index).find("td:eq(1) img");
+                            let imgSrc = imgElement.attr("src");
+
+                            if (imgSrc && imageMap[imgSrc]) {
+                                row[1] = {
+                                    image: imageMap[imgSrc],
+                                    width: 50,
+                                    height: 50,
+                                };
+                            }
+                        });
+                    },
+                },
+            ],
             columns: [
                 { data: "id" }, // Id
                 {
@@ -98,6 +150,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 info: "Hiển thị _START_ đến _END_ của _TOTAL_ sản phẩm",
             },
         });
+
+        // Hàm chuyển ảnh từ URL sang base64
+        function toDataURL(url) {
+            return new Promise((resolve, reject) => {
+                let img = new Image();
+                img.crossOrigin = "Anonymous"; // Xử lý CORS nếu có
+                img.onload = function () {
+                    let canvas = document.createElement("canvas");
+                    canvas.width = this.width;
+                    canvas.height = this.height;
+                    let ctx = canvas.getContext("2d");
+                    ctx.drawImage(this, 0, 0);
+                    resolve(canvas.toDataURL("image/png"));
+                };
+                img.onerror = function () {
+                    reject(new Error("Không thể tải ảnh: " + url));
+                };
+                img.src = url;
+            });
+        }
 
         $("#product-table").on("click", ".view-details", function () {
             $(".product-stats").hide();
