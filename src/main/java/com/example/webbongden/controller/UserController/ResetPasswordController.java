@@ -14,40 +14,30 @@ public class ResetPasswordController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("reset-email");
-        System.out.println("Email: " + email);
 
-        // Kiểm tra email có tồn tại trong hệ thống không
-        if (email == null || email.isEmpty()) {
-            request.setAttribute("errorMessageReset", "Email không hợp lệ.");
-            request.getRequestDispatcher("/user/login.jsp").forward(request, response); // Chuyển hướng về form reset password
-            return;
-        }
-
+        // Kiểm tra email có tồn tại không
         if (!accountServices.checkEmailExists(email)) {
-            // Trả về thông báo lỗi nếu email không tồn tại
             request.setAttribute("errorMessageReset", "Email không tồn tại.");
-            request.getRequestDispatcher("/user/login.jsp").forward(request, response); // Chuyển hướng về form reset password
+            request.getRequestDispatcher("/user/login.jsp").forward(request, response);
             return;
         }
 
-        // Tạo mật khẩu tạm thời
-        String temporaryPassword = accountServices.generateTemporaryPassword();
+        // Tạo và gửi OTP
+        String otp = accountServices.generateOtp();
+        boolean isOtpSent = accountServices.sendOtpToEmail(email, otp);
 
-        // Cập nhật mật khẩu tạm thời vào cơ sở dữ liệu
-        boolean isPasswordUpdated = accountServices.updatePassword(email, temporaryPassword);
-        if (isPasswordUpdated) {
-            // Gửi email chứa mật khẩu tạm thời
-            boolean isEmailSent = accountServices.sendTemporaryPasswordEmail(email, temporaryPassword);
-            if (isEmailSent) {
-                request.setAttribute("successMessageReset", "Mật khẩu tạm thời đã được gửi đến email của bạn.");
-            } else {
-                request.setAttribute("errorMessageReset", "Có lỗi xảy ra khi gửi email.");
-            }
+        if (isOtpSent) {
+            // Lưu OTP và email vào session
+            HttpSession session = request.getSession();
+            session.setAttribute("otp", otp);
+            session.setAttribute("email", email);
+
+            // Đặt attribute để hiển thị form nhập OTP
+            request.setAttribute("showOtpForm", true);
+            request.getRequestDispatcher("/user/login.jsp").forward(request, response);
         } else {
-            request.setAttribute("errorMessageReset", "Không thể cập nhật mật khẩu.");
+            request.setAttribute("errorMessageReset", "Có lỗi xảy ra khi gửi OTP.");
+            request.getRequestDispatcher("/user/login.jsp").forward(request, response);
         }
-
-        // Chuyển hướng lại về trang reset-password.jsp với thông báo
-        request.getRequestDispatcher("/user/login.jsp").forward(request, response);
     }
 }
