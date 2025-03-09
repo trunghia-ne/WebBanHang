@@ -31,6 +31,7 @@
           rel="stylesheet"
           href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"
   />
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.2/css/buttons.dataTables.css">
   <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">
   <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/admin.css?v=2.0">
 </head>
@@ -46,6 +47,23 @@
 
   .details-form {
     margin-top: 20px;
+  }
+
+  button.dt-button.buttons-pdf.buttons-html5.btn.btn-danger {
+    color: white;
+    background: #007bff;
+    float: right;
+    margin-top: -59px;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 8px 15px;
+  }
+  button.add-product {
+    margin-right: 100px;
+  }
+
+  .main-content .header-tab .add-category {
+    margin-left: 100px;
   }
 
   /* Form thêm danh mục */
@@ -813,6 +831,19 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+
+<!-- DataTables Buttons Extension -->
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+
+<!-- pdfmake (hỗ trợ xuất PDF) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+<!-- JSZip (hỗ trợ xuất Excel) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
 <script>
   // Tự động ẩn thông báo sau 3 giây
   setTimeout(() => {
