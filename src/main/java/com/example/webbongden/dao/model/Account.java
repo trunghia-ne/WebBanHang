@@ -17,6 +17,13 @@ public class Account {
     public Account() {
     }
 
+    public Account(String email, String cusName, String username, String password) {
+        this.email = email;
+        this.cusName = cusName;
+        this.username = username;
+        this.password = password;
+    }
+
     // Constructor đầy đủ tham số
     public Account(
             int id,

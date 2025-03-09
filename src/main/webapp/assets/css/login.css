@@ -206,3 +206,40 @@ button[type="submit"],
 .notification.show {
   left: 20px;
 }
+
+/*Css cho chức năng dn bằng fb, gg*/
+.login-by-platform {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.login-by-platform p {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333333;
+}
+
+.platfrom-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.platform {
+  display: flex;
+  gap: 10px;
+  border-radius: 4px;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #eee;
+  padding: 5px 25px;
+  cursor: pointer;
+}
+
+.platform img {
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+  display: block;
+}

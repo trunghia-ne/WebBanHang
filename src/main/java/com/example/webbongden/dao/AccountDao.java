@@ -6,6 +6,7 @@ import org.jdbi.v3.core.Jdbi;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.List;
+import java.util.Optional;
 
 public class AccountDao {
     private final Jdbi jdbi;
@@ -295,6 +296,45 @@ public class AccountDao {
     }
 
 
+    // =========================Dang nhap bang facebook==============================
+    // Kiểm tra tài khoản dựa vào email
+    public Optional<Account> findByEmail(String email) {
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM accounts WHERE email = :email")
+                .bind("email", email)
+                .mapToBean(Account.class)
+                .findOne());
+    }
+
+    // Thêm tài khoản mới từ Facebook
+    public boolean addAccountUserFB(Account account) {
+        return jdbi.inTransaction(handle -> {
+            // Thêm khách hàng mới
+            String addCustomerSql = "INSERT INTO customers (cus_name) VALUES (:cusName)";
+            Integer customerId = handle.createUpdate(addCustomerSql)
+                    .bind("cusName", account.getCusName())
+                    .executeAndReturnGeneratedKeys("id")
+                    .mapTo(Integer.class)
+                    .findOne()
+                    .orElse(null);
+
+            if (customerId == null) {
+                throw new IllegalStateException("Không thể tạo khách hàng.");
+            }
+
+            // Thêm tài khoản vào bảng accounts
+            String sql = "INSERT INTO accounts (email, cus_name, username, password, role, customer_id, created_at) " +
+                    "VALUES (:email, :cusName, :username,:password, :role, :customerId, NOW())";
+
+            return handle.createUpdate(sql)
+                    .bind("email", account.getEmail())
+                    .bind("cusName", account.getCusName())
+                    .bind("username", account.getUsername())
+                    .bind("password", account.getPassword())
+                    .bind("role", "user")
+                    .bind("customerId", customerId)  // BIND CUSTOMER ID Ở ĐÂY
+                    .execute() > 0;
+        });
+    }
 
     public static void main(String[] args) {
         String plainPassword = "admin123";

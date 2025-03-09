@@ -25,7 +25,7 @@
             href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
             rel="stylesheet"
     />
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/login.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/login.css?v=1">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">
 </head>
 <body>
@@ -88,6 +88,24 @@
             <%
                 }
             %>
+
+            <div class="login-by-platform">
+                <p>ĐĂNG NHẬP BẰNG ỨNG DỤNG KHÁC </p>
+                <div class="platfrom-container">
+                    <div class="platform" id="login-facebook">
+                        <img src="<%= request.getContextPath() %>/assets/img/imagesWeb/facebook.png" alt="Facebook Login">
+                        <span>Facebook</span>
+                    </div>
+
+                    <div class="platform" id="login-google">
+                        <img src="<%= request.getContextPath() %>/assets/img/imagesWeb/google.png" alt="Google Login">
+                        <span>Google</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="width: 100%; background-color: #eee; height: 1px; border-radius: 4px; margin-top: 20px;" ></div>
+
             <div class="form-footer">
                 <label>
                     <div class="option_field">
@@ -160,6 +178,34 @@
         backToLogin.addEventListener("click", function () {
             forgotPasswordForm.style.display = "none";
             loginForm.style.display = "block";
+        });
+
+    //     ================code đăng nhập qua facebook ================================
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : '1158509715937438', // Thay YOUR_APP_ID bằng App ID của bạn
+                cookie     : true,
+                xfbml      : true,
+                version    : 'v18.0'
+            });
+            FB.AppEvents.logPageView();
+        };
+
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+        document.getElementById("login-facebook").addEventListener("click", function() {
+            FB.login(function(response) {
+                if (response.authResponse) {
+                    // Chuyển hướng đến Servlet để xử lý đăng nhập
+                    window.location.href = "login-facebook?access_token=" + response.authResponse.accessToken;
+                }
+            }, {scope: 'public_profile,email'});
         });
     });
 </script>
