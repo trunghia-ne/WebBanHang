@@ -12,6 +12,7 @@ public class Account {
     private Date createdAt; // Ngày tạo tài khoản
     private String role; // Vai trò của tài khoản
     private String rePassword;
+    private String avatar;
 
     // Constructor không tham số
     public Account() {
@@ -70,6 +71,13 @@ public class Account {
         this.customerId = customerId;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
     public String getRePassword() {
         return rePassword;
     }

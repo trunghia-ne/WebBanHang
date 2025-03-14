@@ -25,7 +25,7 @@
             href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
             rel="stylesheet"
     />
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/login.css?v=1.2">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/login.css?v=1.3">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">
 </head>
 <body>
@@ -111,8 +111,10 @@
                     </div>
 
                     <div class="platform" id="login-google">
-                        <img src="<%= request.getContextPath() %>/assets/img/imagesWeb/google.png" alt="Google Login">
-                        <span>Google</span>
+                        <a class="google-link" href="https://accounts.google.com/o/oauth2/auth?scope=email%20profile&response_type=code&client_id=625158935097-jbd22lba0t05tm01j6m2bc4n801ncnfj.apps.googleusercontent.com&redirect_uri=http://localhost:8080/WebBongDen_war/login-google&access_type=offline&approval_prompt=force">
+                            <img src="<%= request.getContextPath() %>/assets/img/imagesWeb/google.png" alt="Facebook Login">
+                            <span>Google</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -159,6 +161,7 @@
     </div>
 </div>
 </body>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="${pageContext.request.contextPath}/assets/Js/login.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
