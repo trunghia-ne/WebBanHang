@@ -25,7 +25,7 @@
             href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
             rel="stylesheet"
     />
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/login.css?v=1">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/login.css?v=1.2">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">
 </head>
 <body>
@@ -89,6 +89,19 @@
                 }
             %>
 
+            <div class="form-footer">
+                <label>
+                    <div class="option_field">
+                        <a href="#" class="forgot-pw"
+                        >Quên mật khẩu?</a
+                        >
+                    </div>
+                </label>
+                <button type="submit" class="btn">Đăng nhập</button>
+            </div>
+
+            <div style="width: 100%; background-color: #eee; height: 1px; border-radius: 4px; margin-top: 20px;" ></div>
+
             <div class="login-by-platform">
                 <p>ĐĂNG NHẬP BẰNG ỨNG DỤNG KHÁC </p>
                 <div class="platfrom-container">
@@ -102,19 +115,6 @@
                         <span>Google</span>
                     </div>
                 </div>
-            </div>
-
-            <div style="width: 100%; background-color: #eee; height: 1px; border-radius: 4px; margin-top: 20px;" ></div>
-
-            <div class="form-footer">
-                <label>
-                    <div class="option_field">
-                        <a href="#" class="forgot-pw"
-                        >Quên mật khẩu?</a
-                        >
-                    </div>
-                </label>
-                <button type="submit" class="btn">Đăng nhập</button>
             </div>
             <div class="login_signup">
                 Bạn chưa có tài khoản?
