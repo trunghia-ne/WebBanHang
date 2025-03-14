@@ -3,6 +3,7 @@ package com.example.webbongden.services;
 import com.example.webbongden.dao.AccountDao;
 import com.example.webbongden.dao.model.Account;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -132,5 +133,25 @@ public class AccountServices {
 
         // Cập nhật mật khẩu mới
         return accountDao.updatePassword(account.getEmail(), hashedPassword);
+    }
+
+    // Tạo OTP ngẫu nhiên
+    public String generateOtp() {
+        Random random = new Random();
+        int otpNumber = random.nextInt(999999);
+        return String.format("%06d", otpNumber);
+    }
+
+    // Gửi OTP qua email
+    public boolean sendOtpToEmail(String email, String otp) {
+        try {
+            String subject = "Mã OTP khôi phục mật khẩu";
+            String body = "Mã OTP của bạn là: " + otp + ". Mã có hiệu lực trong 5 phút.";
+            EmailService.sendEmail(email, subject, body);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
