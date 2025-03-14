@@ -91,19 +91,6 @@
                 }
             %>
 
-            <div class="form-footer">
-                <label>
-                    <div class="option_field">
-                        <a href="#" class="forgot-pw"
-                        >Quên mật khẩu?</a
-                        >
-                    </div>
-                </label>
-                <button type="submit" class="btn">Đăng nhập</button>
-            </div>
-
-            <div style="width: 100%; background-color: #eee; height: 1px; border-radius: 4px; margin-top: 20px;" ></div>
-
             <div class="login-by-platform">
                 <p>ĐĂNG NHẬP BẰNG ỨNG DỤNG KHÁC </p>
                 <div class="platfrom-container">
