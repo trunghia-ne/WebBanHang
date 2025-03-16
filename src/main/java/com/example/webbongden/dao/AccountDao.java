@@ -322,13 +322,14 @@ public class AccountDao {
             }
 
             // Thêm tài khoản vào bảng accounts
-            String sql = "INSERT INTO accounts (email, cus_name, username, password, role, customer_id, created_at) " +
-                    "VALUES (:email, :cusName, :username,:password, :role, :customerId, NOW())";
+            String sql = "INSERT INTO accounts (email, cus_name, username, avatar, password, role, customer_id, created_at) " +
+                    "VALUES (:email, :cusName, :username, :avatar,:password, :role, :customerId, NOW())";
 
             return handle.createUpdate(sql)
                     .bind("email", account.getEmail())
                     .bind("cusName", account.getCusName())
                     .bind("username", account.getUsername())
+                    .bind("avatar", account.getAvatar())
                     .bind("password", account.getPassword())
                     .bind("role", "user")
                     .bind("customerId", customerId)  // BIND CUSTOMER ID Ở ĐÂY

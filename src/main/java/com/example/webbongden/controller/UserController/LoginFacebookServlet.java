@@ -2,6 +2,9 @@ package com.example.webbongden.controller.UserController;
 
 import com.example.webbongden.dao.AccountDao;
 import com.example.webbongden.dao.model.Account;
+import com.example.webbongden.dao.model.User;
+import com.example.webbongden.services.OrderSevices;
+import com.example.webbongden.services.UserSevices;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -19,6 +22,8 @@ import java.util.Scanner;
 public class LoginFacebookServlet extends HttpServlet {
     private static final String FACEBOOK_GRAPH_API_URL = "https://graph.facebook.com/me?fields=id,name,email,picture&access_token=";
     private final AccountDao accountDAO = new AccountDao();
+    private final UserSevices userSevices = new UserSevices();
+    private final OrderSevices orderSevices = new OrderSevices();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String accessToken = request.getParameter("access_token");
@@ -41,6 +46,7 @@ public class LoginFacebookServlet extends HttpServlet {
         String facebookId = userNode.get("id").asText();
         String name = userNode.get("name").asText();
         String email = userNode.has("email") ? userNode.get("email").asText() : "No Email";
+        String avatar = userNode.has("picture") ? userNode.get("picture").get("data").get("url").asText() : "";
 
         // Kiểm tra xem email đã tồn tại trong database chưa
         Optional<Account> existingAccount = accountDAO.findByEmail(email);
@@ -51,7 +57,7 @@ public class LoginFacebookServlet extends HttpServlet {
             account = existingAccount.get();
         } else {
             // Nếu chưa tồn tại, tạo tài khoản mới
-            account = new Account(email, name, facebookId, facebookId);
+            account = new Account(email, name, avatar, facebookId, facebookId);
             if (!accountDAO.addAccountUserFB(account)) {
                 request.setAttribute("errorMessage", "Lỗi khi tạo tài khoản. Vui lòng thử lại.");
                 request.getRequestDispatcher("/user/login.jsp").forward(request, response);
@@ -59,11 +65,14 @@ public class LoginFacebookServlet extends HttpServlet {
             }
         }
 
+        User user = userSevices.getBasicInfoByUsername(facebookId);
         // Lưu tài khoản vào session
         HttpSession session = request.getSession();
         session.setAttribute("account", account);
         session.setAttribute("username", account.getUsername());
         session.setAttribute("role", account.getRole());
+        session.setAttribute("avatar", avatar);
+        session.setAttribute("userInfo", user);
 
         // Điều hướng đến trang phù hợp
         if ("admin".equals(account.getRole())) {

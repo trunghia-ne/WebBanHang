@@ -2,6 +2,10 @@ package com.example.webbongden.controller.UserController;
 
 import com.example.webbongden.dao.AccountDao;
 import com.example.webbongden.dao.model.Account;
+import com.example.webbongden.dao.model.Order;
+import com.example.webbongden.dao.model.User;
+import com.example.webbongden.services.OrderSevices;
+import com.example.webbongden.services.UserSevices;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
@@ -19,6 +23,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @WebServlet(name = "LoginGoogleServlet", value = "/login-google")
@@ -27,6 +32,8 @@ public class LoginGoogleServlet extends HttpServlet {
     private static final String CLIENT_SECRET = "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";
     private static final String REDIRECT_URI = "http://localhost:8080/WebBongDen_war/login-google";
     private final AccountDao accountDAO = new AccountDao();
+    private final UserSevices userSevices = new UserSevices();
+    private final OrderSevices orderSevices = new OrderSevices();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -66,7 +73,7 @@ public class LoginGoogleServlet extends HttpServlet {
             if (existingAccount.isPresent()) {
                 account = existingAccount.get();
             } else {
-                account = new Account(email, name, userId, userId);
+                account = new Account(email, name, pictureUrl, userId, userId);
                 if (!accountDAO.addAccountUserFB(account)) {
                     request.setAttribute("errorMessage", "Lỗi khi tạo tài khoản. Vui lòng thử lại.");
                     request.getRequestDispatcher("/user/login.jsp").forward(request, response);
@@ -74,11 +81,16 @@ public class LoginGoogleServlet extends HttpServlet {
                 }
             }
 
+
+            User user = userSevices.getBasicInfoByUsername(userId);
+//            List<Order> orders = orderSevices.getOrdersByUsername(userId);
             // Lưu thông tin vào session
             HttpSession session = request.getSession();
             session.setAttribute("account", account);
             session.setAttribute("username", account.getUsername());
             session.setAttribute("role", account.getRole());
+            session.setAttribute("avatar", pictureUrl);
+            session.setAttribute("userInfo", user);
 
             // Điều hướng dựa theo role
             if ("admin".equals(account.getRole())) {

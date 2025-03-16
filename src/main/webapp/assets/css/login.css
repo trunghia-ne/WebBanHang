@@ -43,7 +43,6 @@ a:hover {
 .form-field {
   width: 100%;
   position: relative;
-  margin-bottom: 30px;
 }
 
 .form-label {
@@ -109,6 +108,10 @@ body {
 .form-header p {
   font-weight: 600;
   font-size: 18px;
+}
+
+.form-group {
+  margin-bottom: 30px;
 }
 
 .form-group p {
@@ -251,4 +254,11 @@ button[type="submit"],
   gap: 10px;
   color: black;
   align-items: center;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+  display: block;
 }
