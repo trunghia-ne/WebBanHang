@@ -18,9 +18,9 @@
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-<%--    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/reset.css">--%>
-<%--    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/login.css">--%>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<%--    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/register.css?v=2">--%>
+<%--    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">--%>
     <style>
         :root {
             --color-black: #171C24;
@@ -31,6 +31,19 @@
             --color-gray-dark: #ddd;
             --color-gray-mid: #555;
             --color-gray-darkest: #333;
+        }
+
+        /* Body và Wrapper */
+        body {
+            min-height: 100vh;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url("https://images.unsplash.com/photo-1503455637927-730bce8583c0?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+            height: 100vh;
         }
 
         *,
@@ -127,7 +140,6 @@
         .form-field {
             width: 100%;
             position: relative;
-            margin-bottom: 30px;
         }
 
         .form-label {
@@ -150,19 +162,6 @@
             background-color: #fff;
             color: #6a5af9;
             font-size: 12px;
-        }
-
-        /* Body và Wrapper */
-        body {
-            min-height: 100vh;
-            font-weight: 400;
-            font-size: 16px;
-            line-height: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-image: url(/assets/img/background-login.png);
-            height: 100vh;
         }
 
         .wrapper {
@@ -197,6 +196,10 @@
         .form-header p {
             font-weight: 600;
             font-size: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 35px;
         }
 
         .form-group p {
@@ -294,12 +297,25 @@
         .notification.show {
             left: 20px;
         }
+
+        .error-message {
+            color: #ff4d4f; /* Màu đỏ nổi bật */
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .password-hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
 <div class="wrapper">
-    <form id="signup-form" action="${pageContext.request.contextPath}/register" method="post">
-    <div class="form-header">
+    <form id="signup-form" action="${pageContext.request.contextPath}/register" method="post" novalidate>
+        <div class="form-header">
             <a href="" class="logo"><img src="./img/logo-login.png" alt="" /></a>
             <p>ĐĂNG KÍ</p>
         </div>
@@ -310,6 +326,7 @@
                     <input type="text" class="form-input" id="cusname" name="cusname" placeholder=" " required />
                     <label for="cusname" class="form-label">Tên khách hàng</label>
                 </div>
+                <span class="error-message"></span>
             </div>
 
             <div class="form-group">
@@ -318,6 +335,7 @@
                     <input type="text" class="form-input" id="username" name="username" placeholder=" " required />
                     <label for="username" class="form-label">Tài khoản</label>
                 </div>
+                <span class="error-message"></span>
             </div>
 
             <div class="form-group">
@@ -326,6 +344,7 @@
                     <input type="email" class="form-input" id="email" name="email" placeholder=" " required />
                     <label for="email" class="form-label">Email</label>
                 </div>
+                <span class="error-message"></span>
             </div>
 
             <div class="form-group">
@@ -334,6 +353,8 @@
                     <input type="password" class="form-input" id="password" name="password" placeholder=" " required />
                     <label for="password" class="form-label">Mật khẩu</label>
                 </div>
+                <div id="password-hint" class="password-hint">Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ in hoa, số và ký tự đặc biệt.</div>
+                <span class="error-message"></span>
             </div>
 
             <div class="form-group">
@@ -342,6 +363,7 @@
                     <input type="password" class="form-input" id="rePassword" name="rePassword" placeholder=" " required />
                     <label for="rePassword" class="form-label">Nhập lại mật khẩu</label>
                 </div>
+                <span class="error-message"></span>
             </div>
         </div>
         <div class="form-footer">
@@ -355,30 +377,111 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Thêm jQuery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<script src="${pageContext.request.contextPath}/assets/Js/register.js.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const form = document.getElementById("signup-form");
+        const inputs = form.querySelectorAll(".form-input");
+
+        function validateInput(input) {
+            const value = input.value.trim();
+            const formGroup = input.closest(".form-group");
+            const errorMessage = formGroup.querySelector(".error-message");
+
+            if (value === "") {
+                input.style.borderColor = "red";
+                errorMessage.textContent = "Trường này không được để trống.";
+                return false;
+            }
+
+            if (input.type === "email") {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(value)) {
+                    input.style.borderColor = "red";
+                    errorMessage.textContent = "Email không hợp lệ.";
+                    return false;
+                }
+            }
+
+            if (input.type === "password") {
+                if (value.length < 8) {
+                    input.style.borderColor = "red";
+                    errorMessage.textContent = "Mật khẩu phải có ít nhất 8 ký tự.";
+                    return false;
+                }
+                if (!/[A-Z]/.test(value)) {
+                    input.style.borderColor = "red";
+                    errorMessage.textContent = "Mật khẩu phải có ít nhất 1 chữ cái viết hoa.";
+                    return false;
+                }
+                if (!/[a-z]/.test(value)) {
+                    input.style.borderColor = "red";
+                    errorMessage.textContent = "Mật khẩu phải có ít nhất 1 chữ cái viết thường.";
+                    return false;
+                }
+                if (!/\d/.test(value)) {
+                    input.style.borderColor = "red";
+                    errorMessage.textContent = "Mật khẩu phải có ít nhất 1 chữ số.";
+                    return false;
+                }
+                if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+                    input.style.borderColor = "red";
+                    errorMessage.textContent = "Mật khẩu phải có ít nhất 1 ký tự đặc biệt.";
+                    return false;
+                }
+            }
+
+            input.style.borderColor = "green";
+            errorMessage.textContent = "";
+            return true;
+        }
+
+        inputs.forEach(input => {
+            input.addEventListener("blur", function () {
+                validateInput(input);
+            });
+
+            input.addEventListener("input", function () {
+                validateInput(input);
+            });
+        });
 
         form.addEventListener("submit", function (e) {
-            e.preventDefault(); // Ngăn form gửi dữ liệu trực tiếp
+            e.preventDefault()
+            let isValid = true;
 
-            // Lấy dữ liệu từ form
+            inputs.forEach(input => {
+                if (!validateInput(input)) {
+                    isValid = false;
+                }
+            });
+
+            // Kiểm tra nhập lại mật khẩu
+            const password = document.getElementById("password").value.trim();
+            const rePassword = document.getElementById("rePassword").value.trim();
+            const rePasswordError = document.getElementById("rePassword").closest(".form-group").querySelector(".error-message");
+
+            if (password !== rePassword) {
+                isValid = false;
+                rePasswordError.textContent = "Mật khẩu nhập lại không khớp.";
+                document.getElementById("rePassword").style.borderColor = "red";
+            } else {
+                rePasswordError.textContent = "";
+                document.getElementById("rePassword").style.borderColor = "green";
+            }
+
+            // Nếu có lỗi, ngăn form submit đến Servlet
+            if (!isValid) {
+                e.preventDefault();
+                return;
+            }
+
+            // Gửi dữ liệu đến Servlet
             const formData = new FormData(form);
-
-            // Chuyển FormData thành đối tượng JSON
             const jsonData = {};
             formData.forEach((value, key) => {
                 jsonData[key] = value;
             });
 
-            // Kiểm tra mật khẩu có khớp hay không
-            if (jsonData.password !== jsonData.rePassword) {
-                toastr.error("Mật khẩu không khớp. Vui lòng kiểm tra lại!");
-                return;
-            }
-
-            // Gửi dữ liệu tới server bằng fetch API
             fetch(form.action, {
                 method: "POST",
                 headers: {

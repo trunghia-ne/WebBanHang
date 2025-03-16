@@ -1,12 +1,8 @@
 <%@ page import="com.example.webbongden.dao.model.Order" %>
-<%@ page import="java.util.List" %><%--
-  Created by IntelliJ IDEA.
-  User: Admin
-  Date: 12/15/2024
-  Time: 10:22 AM
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="java.util.List" %>
+<%@ page import="jakarta.servlet.http.HttpSession" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8" />

@@ -224,6 +224,17 @@ public class AccountDao {
                 return false; // Trả về false nếu username đã tồn tại
             }
 
+            // Kiểm tra xem email đã tồn tại hay chưa
+            String checkEmailSql = "SELECT COUNT(*) FROM accounts WHERE email = :email";
+            Integer emailCount = handle.createQuery(checkEmailSql)
+                    .bind("email", account.getEmail())
+                    .mapTo(Integer.class)
+                    .one();
+
+            if (emailCount > 0) {
+                return false; // Email đã tồn tại
+            }
+
             // Kiểm tra khách hàng đã tồn tại trong bảng customers hay chưa
             String findCustomerSql = "SELECT id FROM customers WHERE cus_name = :cusName";
             Integer customerId = handle.createQuery(findCustomerSql)

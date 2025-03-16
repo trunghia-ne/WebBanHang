@@ -48,12 +48,6 @@ public class RegisterController extends HttpServlet {
             String password = formData.get("password");
             String rePassword = formData.get("rePassword");
 
-            // Kiểm tra mật khẩu nhập lại
-            if (!password.equals(rePassword)) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write("{\"success\":false,\"message\":\"Mật khẩu không khớp!\"}");
-                return;
-            }
 
             // Tạo tài khoản mới
             Account account = new Account();
@@ -62,6 +56,12 @@ public class RegisterController extends HttpServlet {
             account.setEmail(email);
             account.setPassword(password); // Mật khẩu plaintext sẽ được hash trong service
 
+
+            // Kiểm tra email đã tồn tại chưa
+            if (accountServices.checkEmailExists(email)) {
+                response.getWriter().write("{\"success\":false,\"message\":\"Email đã được sử dụng!\"}");
+                return;
+            }
             // Đăng ký tài khoản qua service
             boolean isRegistered = accountServices.registerAccount(account);
 
