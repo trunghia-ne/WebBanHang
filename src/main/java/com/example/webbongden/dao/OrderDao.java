@@ -172,6 +172,20 @@ public class OrderDao {
         );
     }
 
+    public boolean updateInvoicesStatus(int invoicesID, Invoices invoices) {
+        String sql = "UPDATE invoices SET payment_status = :status WHERE id = :id";
+
+        int rowsAffected = jdbi.withHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("status", invoices.getPaymentStatus())  // Cập nhật trạng thái
+                        .bind("id", invoicesID)
+                        .execute()
+        );
+
+
+        return rowsAffected > 0;
+    }
+
     public List<Order> filterOrderByStatus(String keyword) {
         String sql = "SELECT o.id AS orderId, c.cus_name AS customerName, " +
                 "o.created_at AS orderDate, " +
