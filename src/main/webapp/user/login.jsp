@@ -25,8 +25,9 @@
             href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
             rel="stylesheet"
     />
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/login.css?v=1.3">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/login.css?v=1">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
 <div class="wrapper">
@@ -65,6 +66,7 @@
                     />
                     <label for="cus-username" class="form-label">Tài khoản</label>
                 </div>
+                <span class="error-message" id="error-username"></span>
             </div>
 
             <div class="form-group">
@@ -79,18 +81,29 @@
                     />
                     <label for="cus-password" class="form-label">Mật khẩu</label>
                 </div>
+                <span class="error-message" id="error-password"></span>
             </div>
-            <%
-                String errorMessage = (String) request.getAttribute("errorMessage");
-                if (errorMessage != null) {
-            %>
-            <div class="error-message" style="color: red; text-align: center; margin: 10px 0;">
-                <%= errorMessage %>
-            </div>
-            <%
-                }
-            %>
+            <p id="error-message" style="color: red; display: none;"></p>
 
+            <!-- CAPTCHA -->
+            <div class="form-group">
+                <div class="g-recaptcha" data-sitekey="6LehGvYqAAAAAGyyRncgehEOw351OwCJK4fAoLL0" data-callback="onCaptchaSuccess"></div>
+                <span class="error-message" id="error-captcha"></span>
+            </div>
+
+
+            <div class="form-footer">
+                <label>
+                    <div class="option_field">
+                        <a href="#" class="forgot-pw"
+                        >Quên mật khẩu?</a
+                        >
+                    </div>
+                </label>
+                <button type="submit" id="login-btn" class="btn">Đăng nhập</button>
+            </div>
+
+            <div style="width: 100%; background-color: #eee; height: 1px; border-radius: 4px; margin-top: 35px;" ></div>
             <div class="login-by-platform">
                 <p>ĐĂNG NHẬP BẰNG ỨNG DỤNG KHÁC </p>
                 <div class="platfrom-container">
@@ -108,17 +121,6 @@
                 </div>
             </div>
 
-            <div style="width: 100%; background-color: #eee; height: 1px; border-radius: 4px; margin-top: 20px;" ></div>
-            <div class="form-footer">
-                <label>
-                    <div class="option_field">
-                        <a href="#" class="forgot-pw"
-                        >Quên mật khẩu?</a
-                        >
-                    </div>
-                </label>
-                <button type="submit" class="btn">Đăng nhập</button>
-            </div>
             <div class="login_signup">
                 Bạn chưa có tài khoản?
                 <a href="${pageContext.request.contextPath}/register" id="signup">Đăng ký ngay!</a>
@@ -278,6 +280,96 @@
                     window.location.href = "login-facebook?access_token=" + response.authResponse.accessToken;
                 }
             }, {scope: 'public_profile,email'});
+        });
+    });
+
+    //Login ajax & Captcha
+    document.addEventListener("DOMContentLoaded", function () {
+        let username = document.getElementById("cus-username");
+        let password = document.getElementById("cus-password");
+        let errorUsername = document.getElementById("error-username");
+        let errorPassword = document.getElementById("error-password");
+        let errorCaptcha = document.getElementById("error-captcha");
+
+        function validateInput(input, errorElement) {
+            if (input.value.trim() !== "") {
+                errorElement.textContent = "";
+                input.style.border = "1px solid green"; // Xanh khi hợp lệ
+            } else {
+                errorElement.textContent = `Vui lòng nhập ${input.getAttribute("placeholder").toLowerCase()}.`;
+                input.style.border = "1px solid red"; // Đỏ khi trống
+            }
+        }
+
+        username.addEventListener("input", function () {
+            validateInput(username, errorUsername);
+        });
+
+        password.addEventListener("input", function () {
+            validateInput(password, errorPassword);
+        });
+
+        // Lắng nghe sự kiện khi CAPTCHA được xác thực
+        window.onCaptchaSuccess = function () {
+            errorCaptcha.textContent = ""; // Xóa lỗi nếu CAPTCHA hợp lệ
+        };
+
+        document.getElementById("login-form").addEventListener("submit", function (event) {
+            event.preventDefault(); // Chặn submit mặc định
+
+            let isValid = true;
+
+            if (!username.value.trim()) {
+                errorUsername.textContent = "Vui lòng nhập tài khoản.";
+                username.style.border = "1px solid red";
+                isValid = false;
+            }
+
+            if (!password.value.trim()) {
+                errorPassword.textContent = "Vui lòng nhập mật khẩu.";
+                password.style.border = "1px solid red";
+                isValid = false;
+            }
+
+            // Kiểm tra reCAPTCHA
+            let captchaResponse = grecaptcha.getResponse();
+            if (!captchaResponse) {
+                errorCaptcha.textContent = "Vui lòng xác nhận CAPTCHA.";
+                isValid = false;
+            } else {
+                errorCaptcha.textContent = "";
+            }
+
+            if (!isValid) return;
+
+            let formData = {
+                username: username.value,
+                password: password.value,
+                captcha: captchaResponse
+            };
+
+            fetch("/WebBongDen_war/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (data.role === "admin") {
+                            window.location.href = "/WebBongDen_war/admin?page=dashboard-management";
+                        } else {
+                            window.location.href = "/WebBongDen_war/home";
+                        }
+                    } else {
+                        document.getElementById("error-message").textContent = data.message;
+                        document.getElementById("error-message").style.display = "block";
+                        grecaptcha.reset(); // Reset CAPTCHA nếu lỗi
+                    }
+                })
+                .catch(error => console.error("Lỗi:", error));
         });
     });
 </script>

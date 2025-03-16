@@ -22,6 +22,7 @@ public class UserDao {
                 "c.cus_name AS customerName, " +
                 "a.email, " +
                 "c.phone, " +
+                "a.avatar, " +
                 "c.address, " +
                 "a.created_at AS registrationDate " +
                 "FROM customers c " +
@@ -34,6 +35,7 @@ public class UserDao {
                                 rs.getString("customerName"),
                                 rs.getString("email"),
                                 rs.getString("phone"),
+                                rs.getString("avatar"),
                                 rs.getString("address"),
                                 rs.getDate("registrationDate"),
                                 null // Tạm thời chưa gán lịch sử mua hàng
@@ -56,6 +58,7 @@ public class UserDao {
                 "c.id AS customerId, " +
                 "c.cus_name AS customerName, " +
                 "a.email, " +
+                "a.avatar, " +
                 "c.phone, " +
                 "c.address, " +
                 "a.created_at AS registrationDate " +
@@ -71,6 +74,7 @@ public class UserDao {
                                 rs.getString("customerName"),
                                 rs.getString("email"),
                                 rs.getString("phone"),
+                                rs.getString("avatar"),
                                 rs.getString("address"),
                                 rs.getDate("registrationDate"),
                                 null // Tạm thời chưa gán lịch sử mua hàng
@@ -195,6 +199,7 @@ public class UserDao {
                 "c.id AS customerId, " + // Thêm ID khách hàng
                 "c.cus_name AS customerName, " +
                 "a.email AS email, " +
+                "a.avatar AS avatar, " +
                 "c.phone AS phoneNumber, " +
                 "c.address AS address, " +
                 "a.created_at AS registrationDate " +
@@ -210,6 +215,7 @@ public class UserDao {
                                 rs.getString("customerName"),
                                 rs.getString("email"),
                                 rs.getString("phoneNumber"),
+                                rs.getString("avatar"),
                                 rs.getString("address"),
                                 rs.getDate("registrationDate"),
                                 null // Không cần lịch sử mua hàng

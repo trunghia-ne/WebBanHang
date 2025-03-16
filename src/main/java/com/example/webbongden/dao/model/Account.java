@@ -18,9 +18,10 @@ public class Account {
     public Account() {
     }
 
-    public Account(String email, String cusName, String username, String password) {
+    public Account(String email, String cusName, String avatar, String username, String password) {
         this.email = email;
         this.cusName = cusName;
+        this.avatar = avatar;
         this.username = username;
         this.password = password;
     }

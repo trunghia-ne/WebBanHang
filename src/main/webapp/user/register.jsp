@@ -64,13 +64,7 @@
             outline: none;
             border: 0;
         }
-        body {
-            min-height: 100vh;
-            font-weight: 400;
-            font-size: 16px;
-            line-height: 1;
-            background-color: var(--color-gray-light);
-        }
+
 
         ul li {
             list-style: none;
@@ -160,10 +154,14 @@
 
         /* Body và Wrapper */
         body {
+            min-height: 100vh;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-image: url(../img/background-login.png);
+            background-image: url(/assets/img/background-login.png);
             height: 100vh;
         }
 

@@ -11,13 +11,15 @@ public class User {
     private String address; // Địa chỉ
     private Date createdAt; // Ngày đăng ký
     private List<Order> orderHistory; // Danh sách lịch sử mua hàng
+    private String avatar;
 
     // Constructor tổng hợp
-    public User(String customerId, String customerName, String email, String phone, String address, Date createdAt, List<Order> orderHistory) {
+    public User(String customerId, String customerName, String email, String phone, String avatar, String address, Date createdAt, List<Order> orderHistory) {
         this.customerId = customerId;
         this.customerName = customerName;
         this.email = email;
         this.phone = phone;
+        this.avatar = avatar;
         this.address = address;
         this.createdAt = createdAt;
         this.orderHistory = orderHistory;
@@ -31,6 +33,14 @@ public class User {
     }
 
     // Getter và Setter
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     public String getCustomerId() {
         return customerId;
     }
@@ -95,6 +105,7 @@ public class User {
                 ", customerName='" + customerName + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
+                ", avatar='" + avatar + '\'' +
                 ", address='" + address + '\'' +
                 ", createdAt=" + createdAt +
                 ", orderHistory=" + orderHistory +
