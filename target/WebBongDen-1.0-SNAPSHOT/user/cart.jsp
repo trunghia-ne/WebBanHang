@@ -366,10 +366,49 @@
                 </div>
             </form>
             <div class="tab-content" id="finish" style="padding: 70px 0">
-                <img
-                        src="https://daphongthuyvn.com/files/assets/dat-hang-thanh-cong.jpg"
-                        alt=""
-                />
+                <section style="margin-top: 50px; text-align: center;">
+                    <div>
+                        <img src="https://daphongthuyvn.com/files/assets/dat-hang-thanh-cong.jpg"
+                             alt="Transaction Status"
+                             style="width: 120px; height: 120px; margin-bottom: 20px;">
+                    </div>
+
+                    <!-- Giao dịch thành công -->
+                    <c:if test="${sessionScope.transResult}">
+                        <div>
+                            <h3 style="font-weight: bold; color: #28a745;">
+                                Bạn đã giao dịch thành công!
+                                <i class="fas fa-check-circle"></i>
+                            </h3>
+                            <p style="font-size: 18px; margin-top: 15px;">Vui lòng để ý số điện thoại của nhân viên tư vấn:</p>
+                            <strong style="color: red; font-size: 24px;">0383459560</strong>
+                        </div>
+                    </c:if>
+
+                    <!-- Giao dịch thất bại -->
+                    <c:if test="${sessionScope.transResult == false}">
+                        <div>
+                            <h3 style="font-weight: bold; color: #dc3545;">
+                                Đơn hàng giao dịch thất bại!
+                            </h3>
+                            <p style="font-size: 18px; margin-top: 15px;">Cảm ơn quý khách đã dùng dịch vụ của chúng tôi.</p>
+                            <p style="font-size: 18px;">Liên hệ tổng đài để được tư vấn:</p>
+                            <strong style="color: red; font-size: 24px;">0383456xxx</strong>
+                        </div>
+                    </c:if>
+
+                    <!-- Đang xử lý giao dịch -->
+                    <c:if test="${sessionScope.transResult == null}">
+                        <div>
+                            <h3 style="font-weight: bold; color: #ffc107;">
+                                Chúng tôi đã tiếp nhận đơn hàng, xin chờ quá trình xử lý!
+                            </h3>
+                            <p style="font-size: 18px; margin-top: 15px;">Vui lòng để ý số điện thoại của nhân viên tư vấn:</p>
+                            <strong style="color: red; font-size: 24px;">0383456xxx</strong>
+                        </div>
+                    </c:if>
+
+                </section>
             </div>
         </div>
     </div>
