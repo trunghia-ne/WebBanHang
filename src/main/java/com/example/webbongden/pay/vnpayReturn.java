@@ -47,7 +47,7 @@ public class vnpayReturn extends HttpServlet {
 
                 Invoices invoices = new Invoices();
                 invoices.setId(Integer.parseInt(orderId));
-
+                HttpSession session = request.getSession();
                 boolean transSuccess = false;
                 if ("00".equals(request.getParameter("vnp_TransactionStatus"))) {
                     //update banking system
@@ -56,7 +56,6 @@ public class vnpayReturn extends HttpServlet {
                 } else {
                     invoices.setPaymentStatus("Pending");
                 }
-                HttpSession session = request.getSession();
                 System.out.println("TransResult: " + transSuccess);
                 OrderDao orderDao = new OrderDao();
                 orderDao.updateInvoicesStatus(invoices.getId(), invoices);

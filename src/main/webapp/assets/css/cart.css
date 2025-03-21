@@ -416,23 +416,29 @@ input[type="text"]::placeholder {
 
 .tab-container .container-top .payment-method .option {
   display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.tab-container .container-top .payment-method .option input[type="radio"] {
-  margin-right: 10px;
+  flex-direction: column; /* Sắp xếp theo cột */
+  gap: 10px; /* Khoảng cách giữa các phương thức */
 }
 
 .tab-container .container-top .payment-method .option label {
+  display: flex;
+  align-items: center;
   font-size: 16px;
   color: #666;
   cursor: pointer;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.tab-container .container-top .payment-method .option input[type="radio"] {
+  margin: 0;
+  width: 18px;
+  height: 18px;
 }
 
 .tab-container .container-top .payment-method .option i {
-  margin-right: 5px;
   color: #666;
+  font-size: 18px;
 }
 
 .tab-container .container-top .payment-method .total {
