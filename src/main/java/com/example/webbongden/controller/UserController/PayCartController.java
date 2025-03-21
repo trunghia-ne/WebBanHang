@@ -39,13 +39,15 @@ public class PayCartController extends HttpServlet {
         Account account = (Account) session.getAttribute("account");
 
         if (cart == null || customerInfo == null || account == null) {
-            // Nếu thiếu thông tin cần thiết, quay lại trang giỏ hàng và báo lỗi
             request.setAttribute("errorMessage", "Thanh toán thất bại. Vui lòng kiểm tra lại thông tin giỏ hàng và khách hàng.");
             request.getRequestDispatcher("/user/cart.jsp").forward(request, response);
             return;
         }
 
         try {
+            // Lấy phương thức thanh toán từ request
+            String paymentMethod = request.getParameter("paymentMethod");
+
             // Tạo hóa đơn
             Invoices invoice = new Invoices();
             invoice.setAccountId(account.getId());
@@ -53,7 +55,7 @@ public class PayCartController extends HttpServlet {
             invoice.setTotalPrice(cart.getTotalPriceNumber());
             invoice.setPaymentStatus("Pending");
 
-            int promotionId = 0; // Để lưu promotionId (nếu có)
+            int promotionId = 0;
             List<OrderDetail> orderDetails = new ArrayList<>();
 
             for (CartItem item : cart.getItems()) {
@@ -65,23 +67,27 @@ public class PayCartController extends HttpServlet {
                 detail.setItemDiscount(0);
                 detail.setAmount(item.getPrice() * item.getQuantity());
 
-                // Kiểm tra khuyến mãi
                 Promotion gift = promotionService.getPromotionById(item.getProductId());
-                if (gift != null) {
-                    if (promotionId != 0) {
-                        promotionId = gift.getId(); // Lưu promotionId đầu tiên tìm được
-                    }
+                if (gift != null && promotionId == 0) {
+                    promotionId = gift.getId();
                 }
 
                 orderDetails.add(detail);
             }
 
-            // Gắn promotionId cho hóa đơn (nếu có)
             invoice.setPromotionId(promotionId);
 
             // Lưu hóa đơn và chi tiết đơn hàng
             orderServices.createOrderAndInvoice(invoice, orderDetails, customerInfo);
 
+            // Nếu chọn COD, kết thúc tại đây
+            if ("COD".equals(paymentMethod)) {
+                session.removeAttribute("cart");
+                response.sendRedirect("/WebBongDen_war/cart#finish");
+                return;
+            }
+
+            // Nếu chọn VNPay, tiếp tục xử lý
             int hoadon =  invoice.getId();
             // VNP:
             String vnp_Version = "2.1.0";
@@ -152,11 +158,8 @@ public class PayCartController extends HttpServlet {
             System.out.println("VNPay Pay URL: " + Config.vnp_PayUrl);
             response.sendRedirect(paymentUrl);
             System.out.println("VNPay URL: " + paymentUrl);
-
-
             // Xóa giỏ hàng khỏi session sau khi thanh toán
             session.removeAttribute("cart");
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
