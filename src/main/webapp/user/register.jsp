@@ -99,7 +99,8 @@
         select, input[type="text"], input[type="email"], input[type="password"] {
             width: 100%;
             padding: 8px;
-            border: 1px solid #ccc;
+            border: none;
+            outline: none;
             border-radius: 4px;
             font-size: 14px;
             background-color: #fff;
@@ -107,7 +108,7 @@
 
         /* Placeholder */
         input[type="text"]::placeholder {
-            color: #999;
+            color: #9b9b9b;
         }
 
         a {
@@ -127,13 +128,16 @@
         .form-input {
             height: 40px;
             padding: 0 20px;
-            border: 1px solid #eee;
             border-radius: 4px;
             transition: 0.25s ease;
+            background-color: #eee !important;
+            border: 1px solid #999999;
+            outline: none;
         }
 
         .form-input:focus {
-            border-color: #6a5af9;
+            border: 1px solid #6a5af9;
+            background-color: #fff !important;
         }
 
         /* Field và Label */
@@ -316,7 +320,8 @@
 <div class="wrapper">
     <form id="signup-form" action="${pageContext.request.contextPath}/register" method="post" novalidate>
         <div class="form-header">
-            <a href="" class="logo"><img src="./img/logo-login.png" alt="" /></a>
+            <a href="/WebBongDen_war/home" class="logo"
+            ><img src="./assets/img/logo-login.png" alt="Logo"></a>
             <p>ĐĂNG KÍ</p>
         </div>
         <div class="form-main">

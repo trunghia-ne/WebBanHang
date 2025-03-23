@@ -48,9 +48,8 @@
           style="${showOtpForm || showNewPasswordForm ? 'display: none;' : 'display: block;'}">
         <%--    <form id="login-form" action="login" method="post">--%>
         <div class="form-header">
-            <a href="index.html" class="logo"
-            ><img src="./img/logo-login.png" alt=""
-            /></a>
+            <a href="/WebBongDen_war/home" class="logo"
+            ><img src="./assets/img/logo-login.png" alt="Logo"></a>
             <p>ĐĂNG NHẬP</p>
         </div>
         <div class="form-main">

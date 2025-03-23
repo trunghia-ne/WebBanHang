@@ -343,9 +343,19 @@
                         <div class="payment-method">
                             <h2>Chọn hình thức thanh toán</h2>
                             <div class="option">
-                                <input type="radio" id="cod" name="paymentMethod" value="COD" checked />
                                 <label for="cod">
-                                    <i class="fas fa-box"></i> Thanh toán khi giao hàng (COD)
+                                    <input type="radio" id="cod" name="paymentMethod" value="COD" checked />
+                                    <i class="fas fa-box"></i> Thanh toán khi giao hàng
+                                </label>
+
+                                <label>
+                                    <input type="radio" name="paymentMethod" value="vnpay">
+                                    <i class="fas fa-box"></i> Thanh toán qua VNPAY
+                                </label>
+
+                                <label>
+                                    <input type="radio" name="paymentMethod" value="momo">
+                                    <i class="fas fa-box"></i> Thanh toán qua MoMo
                                 </label>
                             </div>
                         </div>
@@ -370,7 +380,7 @@
                     <div>
                         <img src="https://daphongthuyvn.com/files/assets/dat-hang-thanh-cong.jpg"
                              alt="Transaction Status"
-                             style="width: 120px; height: 120px; margin-bottom: 20px;">
+                            >
                     </div>
 
                     <!-- Giao dịch thành công -->
