@@ -320,7 +320,8 @@
 <div class="wrapper">
     <form id="signup-form" action="${pageContext.request.contextPath}/register" method="post" novalidate>
         <div class="form-header">
-            <a href="" class="logo"><img src="./img/logo-login.png" alt="" /></a>
+            <a href="/WebBongDen_war/home" class="logo"
+            ><img src="./assets/img/logo-login.png" alt="Logo"></a>
             <p>ĐĂNG KÍ</p>
         </div>
         <div class="form-main">
