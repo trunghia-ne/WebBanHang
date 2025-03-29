@@ -13,45 +13,37 @@ public class ChangePassWord extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        request.getRequestDispatcher("/user/userinfo.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-        // Lấy thông tin từ form
+        HttpSession session = request.getSession();
         String oldPassword = request.getParameter("oldPassword");
         String newPassword = request.getParameter("newPassword");
         String confirmPassword = request.getParameter("confirmPassword");
-
-        // Lấy username từ session
         String username = (String) session.getAttribute("username");
 
-        // Kiểm tra username
+        String message;
+        boolean success = false;
+
         if (username == null) {
-            request.setAttribute("errorMessage", "Bạn chưa đăng nhập.");
-            request.getRequestDispatcher("/user/userinfo.jsp").forward(request, response);
-            return;
-        }
-
-        // Kiểm tra mật khẩu mới và xác nhận mật khẩu khớp nhau
-        if (!newPassword.equals(confirmPassword)) {
-            request.setAttribute("errorMessage", "Mật khẩu mới và xác nhận mật khẩu không khớp.");
-            request.getRequestDispatcher("/user/userinfo.jsp").forward(request, response);
-            return;
-        }
-
-        // Thực hiện đổi mật khẩu
-        boolean isPasswordChanged = accountServices.changePassword(username, oldPassword, newPassword);
-
-        // Xử lý kết quả
-        if (isPasswordChanged) {
-            session.setAttribute("successMessage", "Đổi mật khẩu thành công.");
-            request.getRequestDispatcher("/user/userinfo.jsp").forward(request, response);
+            message = "Bạn chưa đăng nhập.";
         } else {
-            request.setAttribute("errorMessage", "Mật khẩu cũ không chính xác.");
-            request.getRequestDispatcher("/user/userinfo.jsp").forward(request, response);
+            boolean isChanged = accountServices.changePassword(username, oldPassword, newPassword);
+            if (isChanged) {
+                success = true;
+                message = "Đổi mật khẩu thành công!";
+            } else {
+                message = "Mật khẩu cũ không chính xác.";
+            }
         }
+
+        String json = String.format("{\"success\": %b, \"message\": \"%s\"}", success, message.replace("\"", "\\\""));
+        response.getWriter().write(json);
     }
 }
