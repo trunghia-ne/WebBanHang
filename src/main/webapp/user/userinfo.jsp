@@ -22,9 +22,10 @@
             href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
             rel="stylesheet"
     />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/header-footer.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/user.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/user.css?v=2">
 </head>
 <style>
     .info-btn button {
@@ -57,20 +58,20 @@
                                     onclick="showContent('information_account')"
                             >
                                 <i class="fa-solid fa-user"></i>
-                                <a href="#">Thông tin tài khoản</a>
+                                <a href="javascript:void(0)">Thông tin tài khoản</a>
                             </li>
                             <li data-section="order" onclick="showContent('order')">
                                 <i class="fa-solid fa-bars-progress"></i>
-                                <a href="#">Quản lý đơn hàng</a>
+                                <a href="javascript:void(0)">Quản lý đơn hàng</a>
                             </li>
                             <li
                                     data-section="change_password"
                                     onclick="showContent('change_password')"
                             >
                                 <i class="fa-solid fa-lock"></i>
-                                <a href="#">Đổi mật khẩu</a>
+                                <a href="javascript:void(0)">Đổi mật khẩu</a>
                             </li>
-                            <li onclick="logout()">
+                            <li>
                                 <i class="fa-solid fa-right-from-bracket"></i>
                                 <a href="/WebBongDen_war/LogoutController" id="logoutLink">Đăng xuất</a>
                             </li>
@@ -222,12 +223,6 @@
                         </div>
                         <button class="submit" type="submit">Xác nhận</button>
                     </form>
-                    <c:if test="${not empty successMessage}">
-                        <p style="color: green;">${successMessage}</p>
-                    </c:if>
-                    <c:if test="${not empty errorMessage}">
-                        <p style="color: red;">${errorMessage}</p>
-                    </c:if>
                 </div>
             </div>
         </div>
@@ -236,6 +231,8 @@
 </div>
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/just-validate@latest/dist/just-validate.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="${pageContext.request.contextPath}/assets/Js/user.js?v=2.0" defer></script>
 <script>
@@ -300,6 +297,94 @@
             }
         });
     });
+
+    //Xử ly doi mk
+    const validator = new JustValidate('.change_password_form');
+
+    validator
+        .addField('#oldPassword', [
+            {
+                rule: 'required',
+                errorMessage: 'Vui lòng nhập mật khẩu cũ',
+            },
+        ])
+        .addField('#newPassword', [
+            {
+                rule: 'required',
+                errorMessage: 'Vui lòng nhập mật khẩu mới',
+            },
+            {
+                validator: (value) =>
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(value),
+                errorMessage:
+                    'Mật khẩu phải có chữ hoa, chữ thường, số, ký tự đặc biệt và ít nhất 8 ký tự',
+            },
+        ])
+        .addField('#confirm_password', [
+            {
+                rule: 'required',
+                errorMessage: 'Vui lòng nhập lại mật khẩu',
+            },
+            {
+                validator: (value, fields) => {
+                    return value === fields['#newPassword'].elem.value;
+                },
+                errorMessage: 'Mật khẩu xác nhận không khớp',
+            },
+        ])
+        .onSuccess((event) => {
+            event.preventDefault();
+
+            const form = event.target;
+            const data = new URLSearchParams();
+            data.append('oldPassword', form.oldPassword.value);
+            data.append('newPassword', form.newPassword.value);
+            data.append('confirmPassword', form.confirmPassword.value);
+
+            fetch('/WebBongDen_war/changePassword', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: data,
+            })
+                .then((res) => res.json())
+                .then((res) => {
+                    Toastify({
+                        text: res.message,
+                        duration: 3000,
+                        gravity: 'top',
+                        position: 'right',
+                        close: true,
+                        style: {
+                            background: res.success
+                                ? 'linear-gradient(to right, #00b09b, #96c93d)'
+                                : 'linear-gradient(to right, #ff416c, #ff4b2b)',
+                            color: '#fff',
+                            borderRadius: '6px',
+                        },
+                    }).showToast();
+
+                    if (res.success) form.reset();
+                });
+        })
+
+        // ✅ Hiển thị lỗi bằng Toastify
+        .onFail((fields) => {
+            const firstErrorField = Object.values(fields)[0];
+            if (firstErrorField && firstErrorField.message) {
+                Toastify({
+                    text: firstErrorField.message,
+                    duration: 3000,
+                    gravity: 'top',
+                    position: 'right',
+                    close: true,
+                    style: {
+                        background: 'linear-gradient(to right, #ff416c, #ff4b2b)',
+                        color: '#fff',
+                        borderRadius: '6px',
+                    },
+                }).showToast();
+            }
+        });
 </script>
 </html>
 

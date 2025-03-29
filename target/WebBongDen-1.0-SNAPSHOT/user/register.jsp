@@ -99,7 +99,6 @@
         select, input[type="text"], input[type="email"], input[type="password"] {
             width: 100%;
             padding: 8px;
-            border: none;
             outline: none;
             border-radius: 4px;
             font-size: 14px;
@@ -130,14 +129,14 @@
             padding: 0 20px;
             border-radius: 4px;
             transition: 0.25s ease;
-            background-color: #eee !important;
-            border: 1px solid #999999;
+            border: 1px solid #ccc;
             outline: none;
         }
 
         .form-input:focus {
             border: 1px solid #6a5af9;
             background-color: #fff !important;
+            box-shadow: 0 0 8px rgba(106, 90, 249, 0.6); /* Hiệu ứng viền mờ */
         }
 
         /* Field và Label */
