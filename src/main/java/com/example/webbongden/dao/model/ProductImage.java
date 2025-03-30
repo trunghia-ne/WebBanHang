@@ -1,6 +1,7 @@
 package com.example.webbongden.dao.model;
 
 public class ProductImage {
+    private int id;
     private String url; // Đường dẫn hình ảnh
     private boolean mainImage; // Hình ảnh chính
 
@@ -19,6 +20,14 @@ public class ProductImage {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public boolean isMainImage() {

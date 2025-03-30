@@ -294,32 +294,48 @@ public class ProductDao {
                 "LEFT JOIN product_images pi ON p.id = pi.product_id AND pi.main_image = true " +
                 "WHERE p.id = :id";
 
-        return jdbi.withHandle(handle ->
-                handle.createQuery(sql)
+        return jdbi.withHandle(handle -> {
+            ProductDetail product = handle.createQuery(sql)
+                    .bind("id", id)
+                    .map((rs, ctx) -> new ProductDetail(
+                            rs.getInt("id"),
+                            rs.getInt("subCategory_id"),
+                            rs.getString("product_name"),
+                            rs.getDouble("unit_price"),
+                            rs.getDate("created_at"),
+                            rs.getInt("stock_quantity"),
+                            rs.getString("product_status"),
+                            rs.getDouble("rating"),
+                            rs.getString("description"),
+                            rs.getString("warranty_period"),
+                            rs.getString("light_color"),
+                            rs.getString("material"),
+                            rs.getString("voltage"),
+                            rs.getString("usage_age"),
+                            rs.getDouble("discount_percent"),
+                            null, // tạm thời
+                            rs.getString("category_name"),
+                            rs.getString("main_image_url")
+                    ))
+                    .findOne()
+                    .orElse(null);
+
+            if (product != null) {
+                List<ProductImage> images = handle.createQuery("SELECT id, url, main_image FROM product_images WHERE product_id = :id")
                         .bind("id", id)
-                        .map((rs, ctx) -> new ProductDetail(
-                                rs.getInt("id"),
-                                rs.getInt("subCategory_id"),
-                                rs.getString("product_name"),
-                                rs.getDouble("unit_price"),
-                                rs.getDate("created_at"),
-                                rs.getInt("stock_quantity"),
-                                rs.getString("product_status"),
-                                rs.getDouble("rating"),
-                                rs.getString("description"),
-                                rs.getString("warranty_period"),
-                                rs.getString("light_color"),
-                                rs.getString("material"),
-                                rs.getString("voltage"),
-                                rs.getString("usage_age"),
-                                rs.getDouble("discount_percent"),
-                                null, // Danh sách hình ảnh sẽ không cần nếu chỉ lấy hình chính
-                                rs.getString("category_name"), // Tên danh mục
-                                rs.getString("main_image_url") // Hình ảnh chính
-                        ))
-                        .findOne()
-                        .orElse(null)
-        );
+                        .map((rs, ctx) -> {
+                            ProductImage img = new ProductImage();
+                            img.setId(rs.getInt("id"));
+                            img.setUrl(rs.getString("url"));
+                            img.setMainImage(rs.getBoolean("main_image"));
+                            return img;
+                        })
+                        .list();
+                product.setListImages(images);
+            }
+
+            return product;
+        });
     }
 
     //Lay id cate khi nhap ten
@@ -469,55 +485,6 @@ public class ProductDao {
         });
     }
 
-
-//    public boolean editProductDetail(ProductDetail productDetail) {
-//        return jdbi.inTransaction(handle -> {
-//            // Cập nhật bảng `products`
-//            String productSql = "UPDATE products SET " +
-//                    "product_name = :productName, " +
-//                    "unit_price = :unitPrice, " +
-//                    "stock_quantity = :stockQuantity, " +
-//                    "product_status = :productStatus, " +
-//                    "rating = :rating, " +
-//                    "DESC_1 = :description, " +
-//                    "warranty_period = :warrantyPeriod, " +
-//                    "light_color = :lightColor, " +
-//                    "material = :material, " +
-//                    "voltage = :voltage, " +
-//                    "usage_age = :usageAge, " +
-//                    "discount_percent = :discountPercent, " +
-//                    "subCategory_id = :subCategoryId " +
-//                    "WHERE id = :id";
-//
-//            int updatedProduct = handle.createUpdate(productSql)
-//                    .bind("id", productDetail.getId())
-//                    .bind("productName", productDetail.getProductName())
-//                    .bind("unitPrice", productDetail.getUnitPrice())
-//                    .bind("stockQuantity", productDetail.getStockQuantity())
-//                    .bind("productStatus", productDetail.getProductStatus())
-//                    .bind("rating", productDetail.getRating())
-//                    .bind("description", productDetail.getDescription())
-//                    .bind("warrantyPeriod", productDetail.getWarrantyPeriod())
-//                    .bind("lightColor", productDetail.getLightColor())
-//                    .bind("material", productDetail.getMaterial())
-//                    .bind("voltage", productDetail.getVoltage())
-//                    .bind("usageAge", productDetail.getUsageAge())
-//                    .bind("discountPercent", productDetail.getDiscountPercent())
-//                    .bind("subCategoryId", productDetail.getSubCategoryId())
-//                    .execute();
-//
-//            // Cập nhật bảng `product_images`
-//            String imageSql = "UPDATE product_images SET url = :mainImageUrl " +
-//                    "WHERE product_id = :id AND main_image = true";
-//
-//            int updatedImage = handle.createUpdate(imageSql)
-//                    .bind("id", productDetail.getId())
-//                    .bind("mainImageUrl", productDetail.getMainImageUrl())
-//                    .execute();
-//
-//            return updatedProduct > 0 && updatedImage > 0;
-//        });
-//    }
 
     public boolean editProductDetail(ProductDetail productDetail) {
         return jdbi.inTransaction(handle -> {
@@ -909,6 +876,19 @@ public class ProductDao {
         );
     }
 
+    public boolean addImage(int productId, String imageUrl, boolean isMainImage) {
+        String sql = "INSERT INTO product_images (product_id, url, main_image) " +
+                "VALUES (:productId, :url, :mainImage)";
+
+        return jdbi.withHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("productId", productId)
+                        .bind("url", imageUrl)
+                        .bind("mainImage", isMainImage)
+                        .execute() > 0
+        );
+    }
+
 
     public List<Product> getRelatedProducts(int productId) {
         String sql = """
@@ -981,23 +961,28 @@ public class ProductDao {
         // Khởi tạo dịch vụ sản phẩm
         ProductDao productServices = new ProductDao();
 
-        // Gọi phương thức getBestSellingProducts()
-        List<Product> bestSellingProducts = productServices.getBestSellingProducts();
+        int testProductId = 1; // đổi ID thành ID sản phẩm có thật trong DB
+        ProductDetail product = productServices.getProductDetailById(testProductId);
 
-        // In kết quả ra console để kiểm tra
-        System.out.println("Sản phẩm bán chạy:");
-        for (Product product : bestSellingProducts) {
+        if (product != null) {
+            System.out.println("=== Thông tin sản phẩm ===");
             System.out.println("ID: " + product.getId());
             System.out.println("Tên: " + product.getProductName());
             System.out.println("Giá: " + product.getUnitPrice());
-            System.out.println("Giảm giá: " + product.getDiscountPercent() + "%");
-            System.out.println("Hình ảnh chính: " + product.getImageUrl());
+            System.out.println("Ảnh chính: " + product.getMainImageUrl());
+            System.out.println("Danh mục: " + product.getCategoryName());
+            System.out.println("Mô tả: " + product.getDescription());
 
-            System.out.println("Danh sách hình ảnh:");
-            for (ProductImage image : product.getListImg()) {
-                System.out.println("  - " + image.getUrl() + (image.isMainImage() ? " (Chính)" : ""));
+            System.out.println("=== Danh sách hình ảnh ===");
+            if (product.getListImages() != null) {
+                for (ProductImage img : product.getListImages()) {
+                    System.out.println("- " + img.getUrl() + (img.isMainImage() ? " (main)" : ""));
+                }
+            } else {
+                System.out.println("Không có hình ảnh");
             }
-            System.out.println("-----");
+        } else {
+            System.out.println("Không tìm thấy sản phẩm với ID: " + testProductId);
         }
     }
 }
