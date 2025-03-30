@@ -5,30 +5,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const uploadFileSection = document.getElementById("upload-file-section");
     const imageUrlInput = document.getElementById("product-image-url");
     const fileInput = document.getElementById("upload-product-image");
-
-    // Khi nhấn "Chỉnh sửa"
-    // editButton.addEventListener("click", function () {
-    //     // Ẩn phần URL và nút "Chỉnh sửa"
-    //     imageSection.style.display = "none";
-    //
-    //     // Hiện phần upload file và nút "Hủy"
-    //     uploadFileSection.style.display = "flex";
-    // });
-    //
-    // // Khi nhấn "Hủy"
-    // cancelEditButton.addEventListener("click", function () {
-    //     // Hiện lại phần URL và nút "Chỉnh sửa"
-    //     imageSection.style.display = "flex";
-    //
-    //     // Ẩn phần upload file
-    //     uploadFileSection.style.display = "none";
-    //
-    //     // Xóa file đã chọn (nếu có)
-    //     fileInput.value = "";
-    // });
-
-
-
     $(document).ready(function () {
         const table = $("#product-table").DataTable({
             ajax: {
@@ -174,8 +150,6 @@ document.addEventListener("DOMContentLoaded", function () {
         $("#product-table").on("click", ".view-details", function () {
             $(".product-stats").hide();
             const productId = $(this).data("id"); // Lấy product ID từ data-id
-            console.log("Product ID:", productId); // Debug: Kiểm tra giá trị ID
-
             // Gửi yêu cầu tới server để lấy chi tiết sản phẩm
             fetch(`/WebBongDen_war/getProductDetails?id=${productId}`)
                 .then(response => {
@@ -185,6 +159,26 @@ document.addEventListener("DOMContentLoaded", function () {
                     return response.json();
                 })
                 .then(data => {
+                    const imageListContainer = document.getElementById("product-images-list");
+                    imageListContainer.innerHTML = "";
+                    if (data.listImages && Array.isArray(data.listImages)) {
+                        data.listImages.forEach(img => {
+                            imageListContainer.innerHTML += `
+                              <div class="image-wrapper">
+                                <img src="${img.url}" alt="Ảnh sản phẩm" />
+                                <div class="image-overlay">
+                                  <button class="edit-img-btn" data-id="${img.id}" type="button">
+                                    <i class="fa-solid fa-pen"></i>
+                                  </button>
+                                  <button class="delete-img-btn" data-id="${img.id}" type="button">
+                                    <i class="fa-solid fa-trash"></i>
+                                  </button>
+                                </div>
+                              </div>
+                            `;
+                                                });
+                                            }
+                    document.getElementById("product-id-hidden").value = data.id;
                     // Cập nhật các trường trong modal
                     $("#product-id-details").text(data.id || "N/A");
                     $("#product-name-details").text(data.productName || "N/A");
