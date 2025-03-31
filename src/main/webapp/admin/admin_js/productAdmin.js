@@ -180,10 +180,10 @@ document.addEventListener("DOMContentLoaded", function () {
                                             }
                     document.getElementById("product-id-hidden").value = data.id;
                     // Cập nhật các trường trong modal
+                    console.log(data);
                     $("#product-id-details").text(data.id || "N/A");
                     $("#product-name-details").text(data.productName || "N/A");
                     $("#product-image-main").attr("src", data.mainImageUrl || "./img/default-product.png");
-                    $("#product-image-view").text(data.mainImageUrl || "./img/default-product.png");
                     $("#product-name-view").text(data.productName || "N/A");
                     $("#product-id-view").text(data.id || "N/A");
                     $("#product-price-view").text(`${data.unitPrice || 0} VNĐ`);
@@ -204,7 +204,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     $("#edit-product-name").val(data.productName || "N/A");
                     $("#edit-product-id").val(data.id || "N/A");
                     $("#edit-product-price").val(`${data.unitPrice || 0}`);
-                    $("#edit-product-category").val(data.categoryName || "N/A");
+                    $("#edit-product-category").val(data.subCategoryId || "N/A");
                     $("#edit-product-status").val(data.productStatus || "N/A");
                     $("#edit-product-description").val(data.description || "N/A");
                     $("#edit-product-date").val(data.createdAt || "N/A");
@@ -227,6 +227,52 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
         });
 
+        document.getElementById("product-images-list").addEventListener("click", function (e) {
+            if (e.target.closest(".edit-img-btn")) {
+                const imgId = e.target.closest(".edit-img-btn").dataset.id;
+                Swal.fire("Sửa ảnh ID: " + imgId);
+            }
+
+            if (e.target.closest(".delete-img-btn")) {
+                const btn = e.target.closest(".delete-img-btn");
+                const imgId = btn.dataset.id;
+
+                Swal.fire({
+                    title: "Bạn có chắc muốn xóa ảnh này?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Xóa",
+                    cancelButtonText: "Hủy"
+                }).then(async result => {
+                    if (result.isConfirmed) {
+                        try {
+                            const res = await fetch(`/WebBongDen_war/delete-product-image?id=${imgId}`, {
+                                method: "DELETE"
+                            });
+                            if (!res.ok) throw new Error();
+                            btn.closest(".image-wrapper").remove();
+                            Toastify({
+                                text: "Đã xóa ảnh!",
+                                duration: 3000,
+                                gravity: "top",
+                                position: "right",
+                                backgroundColor: "#28a745",
+                                close: true,
+                            }).showToast();
+                        } catch {
+                            Toastify({
+                                text: "Xóa ảnh thất bại!",
+                                duration: 3000,
+                                gravity: "top",
+                                position: "right",
+                                backgroundColor: "#dc3545",
+                                close: true,
+                            }).showToast();
+                        }
+                    }
+                });
+            }
+        });
 
         $("#close-details-btn").on("click", function () {
             $(".product-stats").show();
