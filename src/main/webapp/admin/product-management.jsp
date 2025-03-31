@@ -33,7 +33,7 @@
   />
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.2/css/buttons.dataTables.css">
   <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">
-  <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/admin.css?v=2.0">
+  <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/admin.css?v=1">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 <style>
@@ -369,6 +369,30 @@
 
   .upload-box i {
     margin-bottom: 8px;
+  }
+
+  select {
+    margin-top: 10px;
+    width: 200px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    font-size: 14px;
+    color: #333;
+    transition: border-color 0.2s ease-in-out;
+  }
+
+  select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+  }
+
+  select option {
+    background-color: #fff;
+    color: #000;
+    padding: 8px;
   }
 </style>
 <body>
@@ -741,8 +765,7 @@
               </div>
               <label class="image-wrapper upload-image-label">
                 <div class="upload-box">
-                  <i class="fa-solid fa-plus fa-2x"></i>
-                  <p>Thêm ảnh</p>
+                  <img style="width: 60px; height: 60px" src="${pageContext.request.contextPath}/assets/img/adminpage/up-loading.png" alt="" />
                 </div>
                 <input type="file" id="upload-image" name="imageFiles" accept="image/*" multiple style="display: none" />
                 <input type="hidden" id="product-id-hidden" name="productId" />
@@ -766,18 +789,6 @@
                   <strong>Id:</strong>
                   <span id="product-id-view"></span>
                   <input type="text" id="edit-product-id" value="" style="display: none" name="id" readonly />
-                </div>
-
-                <div>
-                  <strong>Hình ảnh:</strong>
-                  <div id="image-section">
-                    <input
-                            type="file"
-                            id="upload-product-image"
-                           name="imageFiles"
-                            accept="image/*"
-                            multiple/>
-                  </div>
                 </div>
 
                 <div>

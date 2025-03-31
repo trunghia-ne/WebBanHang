@@ -33,7 +33,8 @@
   />
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.2/css/buttons.dataTables.css">
   <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">
-  <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/admin.css?v=2.0">
+  <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/admin.css?v=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 <style>
   #edit-product-btn, #save-product-btn {
@@ -282,10 +283,116 @@
     }
   }
 
-  .view-sub-categorie-btn {
-      background-color: dodgerblue;
-      padding: 5px 10px;
-      color: white;
+  .product-images-grid {
+    display: flex;
+    gap: 20px;
+  }
+
+  .image-wrapper {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.15);
+  }
+
+  .image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  .image-wrapper:hover img {
+    transform: scale(1.05);
+  }
+
+  .image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.2);
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: opacity 0.3s ease;
+  }
+
+  .image-wrapper:hover .image-overlay {
+    opacity: 1;
+  }
+
+  .edit-img-btn, .delete-img-btn {
+    background: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .edit-img-btn:hover {
+    background-color: #f0f0f0;
+  }
+
+  .delete-img-btn:hover {
+    background-color: #ffe0e0;
+  }
+
+  .upload-image-label {
+    cursor: pointer;
+  }
+
+  .upload-box {
+    width: 100%;
+    height: 100%;
+    background-color: #f5f5f5;
+    color: #888;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+  }
+
+  .upload-box:hover {
+    background-color: #e0e0e0;
+  }
+
+  .upload-box i {
+    margin-bottom: 8px;
+  }
+
+  select {
+    margin-top: 10px;
+    width: 200px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    font-size: 14px;
+    color: #333;
+    transition: border-color 0.2s ease-in-out;
+  }
+
+  select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+  }
+
+  select option {
+    background-color: #fff;
+    color: #000;
+    padding: 8px;
   }
 </style>
 <body>
@@ -652,6 +759,18 @@
           </div>
 
           <div class="details-main">
+            <div class="product-images-grid">
+              <div id="product-images-list" class="product-images-grid">
+
+              </div>
+              <label class="image-wrapper upload-image-label">
+                <div class="upload-box">
+                  <img style="width: 60px; height: 60px" src="${pageContext.request.contextPath}/assets/img/adminpage/up-loading.png" alt="" />
+                </div>
+                <input type="file" id="upload-image" name="imageFiles" accept="image/*" multiple style="display: none" />
+                <input type="hidden" id="product-id-hidden" name="productId" />
+              </label>
+            </div>
 
             <!-- Phần chi tiết sản phẩm -->
             <div class="details-content">
@@ -670,44 +789,6 @@
                   <strong>Id:</strong>
                   <span id="product-id-view"></span>
                   <input type="text" id="edit-product-id" value="" style="display: none" name="id" readonly />
-                </div>
-
-                <div>
-                  <strong>Hình ảnh:</strong>
-                  <div id="image-section">
-                    <!-- Hiển thị URL hình ảnh hiện tại -->
-<%--                    <input--%>
-<%--                            type="text"--%>
-<%--                            id="product-image-url"--%>
-<%--                            name="mainImageUrl"--%>
-<%--                            value=""--%>
-<%--                            readonly--%>
-<%--                    />--%>
-                    <input
-                            type="file"
-                            id="upload-product-image"
-                           name="imageFiles"
-                            accept="image/*"
-                            multiple/>
-
-<%--                    <button id="edit-image-btn" class="edit-image-button" type="button">--%>
-<%--                      Chỉnh sửa--%>
-<%--                    </button>--%>
-                  </div>
-
-<%--                  <!-- Input upload file ẩn mặc định -->--%>
-<%--                  <div id="upload-file-section" style="display: none;">--%>
-<%--                    <input--%>
-<%--                            type="file"--%>
-<%--                            id="upload-product-image"--%>
-<%--                            name="imageFiles"--%>
-<%--                            accept="image/*"--%>
-<%--                            multiple--%>
-<%--                    />--%>
-<%--                    <button id="cancel-edit-btn" class="cancel-edit-button" type="button">--%>
-<%--                      Hủy--%>
-<%--                    </button>--%>
-<%--                  </div>--%>
                 </div>
 
                 <div>
@@ -827,11 +908,13 @@
       ${error}
   </div>
 </c:if>
+
 <script src="${pageContext.request.contextPath}/admin/admin_js/productAdmin.js?v=${System.currentTimeMillis()}" defer></script>
+<script src="${pageContext.request.contextPath}/admin/admin_js/upload_image.js?v=${System.currentTimeMillis()}" defer></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
 
 <!-- DataTables Buttons Extension -->
 <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
@@ -840,7 +923,6 @@
 <!-- pdfmake (hỗ trợ xuất PDF) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-
 <!-- JSZip (hỗ trợ xuất Excel) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 

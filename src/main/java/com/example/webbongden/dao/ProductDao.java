@@ -521,23 +521,6 @@ public class ProductDao {
                     .bind("discountPercent", productDetail.getDiscountPercent())
                     .bind("subCategoryId", productDetail.getSubCategoryId())
                     .execute();
-
-            // Xóa ảnh cũ
-            String deleteImageSql = "DELETE FROM product_images WHERE product_id = :id";
-            handle.createUpdate(deleteImageSql)
-                    .bind("id", productDetail.getId())
-                    .execute();
-
-            // Thêm ảnh mới
-            String insertImageSql = "INSERT INTO product_images (product_id, url, main_image) VALUES (:productId, :url, :mainImage)";
-            for (ProductImage image : productDetail.getListImages()) {
-                handle.createUpdate(insertImageSql)
-                        .bind("productId", productDetail.getId())
-                        .bind("url", image.getUrl())
-                        .bind("mainImage", image.isMainImage())
-                        .execute();
-            }
-
             return updatedProduct > 0;
         });
     }
@@ -956,6 +939,14 @@ public class ProductDao {
         });
     }
 
+    public boolean deleteImageById(int imageId) {
+        String sql = "DELETE FROM product_images WHERE id = :id";
+        return jdbi.withHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("id", imageId)
+                        .execute() > 0
+        );
+    }
 
     public static void main(String[] args) {
         // Khởi tạo dịch vụ sản phẩm

@@ -51,42 +51,6 @@ public class EditProductController extends HttpServlet {
             int subCategoryId = Integer.parseInt(request.getParameter("subCategoryId"));
 
 
-
-            // Đường dẫn thư mục upload file
-            String uploadPath = "D:/Nam3/LTWEB/WebDemo/WebBongDen/src/main/webapp/assets/images";
-            File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists()) {
-                boolean isCreated = uploadDir.mkdirs();
-                if (!isCreated) {
-                    throw new IOException("Không thể tạo thư mục upload: " + uploadPath);
-                }
-            }
-
-            // Xử lý upload nhiều ảnh
-            List<ProductImage> productImages = new ArrayList<>();
-            boolean isMainImageSet = false; // Đánh dấu ảnh chính
-            for (Part part : request.getParts()) {
-                if (part.getName().equals("imageFiles") && part.getSize() > 0) {
-                    String fileName = extractFileName(part);
-                    String filePath = uploadPath + File.separator + fileName;
-                    part.write(filePath); // Lưu file lên server
-
-                    // Tạo đối tượng ProductImage
-                    ProductImage productImage = new ProductImage();
-                    productImage.setUrl("assets/images/" + fileName);
-                    productImage.setMainImage(!isMainImageSet); // Đánh dấu ảnh đầu tiên là ảnh chính
-                    isMainImageSet = true;
-
-                    productImages.add(productImage);
-                }
-            }
-
-            System.out.println("Danh sách ảnh sau khi upload:");
-            for (ProductImage image : productImages) {
-                System.out.println("URL: " + image.getUrl() + ", Main: " + image.isMainImage());
-            }
-
-
             // Tạo đối tượng ProductDetail từ dữ liệu form
             ProductDetail productDetail = new ProductDetail();
             productDetail.setId(id);
@@ -103,7 +67,6 @@ public class EditProductController extends HttpServlet {
             productDetail.setUsageAge(usageAge);
             productDetail.setDiscountPercent(discountPercent);
             productDetail.setSubCategoryId(subCategoryId);
-            productDetail.setListImages(productImages);
 
             // Cập nhật sản phẩm trong cơ sở dữ liệu
             boolean isUpdated = productServices.editProductDetail(productDetail);
