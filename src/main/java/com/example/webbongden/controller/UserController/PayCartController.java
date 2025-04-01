@@ -170,14 +170,14 @@ public class PayCartController extends HttpServlet {
             long amount = (long) cart.getTotalPriceNumber();
             System.out.println(amount);
             String requestId = UUID.randomUUID().toString();
-            String uniqueOrderId = "ORDER-" + System.currentTimeMillis(); // OrderId duy nhất
-            String orderInfo = "Don " + orderId;
+            String uniqueOrderId = String.valueOf(System.currentTimeMillis());
+            int orderInfo = orderId;
 
             String rawData = "accessKey=" + ConfigMomo.ACCESS_KEY +
                     "&amount=" + amount +
                     "&extraData=" + "" +
                     "&ipnUrl=" + ConfigMomo.IPN_URL +
-                    "&orderId=" + uniqueOrderId + // Sử dụng orderId duy nhất
+                    "&orderId=" + uniqueOrderId +
                     "&orderInfo=" + orderInfo +
                     "&partnerCode=" + ConfigMomo.PARTNER_CODE +
                     "&redirectUrl=" + ConfigMomo.RETURN_URL +
@@ -226,6 +226,7 @@ public class PayCartController extends HttpServlet {
             }
 
             response.sendRedirect(payUrl);
+            session.removeAttribute("cart");
         }
 
 
