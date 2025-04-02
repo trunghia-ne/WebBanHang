@@ -84,6 +84,7 @@ public class PayCartController extends HttpServlet {
 
             // Nếu chọn COD, kết thúc tại đây
             if ("COD".equals(paymentMethod)) {
+                session.setAttribute("transResult", true);
                 session.removeAttribute("cart");
                 response.sendRedirect("/WebBongDen_war/cart#finish");
                 return;
