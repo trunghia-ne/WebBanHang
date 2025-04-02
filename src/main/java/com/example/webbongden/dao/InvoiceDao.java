@@ -26,7 +26,7 @@ public class InvoiceDao {
                 handle.createUpdate(sql)
                         .bind("promotionId", invoice.getPromotionId() == 0 ? null : invoice.getPromotionId()) // Đưa NULL nếu promotionId là 0
                         .bind("accountId", invoice.getAccountId())
-                        .bind("createdAt", new java.sql.Date(invoice.getCreatedAt().getTime()))
+                         .bind("createdAt", new java.sql.Date(invoice.getCreatedAt().getTime()))
                         .bind("totalPrice", invoice.getTotalPrice())
                         .bind("paymentStatus", invoice.getPaymentStatus())
                         .executeAndReturnGeneratedKeys("id")
@@ -34,6 +34,7 @@ public class InvoiceDao {
                         .one()
         );
     }
+
 
     // Hàm tạo chi tiết hóa đơn
     public void createInvoiceDetails(int invoiceId, List<OrderDetail> orderDetails) {
