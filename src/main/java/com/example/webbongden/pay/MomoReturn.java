@@ -12,7 +12,7 @@ public class MomoReturn extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String orderId = request.getParameter("orderId");
+        String orderId = request.getParameter("orderInfo");
         String resultCode = request.getParameter("resultCode");
         Invoices invoices = new Invoices();
         invoices.setId(Integer.parseInt(orderId));
