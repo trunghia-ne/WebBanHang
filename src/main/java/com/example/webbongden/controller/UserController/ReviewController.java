@@ -63,15 +63,8 @@ public class ReviewController extends HttpServlet {
         }
     }
 
-
-
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int productId = Integer.parseInt(request.getParameter("id"));
-        List<Review> reviews = reviewService.getReviewsByProductId(productId);
 
-        request.setAttribute("reviews", reviews);
-        request.getRequestDispatcher("/product-detail.jsp").forward(request, response);
     }
 }
