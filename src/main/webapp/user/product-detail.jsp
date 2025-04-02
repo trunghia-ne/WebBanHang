@@ -16,9 +16,9 @@
 %>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="./img/logo-fold.png" sizes="180x180" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="icon" href="./img/logo-fold.png" sizes="180x180"/>
     <title>Chi tiết sản phẩm</title>
     <link
             rel="stylesheet"
@@ -27,8 +27,8 @@
             crossorigin="anonymous"
             referrerpolicy="no-referrer"
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     <link
             href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
             rel="stylesheet"
@@ -40,7 +40,7 @@
 </head>
 <body>
 <div class="wrapper">
-    <jsp:include page="../reuse/header.jsp" />
+    <jsp:include page="../reuse/header.jsp"/>
     <div class="main">
         <div class="container">
             <div class="breadcrumb">
@@ -57,7 +57,7 @@
                         <div class="product-image-list">
                             <c:forEach var="imageUrl" items="${listImg}">
                                 <div class="product-image">
-                                    <img src="${imageUrl}" alt="Hình ảnh sản phẩm" />
+                                    <img src="${imageUrl}" alt="Hình ảnh sản phẩm"/>
                                 </div>
                             </c:forEach>
                         </div>
@@ -70,7 +70,7 @@
                             <div class="product-status">
                                 <span class="product-code">Id: ${productDetail.getId()}</span>
                                 <span class="product-availability"
-                                >Tình trạng:  ${productDetail.getProductStatus()}</span
+                                >Tình trạng: ${productDetail.getProductStatus()}</span
                                 >
                                 <span class="product-reviews"
                                 >Đánh giá: <span class="star-review"> ${productDetail.getRating()}</span>/5</span
@@ -88,7 +88,7 @@
                                     </li>
                                     <li>
                                         Bóng Led ánh sáng: ${productDetail.getLightColor()}<br>
-                                        Tuổi thọ  bóng trung bình: ${productDetail.getUsageAge()} <br>
+                                        Tuổi thọ bóng trung bình: ${productDetail.getUsageAge()} <br>
                                         Điện áp: ${productDetail.getVoltage()}
                                     </li>
                                     <li>Chất liệu: ${productDetail.getMaterial()}</li>
@@ -96,7 +96,8 @@
                             </div>
 
                             <div class="product-detail-bottom">
-                                <button class="buy-product" id="addToCart" data-id = ${productDetail.getId()}>MUA NGAY</button>
+                                <button class="buy-product" id="addToCart" data-id= ${productDetail.getId()}>MUA NGAY
+                                </button>
                             </div>
                             <div id="cartNotification" class="notification">
                                 Bạn đã thêm vào giỏ hàng thành công!
@@ -176,21 +177,21 @@
                                     <c:forEach var="product" items="${relatedProducts}">
                                         <li class="product-item">
                                             <a href="product-detail?id=${product.id}">
-                                            <div class="img">
-                                                <img src="${product.imageUrl}" alt="${product.productName}" />
-                                            </div>
-                                            <div class="product-info2">
-                                                <div class="product-name">${product.productName}</div>
-                                                <p class="original-price">
-                                                        ${String.format('%,.0f', product.unitPrice)} VND
-                                                </p>
-                                                <div class="price-discount">
-                                                    <p class="product-price">
-                                                            ${String.format('%,.0f', product.discountedPrice)} VND
-                                                    </p>
-                                                    <p class="discount-percentage">${product.discountPercent}%</p>
+                                                <div class="img">
+                                                    <img src="${product.imageUrl}" alt="${product.productName}"/>
                                                 </div>
-                                            </div>
+                                                <div class="product-info2">
+                                                    <div class="product-name">${product.productName}</div>
+                                                    <p class="original-price">
+                                                            ${String.format('%,.0f', product.unitPrice)} VND
+                                                    </p>
+                                                    <div class="price-discount">
+                                                        <p class="product-price">
+                                                                ${String.format('%,.0f', product.discountedPrice)} VND
+                                                        </p>
+                                                        <p class="discount-percentage">${product.discountPercent}%</p>
+                                                    </div>
+                                                </div>
                                             </a>
                                         </li>
                                     </c:forEach>
@@ -334,69 +335,164 @@
             <div class="review-product">
                 <!-- Title -->
                 <h2>KHÁCH HÀNG NÓI VỀ SẢN PHẨM</h2>
-
-                <!-- Review Submission Form -->
-                <form id="review-form" method="post">
-                    <!-- Hidden inputs -->
-                    <input type="hidden" id="product-id" name="productId" value="${productDetail.getId()}" />
-                    <input type="hidden" id="account-id" name="accountId" value="${account != null ? account.getId() : ''}" />
-
-                    <!-- Bình luận -->
-                    <div class="review-input">
-                        <textarea id="comment-content" name="content" placeholder="Nhập nội dung bình luận"></textarea>
-                        <div class="rating-selection">
-                            <label for="rating">Chọn đánh giá:</label>
-                            <select id="rating" name="rating">
-                                <option value="1">1 Sao</option>
-                                <option value="2">2 Sao</option>
-                                <option value="3">3 Sao</option>
-                                <option value="4">4 Sao</option>
-                                <option value="5">5 Sao</option>
-                            </select>
+                <div class="rating-container">
+                    <div class="average-rating">
+                        <span class="rating-score">${averageRating}</span><span class="out-of">/5</span>
+                        <div class="stars">
+                            <c:forEach var="star" begin="1" end="${Math.floor(averageRating)}">
+                                ★
+                            </c:forEach>
+                            <c:if test="${(averageRating - Math.floor(averageRating)) >= 0.5}">
+                                <span class="half-star">★</span>
+                            </c:if>
                         </div>
-                        <button type="submit" class="submit-review-btn">Gửi bình luận</button>
+                        <p class="total-ratings">${totalRatings} Ratings</p>
                     </div>
-                </form>
 
-                <!-- Display Comments Section -->
-                <div class="comments-section">
-                    <div class="comments-header">
-                        <p>Đánh giá của khách hàng về sản phẩm</p>
-                    </div>
-                    <div id="comments-list">
-                        <c:forEach var="review" items="${reviews}">
-                            <div class="comment">
-                                <div class="comment-header">
-                                    <div class="avatar">
-                                        <img
-                                                src="https://www.w3schools.com/w3images/avatar2.png"
-                                                alt="Avatar"
-                                        />
-                                    </div>
-                                    <div class="comment-info">
-                                        <span class="username">${review.getCusName()}</span>
-<%--                                        <span class="comment-date">${review.}</span>--%>
-                                    </div>
+                    <div class="rating-bars">
+                        <c:forEach var="ratingCount" items="${ratingCounts}">
+                            <div class="rating-row">
+                <span class="stars-label">
+                    <c:forEach var="star" begin="1" end="${ratingCount.rating}">
+                        ★
+                    </c:forEach>
+                    <c:forEach var="emptyStar" begin="${ratingCount.rating}" end="4">
+                        ☆
+                    </c:forEach>
+                </span>
+                                <div class="bar">
+                                    <div class="fill" style="width: ${ratingCount.count * 100 / totalRatings}%"></div>
                                 </div>
-                                <p class="comment-content">${review.getContent()}</p>
-                                <div class="rating">
-                                    <c:forEach var="star" begin="1" end="${review.getRating()}">
-                                        <i class="fa-solid fa-star"></i>
-                                    </c:forEach>
-                                </div>
+                                <span class="count">${ratingCount.count}</span>
                             </div>
                         </c:forEach>
                     </div>
                 </div>
+
+                <!-- Review Submission Form -->
+                <form id="review-form" method="post">
+                    <!-- Hidden inputs -->
+                    <input type="hidden" id="product-id" name="productId" value="${productDetail.getId()}"/>
+                    <input type="hidden" id="account-id" name="accountId"
+                           value="${account != null ? account.getId() : ''}"/>
+
+                    <%--                    <!-- Bình luận -->--%>
+                    <%--                    <div class="review-input">--%>
+                    <%--                        <textarea id="comment-content" name="content" placeholder="Nhập nội dung bình luận"></textarea>--%>
+                    <%--                        <div class="rating-selection">--%>
+                    <%--                            <label for="rating">Chọn đánh giá:</label>--%>
+                    <%--                            <select id="rating" name="rating">--%>
+                    <%--                                <option value="1">1 Sao</option>--%>
+                    <%--                                <option value="2">2 Sao</option>--%>
+                    <%--                                <option value="3">3 Sao</option>--%>
+                    <%--                                <option value="4">4 Sao</option>--%>
+                    <%--                                <option value="5">5 Sao</option>--%>
+                    <%--                            </select>--%>
+                    <%--                        </div>--%>
+                    <%--                        <button type="submit" class="submit-review-btn">Gửi bình luận</button>--%>
+                    <%--                    </div>--%>
+                </form>
+                <!-- Phần hiển thị reviews -->
+                <div id="comments-list">
+                    <c:choose>
+                        <c:when test="${empty reviews}">
+                            <p class="no-reviews">Chưa có đánh giá nào.</p>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach var="review" items="${reviews}">
+                                <div class="comment">
+                                    <div class="comment-header">
+                                        <div class="avatar">
+                                            <img
+                                                    src="https://www.w3schools.com/w3images/avatar2.png"
+                                                    alt="Avatar"
+                                            />
+                                        </div>
+                                        <div class="comment-info">
+                                            <span class="username">${review.getCusName()}</span>
+                                                <%--                                        <span class="comment-date">${review.}</span>--%>
+                                        </div>
+                                    </div>
+                                    <p class="comment-content">${review.getContent()}</p>
+                                    <div class="rating">
+                                        <c:forEach var="star" begin="1" end="${review.getRating()}">
+                                            <i class="fa-solid fa-star"></i>
+                                        </c:forEach>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+
+                <!-- Phần phân trang -->
+                <div class="pagination">
+                    <c:if test="${totalPages > 1}">
+                        <!-- Nút "Trang trước" -->
+                        <c:if test="${currentPage > 1}">
+                            <a href="product-detail?id=${productDetail.id}&page=${currentPage - 1}">‹</a>
+                        </c:if>
+
+                        <!-- Các trang -->
+                        <c:forEach begin="1" end="${totalPages}" var="i">
+                            <c:choose>
+                                <c:when test="${i == currentPage}">
+                                    <a class="active">${i}</a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="product-detail?id=${productDetail.id}&page=${i}">${i}</a>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+
+                        <!-- Nút "Trang sau" -->
+                        <c:if test="${currentPage < totalPages}">
+                            <a href="product-detail?id=${productDetail.id}&page=${currentPage + 1}">›</a>
+                        </c:if>
+                    </c:if>
+                </div>
             </div>
         </div>
     </div>
-    <jsp:include page="../reuse/footer.jsp" />
+</div>
+<jsp:include page="../reuse/footer.jsp"/>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/slick-carousel/slick/slick.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="${pageContext.request.contextPath}/assets/Js/product.js?v=${System.currentTimeMillis()}"></script>
 </body>
+<style>
+    .loading {
+        text-align: center;
+        padding: 20px;
+        font-style: italic;
+        color: #666;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination a {
+        color: black;
+        padding: 8px 16px;
+        text-decoration: none;
+        border: 1px solid #ddd;
+        margin: 0 4px;
+    }
+
+    .pagination a.active {
+        background-color: #4CAF50;
+        color: white;
+        border: 1px solid #4CAF50;
+    }
+
+    .pagination a:hover:not(.active) {
+        background-color: #ddd;
+    }
+</style>
 </html>
 

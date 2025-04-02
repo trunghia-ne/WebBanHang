@@ -273,7 +273,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             }
         });
-        
+
         $("#close-details-btn").on("click", function () {
             $(".product-stats").show();
             $("#product-details").hide();
