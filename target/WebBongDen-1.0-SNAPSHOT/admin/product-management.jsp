@@ -394,6 +394,38 @@
     color: #000;
     padding: 8px;
   }
+
+  #product-image-upload {
+    display: block;
+    margin-top: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  #preview-container {
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  #preview-container img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+  }
+
+  #preview-container img:hover {
+    transform: scale(1.05);
+    border-color: #aaa;
+  }
 </style>
 <body>
 <div class="wrapper">
@@ -557,6 +589,7 @@
                               accept="image/*"
                               required
                       />
+                      <div id="preview-container"></div>
                     </div>
                   </div>
 

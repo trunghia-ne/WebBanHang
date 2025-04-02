@@ -83,3 +83,23 @@ document.getElementById("upload-image").addEventListener("change", function (e) 
         }
     });
 });
+
+const imageInput = document.getElementById("product-image-upload");
+const previewContainer = document.getElementById("preview-container");
+
+imageInput.addEventListener("change", () => {
+    previewContainer.innerHTML = ""; // Clear old previews
+
+    const files = imageInput.files;
+    Array.from(files).forEach(file => {
+        if (!file.type.startsWith("image/")) return;
+
+        const reader = new FileReader();
+        reader.onload = e => {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            previewContainer.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    });
+});
