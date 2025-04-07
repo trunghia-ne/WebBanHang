@@ -37,7 +37,9 @@ public class AddPromotionController extends HttpServlet {
 
             // Xử lý logic thêm promotion
             boolean success = promotionService.addPromotion(promotion);
-
+            if(success) {
+                request.setAttribute("actionStatus", "success");
+            }
             String message = success
                     ? "Thêm chương trình khuyến mãi thành công!"
                     : "Không thể thêm chương trình khuyến mãi.";

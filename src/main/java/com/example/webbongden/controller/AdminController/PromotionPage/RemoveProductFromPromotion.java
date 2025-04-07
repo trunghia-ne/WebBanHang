@@ -34,6 +34,7 @@ public class RemoveProductFromPromotion extends HttpServlet {
             // Trả về kết quả JSON
             Map<String, Object> responseData = new HashMap<>();
             if (isDeleted) {
+                request.setAttribute("actionStatus", "success");
                 responseData.put("success", true);
                 responseData.put("message", "Sản phẩm đã được xóa khỏi chương trình khuyến mãi.");
             } else {

@@ -34,6 +34,7 @@ public class AddProductImgController extends HttpServlet {
             // Lưu vào DB
             productDao.addImage(productId, imageUrl, false);
 
+            request.setAttribute("actionStatus", "success");
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write("{\"message\":\"Lưu ảnh thành công\"}");
         } catch (Exception e) {

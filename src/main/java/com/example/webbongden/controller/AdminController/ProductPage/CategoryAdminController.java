@@ -46,6 +46,7 @@ public class CategoryAdminController extends HttpServlet {
         }
 
         if (categorySevices.addCategory(categoryName)) {
+            request.setAttribute("actionStatus", "success");
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write("{\"message\": \"Danh mục cha đã được thêm thành công.\"}");
         } else {
@@ -69,6 +70,7 @@ public class CategoryAdminController extends HttpServlet {
         try {
             int parentId = Integer.parseInt(parentIdStr);
             if (categorySevices.addSubCategory(parentId, subCategoryName)) {
+                request.setAttribute("actionStatus", "success");
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write("{\"message\": \"Danh mục con đã được thêm thành công.\"}");
             } else {
@@ -97,6 +99,7 @@ public class CategoryAdminController extends HttpServlet {
                 System.out.println(categoryId);
                 boolean isDeleted = categorySevices.deleteCategory(categoryId);
                 if (isDeleted) {
+                    request.setAttribute("actionStatus", "success");
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.getWriter().write("{\"message\": \"Danh mục đã được xóa thành công\"}");
                 } else {
@@ -110,6 +113,7 @@ public class CategoryAdminController extends HttpServlet {
                 boolean isDeleted = categorySevices.deleteSubCategory(subCategoryId);
 
                 if (isDeleted) {
+                    request.setAttribute("actionStatus", "success");
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.getWriter().write("{\"message\": \"Danh mục con đã được xóa thành công\"}");
                 } else {

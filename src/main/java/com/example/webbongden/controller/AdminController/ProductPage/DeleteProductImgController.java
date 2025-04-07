@@ -20,6 +20,7 @@ public class DeleteProductImgController extends HttpServlet {
             boolean deleted = productDao.deleteImageById(imageId);
 
             if (deleted) {
+                request.setAttribute("actionStatus", "success");
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Không thể xóa ảnh");

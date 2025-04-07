@@ -81,6 +81,7 @@ public class UpdateAccount extends HttpServlet {
             boolean isUpdated = accountSevices.updateAccount(account);
 
             if (isUpdated) {
+                request.setAttribute("actionStatus", "success");
                 response.getWriter().write("{\"success\":true, \"message\":\"Cập nhật thành công!\"}");
             } else {
                 response.getWriter().write("{\"success\":false, \"message\":\"Cập nhật thất bại!\"}");
