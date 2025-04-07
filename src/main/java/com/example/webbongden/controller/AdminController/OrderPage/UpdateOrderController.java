@@ -41,6 +41,7 @@ public class UpdateOrderController extends HttpServlet {
             boolean updated = orderServices.updateOrderStatus(orderId, status);
 
             if (updated) {
+                request.setAttribute("actionStatus", "success");
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write("{\"message\": \"Trạng thái đơn hàng đã được cập nhật\"}");
             } else {

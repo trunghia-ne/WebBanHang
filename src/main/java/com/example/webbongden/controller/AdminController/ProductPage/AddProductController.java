@@ -92,6 +92,7 @@ public class AddProductController extends HttpServlet {
             boolean isAdded = productServices.addProduct(product, subCategoryName);
 
             if (isAdded) {
+                request.setAttribute("actionStatus", "success");
                 request.setAttribute("message", "Thêm sản phẩm thành công!");
             } else {
                 request.setAttribute("error", "Thêm sản phẩm thất bại!");

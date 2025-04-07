@@ -92,6 +92,7 @@ public class LoginControllerr extends HttpServlet {
         session.setAttribute("account", account);
         session.setAttribute("username", account.getUsername());
         session.setAttribute("role", account.getRole());
+        request.setAttribute("actionStatus", "success");
         session.setAttribute("userInfo", userSevices.getBasicInfoByUsername(username));
         session.setAttribute("orders", orderSevices.getOrdersByUsername(username));
 

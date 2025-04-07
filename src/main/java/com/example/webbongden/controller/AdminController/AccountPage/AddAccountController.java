@@ -46,6 +46,7 @@ public class AddAccountController extends HttpServlet {
 
             if (success) {
                 message = "Thêm tài khoản thành công!";
+                request.setAttribute("actionStatus", "success");
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 message = "Username đã tồn tại! Không thể thêm tài khoản.";

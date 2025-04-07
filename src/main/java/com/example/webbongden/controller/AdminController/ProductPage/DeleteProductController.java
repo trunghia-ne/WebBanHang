@@ -60,6 +60,7 @@ public class DeleteProductController extends HttpServlet {
 
             // 4. Xử lý phản hồi
             if (isDeleted) {
+                request.setAttribute("actionStatus", "success");
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write("{\"status\": \"success\", \"message\": \"Xóa sản phẩm thành công!\"}");

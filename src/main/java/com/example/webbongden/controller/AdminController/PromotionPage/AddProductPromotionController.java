@@ -59,6 +59,7 @@ public class AddProductPromotionController extends HttpServlet {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             if (success) {
+                request.setAttribute("actionStatus", "success");
                 response.getWriter().write("{\"status\":\"success\",\"message\":\"Thêm sản phẩm vào chương trình thành công!\"}");
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

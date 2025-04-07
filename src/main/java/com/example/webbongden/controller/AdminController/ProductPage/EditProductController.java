@@ -72,6 +72,7 @@ public class EditProductController extends HttpServlet {
             boolean isUpdated = productServices.editProductDetail(productDetail);
 
             if (isUpdated) {
+                request.setAttribute("actionStatus", "success");
                 response.getWriter().write("{\"success\": true, \"message\": \"Cập nhật sản phẩm thành công!\"}");
             } else {
                 response.getWriter().write("{\"success\": false, \"message\": \"Không thể cập nhật sản phẩm!\"}");

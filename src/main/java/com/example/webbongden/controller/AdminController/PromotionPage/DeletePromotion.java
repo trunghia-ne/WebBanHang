@@ -33,6 +33,7 @@ public class DeletePromotion extends HttpServlet {
             // Trả về phản hồi JSON
             Map<String, Object> responseData = new HashMap<>();
             if (isDeleted) {
+                request.setAttribute("actionStatus", "success");
                 responseData.put("success", true);
                 responseData.put("message", "Chương trình khuyến mãi đã được xóa thành công.");
             } else {
