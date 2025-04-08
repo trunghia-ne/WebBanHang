@@ -55,6 +55,12 @@
                 <p>Quản lý tài khoản</p>
             </div>
         </a>
+        <a href="admin?page=log" class="nav-link" data-index="account">
+            <div class="nav-item">
+                <i class="fas fa-clipboard-list"></i>
+                <p>Log</p>
+            </div>
+        </a>
     </div>
 
     <a href="/WebBongDen_war/LogoutController" id="login-header-btn" style="display: block">

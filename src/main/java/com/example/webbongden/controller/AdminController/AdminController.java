@@ -54,6 +54,8 @@ public class AdminController extends HttpServlet {
             request.getRequestDispatcher("/admin/promotion-management.jsp").forward(request, response);
         } else if (page.equals("account")) {
             request.getRequestDispatcher("/admin/account-management.jsp").forward(request, response);
+        }else if (page.equals("log")) {
+            request.getRequestDispatcher("/admin/log.jsp").forward(request, response);
         } else {
             // Trang mặc định nếu `page` không khớp
             response.sendRedirect("admin?page=dashboard");
