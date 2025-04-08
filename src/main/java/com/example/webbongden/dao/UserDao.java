@@ -239,27 +239,32 @@ public class UserDao {
         });
     }
 
+    public User getCustomerById(int customerId) {
+        String sql = "SELECT cus_name AS customerName, address, phone FROM customers WHERE id = :customerId";
+
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("customerId", customerId)
+                        .mapToBean(User.class)
+                        .findOne()
+                        .orElse(null)
+        );
+    }
+
 
     public static void main(String[] args) {
-        // Tạo một đối tượng UserDao
         UserDao userDao = new UserDao();
 
-        // Tên đăng nhập cần kiểm tra
-        String username = "pvp1292004";
+        int customerId = 3; // ✅ Thay bằng ID có thực trong database
+        User user = userDao.getCustomerById(customerId);
 
-        // Gọi phương thức getBasicInfoByUsername
-        User user = userDao.getBasicInfoByUsername(username);
-
-        // Kiểm tra kết quả và in ra màn hình
         if (user != null) {
-            System.out.println("Thông tin người dùng:");
+            System.out.println("🎯 Thông tin khách hàng:");
             System.out.println("Tên: " + user.getCustomerName());
-            System.out.println("Email: " + user.getEmail());
-            System.out.println("Số điện thoại: " + user.getPhone());
+            System.out.println("SĐT: " + user.getPhone());
             System.out.println("Địa chỉ: " + user.getAddress());
-            System.out.println("Ngày tạo tài khoản: " + user.getCreatedAt());
         } else {
-            System.out.println("Không tìm thấy người dùng với tên đăng nhập: " + username);
+            System.out.println("❌ Không tìm thấy khách hàng với ID = " + customerId);
         }
     }
 

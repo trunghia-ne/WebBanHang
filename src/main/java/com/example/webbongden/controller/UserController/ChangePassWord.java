@@ -37,6 +37,7 @@ public class ChangePassWord extends HttpServlet {
             boolean isChanged = accountServices.changePassword(username, oldPassword, newPassword);
             if (isChanged) {
                 success = true;
+                request.setAttribute("actionStatus", "success");
                 message = "Đổi mật khẩu thành công!";
             } else {
                 message = "Mật khẩu cũ không chính xác.";

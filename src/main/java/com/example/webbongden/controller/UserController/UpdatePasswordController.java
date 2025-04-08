@@ -28,6 +28,7 @@ public class UpdatePasswordController extends HttpServlet {
         // Cập nhật mật khẩu mới
         boolean isPasswordUpdated = accountServices.updatePassword(email, newPassword);
         if (isPasswordUpdated) {
+            request.setAttribute("actionStatus", "success");
             request.setAttribute("successMessageReset", "Mật khẩu đã được cập nhật thành công.");
             session.removeAttribute("otp"); // Xóa OTP khỏi session
             session.removeAttribute("email"); // Xóa email khỏi session
