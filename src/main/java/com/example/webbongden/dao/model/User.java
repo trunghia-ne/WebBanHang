@@ -32,6 +32,9 @@ public class User {
         this.address = address;
     }
 
+    public User() {
+
+    }
     // Getter và Setter
     public String getAvatar() {
         return avatar;

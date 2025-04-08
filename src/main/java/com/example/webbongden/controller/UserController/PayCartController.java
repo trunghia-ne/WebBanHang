@@ -84,6 +84,7 @@ public class PayCartController extends HttpServlet {
 
             // Nếu chọn COD, kết thúc tại đây
             if ("COD".equals(paymentMethod)) {
+                request.setAttribute("actionStatus", "success");
                 session.setAttribute("transResult", true);
                 session.removeAttribute("cart");
                 response.sendRedirect("/WebBongDen_war/cart#finish");
@@ -161,6 +162,7 @@ public class PayCartController extends HttpServlet {
                 System.out.println("VNPay Pay URL: " + Config.vnp_PayUrl);
                 response.sendRedirect(paymentUrl);
                 System.out.println("VNPay URL: " + paymentUrl);
+                request.setAttribute("actionStatus", "success");
                 // Xóa giỏ hàng khỏi session sau khi thanh toán
                 session.removeAttribute("cart");
             }
@@ -225,7 +227,7 @@ public class PayCartController extends HttpServlet {
                 request.getRequestDispatcher("/user/cart.jsp").forward(request, response);
                 return;
             }
-
+            request.setAttribute("actionStatus", "success");
             response.sendRedirect(payUrl);
             session.removeAttribute("cart");
         }

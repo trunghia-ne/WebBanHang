@@ -34,6 +34,7 @@ public class ResetPasswordController extends HttpServlet {
 
             // Đặt attribute để hiển thị form nhập OTP
             request.setAttribute("showOtpForm", true);
+            request.setAttribute("actionStatus", true);
             request.getRequestDispatcher("/user/login.jsp").forward(request, response);
         } else {
             request.setAttribute("errorMessageReset", "Có lỗi xảy ra khi gửi OTP.");
