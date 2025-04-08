@@ -84,6 +84,30 @@
             </div>
             <p id="error-message" style="color: red; display: none;"></p>
 
+
+            <!-- Ngăn chặn copy pass -->
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const passwordInput = document.getElementById("cus-password");
+
+                    passwordInput.addEventListener("paste", function (e) {
+                        e.preventDefault();
+                    });
+
+                    passwordInput.addEventListener("copy", function (e) {
+                        e.preventDefault();
+                    });
+
+                    passwordInput.addEventListener("cut", function (e) {
+                        e.preventDefault();
+                    });
+
+                    passwordInput.addEventListener("contextmenu", function (e) {
+                        e.preventDefault();
+                    });
+                });
+            </script>
+
             <!-- CAPTCHA -->
             <div class="form-group">
                 <div class="g-recaptcha" data-sitekey="6LehGvYqAAAAAGyyRncgehEOw351OwCJK4fAoLL0" data-callback="onCaptchaSuccess"></div>

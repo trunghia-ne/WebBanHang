@@ -515,6 +515,32 @@
                 });
         });
     });
+
+
+    <!-- Ngăn copy pass -->
+        document.addEventListener("DOMContentLoaded", function () {
+        const passwordInput = document.getElementById("password");
+        const rePasswordInput = document.getElementById("rePassword");
+
+        function preventCopyPaste(input) {
+        input.addEventListener("paste", function (e) {
+        e.preventDefault();
+    });
+        input.addEventListener("copy", function (e) {
+        e.preventDefault();
+    });
+        input.addEventListener("cut", function (e) {
+        e.preventDefault();
+    });
+        input.addEventListener("contextmenu", function (e) {
+        e.preventDefault();
+    });
+    }
+
+        preventCopyPaste(passwordInput);
+        preventCopyPaste(rePasswordInput);
+    });
+
 </script>
 </body>
 </html>
