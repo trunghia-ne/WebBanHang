@@ -4,6 +4,8 @@ import com.example.webbongden.dao.db.JDBIConnect;
 import com.example.webbongden.dao.model.Log;
 import org.jdbi.v3.core.Jdbi;
 
+import java.util.List;
+
 public class LogDao {
     private final Jdbi jdbi;
 
@@ -24,6 +26,15 @@ public class LogDao {
                         .bind("beforeData", log.getBeforeData())
                         .bind("afterData", log.getAfterData())
                         .execute()
+        );
+    }
+
+    public List<Log> getAllLogs() {
+        String sql = "SELECT * FROM logs ORDER BY time DESC";
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .mapToBean(Log.class)
+                        .list()
         );
     }
 }
