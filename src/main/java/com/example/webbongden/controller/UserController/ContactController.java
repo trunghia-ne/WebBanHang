@@ -49,7 +49,7 @@ public class ContactController extends HttpServlet {
         try {
             Message mimeMessage = new MimeMessage(session);
             mimeMessage.setFrom(new InternetAddress(username));
-            mimeMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse("your-destination-email@gmail.com"));
+            mimeMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse("daoduynhat2004@gmail.com"));
             mimeMessage.setSubject(subject);
             mimeMessage.setText(fullMessage);
 
