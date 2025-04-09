@@ -31,7 +31,7 @@
           href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"
   />
   <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">
-  <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/admin.css">
+  <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/admin.css?v=1">
 </head>
 <body>
 <div class="wrapper">

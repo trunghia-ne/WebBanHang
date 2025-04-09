@@ -26,6 +26,27 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/admin.css">
     <style>
+        .btn-view-icon {
+            background-color: #f1f3f5;
+            color: #212529;
+            border: 1px solid #ced4da;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-view-icon i {
+            font-size: 16px;
+            color: #495057;
+        }
+
+        .btn-view-icon:hover {
+            background-color: #dee2e6;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
         /* Log Table Style */
         #log-table {
             width: 100%;
@@ -127,16 +148,5 @@
 
 <!-- JSZip (hỗ trợ xuất Excel) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<style>
-    button.dt-button.buttons-pdf.buttons-html5.btn.btn-danger {
-        color: white;
-        background: #007bff;
-        float: right;
-        margin-top: -58px;
-        border-radius: 4px;
-        cursor: pointer;
-        padding: 8px 15px;
-    }
-</style>
 </body>
 </html>

@@ -7,6 +7,7 @@ import com.example.webbongden.pay.HttpUtil;
 import com.example.webbongden.services.OrderSevices;
 import com.example.webbongden.services.ProductServices;
 import com.example.webbongden.services.PromotionService;
+import com.example.webbongden.utils.LogUtils;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -85,6 +86,7 @@ public class PayCartController extends HttpServlet {
             // Nếu chọn COD, kết thúc tại đây
             if ("COD".equals(paymentMethod)) {
                 request.setAttribute("actionStatus", "success");
+                LogUtils.logCreateOrder(request, invoice, cart, "COD");
                 session.setAttribute("transResult", true);
                 session.removeAttribute("cart");
                 response.sendRedirect("/WebBongDen_war/cart#finish");
@@ -231,7 +233,5 @@ public class PayCartController extends HttpServlet {
             response.sendRedirect(payUrl);
             session.removeAttribute("cart");
         }
-
-
     }
 }

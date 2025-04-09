@@ -341,7 +341,7 @@
             data.append('newPassword', form.newPassword.value);
             data.append('confirmPassword', form.confirmPassword.value);
 
-            fetch('/WebBongDen_war/changePassword', {
+            fetch('/WebBongDen_war/change-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: data,

@@ -2446,12 +2446,6 @@ table {
   background-color: #e53935;
 }
 
-.notification-bell {
-  position: relative;
-  display: inline-block;
-  font-size: 20px;
-  cursor: pointer;
-}
 
 
 /* Hiệu ứng rung */
@@ -2556,5 +2550,102 @@ table {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.notification-bell {
+  position: relative;
+  font-size: 20px;
+  color: #333;
+  cursor: pointer;
+}
+
+.notification-bell .fa-bell {
+  font-size: 20px;
+}
+
+.notification-bell .badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.noti-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 80px;
+  width: 450px;
+  max-height: 600px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  overflow-y: auto;
+  z-index: 999;
+  padding: 0;
+}
+
+.noti-dropdown.show {
+  display: block;
+}
+
+.noti-header {
+  font-weight: 700;
+  font-size: 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f9f9f9;
+}
+
+.noti-list {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.noti-item {
+  display: flex;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.noti-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #20c997;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.noti-content {
+  font-size: 14px;
+  color: #333;
+}
+
+.noti-title {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: #555;
+}
+
+.noti-title span {
+  color: #999;
+  font-weight: normal;
+}
+
+.noti-text {
+  line-height: 1.4;
 }
 

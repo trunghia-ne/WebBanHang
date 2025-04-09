@@ -1,5 +1,6 @@
 package com.example.webbongden.controller.UserController;
 
+import com.example.webbongden.dao.AccountDao;
 import com.example.webbongden.services.AccountServices;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -7,9 +8,10 @@ import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
 
-@WebServlet(name = "ChangePassWord", value = "/changePassword")
+@WebServlet(name = "ChangePassWord", value = "/change-password")
 public class ChangePassWord extends HttpServlet {
     private final AccountServices accountServices = new AccountServices();
+    private final AccountDao accountDao = new AccountDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -38,6 +40,8 @@ public class ChangePassWord extends HttpServlet {
             if (isChanged) {
                 success = true;
                 request.setAttribute("actionStatus", "success");
+                request.setAttribute("beforeData", oldPassword);
+                request.setAttribute("afterData", newPassword);
                 message = "Đổi mật khẩu thành công!";
             } else {
                 message = "Mật khẩu cũ không chính xác.";
