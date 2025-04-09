@@ -76,7 +76,7 @@ public class ActionLoggingFilter implements Filter {
         if (uri == null) return null;
         if (uri.contains("register")) return "USER_REGISTER";
         if (uri.contains("login") && !uri.contains("facebook") && !uri.contains("google")) return "USER_LOGIN";
-        if (uri.contains("changepassword")) return "CHANGE_PASSWORD";
+        if (uri.contains("change-password")) return "CHANGE_PASSWORD";
         if (uri.contains("update-password")) return "UPDATE_PASSWORD";
         if (uri.contains("edit-cus-info")) return "EDIT_CUS_INFO";
         if (uri.contains("reset-password")) return "RESET_PASSWORD";

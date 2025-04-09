@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     className: "btn btn-danger",
                     title: "Danh Sách Log Hệ Thống",
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7],
+                        columns: [0, 1, 2, 3, 4, 6],
                     },
                 },
             ],
@@ -33,33 +33,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 { data: "action", title: "Hành động" },
                 { data: "resource", title: "Tài nguyên" },
                 {
-                    data: "beforeData",
-                    title: "Dữ liệu trước",
-                    render: function (data) {
-                        if (!data) return "—";
-                        try {
-                            const obj = JSON.parse(data);
-                            return Object.entries(obj)
-                                .map(([key, value]) => `<div><strong>${key}:</strong> ${value}</div>`)
-                                .join("");
-                        } catch (e) {
-                            return `<i>Lỗi JSON</i>`;
-                        }
-                    }
-                },
-                {
-                    data: "afterData",
-                    title: "Dữ liệu sau",
-                    render: function (data) {
-                        if (!data) return "—";
-                        try {
-                            const obj = JSON.parse(data);
-                            return Object.entries(obj)
-                                .map(([key, value]) => `<div><strong>${key}:</strong> ${value}</div>`)
-                                .join("");
-                        } catch (e) {
-                            return `<i>Lỗi JSON</i>`;
-                        }
+                    data: null,
+                    title: "Chi tiết thay đổi",
+                    render: function (data, type, row) {
+                        const before = row.beforeData ? row.before_data.replace(/'/g, "&apos;") : "";
+                        const after = row.afterData ? row.after_data.replace(/'/g, "&apos;") : "";
+                        return `
+            <button class="btn-show-diff btn-view-icon" 
+                    data-before='${before}' 
+                    data-after='${after}'>
+                <i class="fa fa-eye"></i>
+            </button>
+        `;
                     }
                 },
                 {
@@ -69,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         const date = new Date(data);
                         return date.toLocaleString("vi-VN");
                     }
-                },
+                }
             ],
             lengthChange: false,
             searching: false,
@@ -82,6 +67,47 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 info: "Hiển thị _START_ đến _END_ của _TOTAL_ log",
             },
+        });
+
+        $(document).on("click", ".btn-show-diff", function () {
+            const beforeRaw = $(this).data("before");
+            const afterRaw = $(this).data("after");
+
+            let beforeText = "Không có dữ liệu";
+            let afterText = "Không có dữ liệu";
+
+            try {
+                if (beforeRaw) {
+                    const objBefore = typeof beforeRaw === "object" ? beforeRaw : JSON.parse(beforeRaw);
+                    beforeText = JSON.stringify(objBefore, null, 2);
+                }
+                if (afterRaw) {
+                    const objAfter = typeof afterRaw === "object" ? afterRaw : JSON.parse(afterRaw);
+                    afterText = JSON.stringify(objAfter, null, 2);
+                }
+            } catch (e) {
+                beforeText = beforeRaw || "Không có";
+                afterText = afterRaw || "Không có";
+            }
+
+            Swal.fire({
+                title: "CHI TIẾT THAY ĐỔI",
+                html: `
+            <div style="display: flex; gap: 20px; text-align: left;">
+                <div style="flex: 1;">
+                    <h4>Dữ liệu trước</h4>
+                    <pre style="background: #f8f9fa; padding: 10px; border-radius: 5px; white-space: pre-wrap;">${beforeText}</pre>
+                </div>
+                <div style="flex: 1;">
+                    <h4>Dữ liệu sau</h4>
+                    <pre style="background: #f1f3f5; padding: 10px; border-radius: 5px; white-space: pre-wrap;">${afterText}</pre>
+                </div>
+            </div>
+        `,
+                width: 900,
+                showCloseButton: true,
+                confirmButtonText: "Đóng"
+            });
         });
     });
 });

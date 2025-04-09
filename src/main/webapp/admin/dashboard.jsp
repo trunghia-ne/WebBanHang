@@ -33,7 +33,7 @@
             href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"
     />
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/admin.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/admin.css?v=1">
 </head>
 <body>
 <div class="wrapper">
@@ -219,5 +219,21 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+    const notiBtn = document.getElementById("notiBtn");
+    const notiDropdown = document.getElementById("notiDropdown");
+
+    notiBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        notiDropdown.classList.toggle("show");
+    });
+
+    // Đóng nếu click ngoài
+    document.addEventListener("click", function (e) {
+        if (!notiBtn.contains(e.target)) {
+            notiDropdown.classList.remove("show");
+        }
+    });
+</script>
 </body>
 </html>
