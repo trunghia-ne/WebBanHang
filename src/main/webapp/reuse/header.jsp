@@ -138,7 +138,7 @@
                 </div>
             </li>
             <li><a href="News.html">TIN TỨC</a></li>
-            <li><a href="Contact.html">LIÊN HỆ</a></li>
+            <li><a href="/WebBongDen_war/ContactController">LIÊN HỆ</a></li>
         </ul>
     </nav>
 </header>
