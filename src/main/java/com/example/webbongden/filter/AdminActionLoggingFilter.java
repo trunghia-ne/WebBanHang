@@ -98,8 +98,11 @@ public class AdminActionLoggingFilter implements Filter {
                 logEntry.setLevel(role);
                 logEntry.setAction(action);
                 logEntry.setResource(detectResourceFromAction(action));
-                logEntry.setBeforeData(null);
-                logEntry.setAfterData(null);
+                Object beforeDataObj = request.getAttribute("beforeData");
+                Object afterDataObj = request.getAttribute("afterData");
+
+                logEntry.setBeforeData(beforeDataObj != null ? beforeDataObj.toString() : null);
+                logEntry.setAfterData(afterDataObj != null ? afterDataObj.toString() : null);
 
                 logDao.insertLog(logEntry);
             } catch (Exception e) {

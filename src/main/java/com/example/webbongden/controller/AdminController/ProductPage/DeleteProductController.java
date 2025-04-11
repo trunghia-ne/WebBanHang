@@ -2,6 +2,7 @@ package com.example.webbongden.controller.AdminController.ProductPage;
 
 import com.example.webbongden.dao.model.ProductDetail;
 import com.example.webbongden.services.ProductServices;
+import com.example.webbongden.utils.LogUtils;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -61,6 +62,7 @@ public class DeleteProductController extends HttpServlet {
             // 4. Xử lý phản hồi
             if (isDeleted) {
                 request.setAttribute("actionStatus", "success");
+                LogUtils.logDeleteProduct(request, productId);
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write("{\"status\": \"success\", \"message\": \"Xóa sản phẩm thành công!\"}");

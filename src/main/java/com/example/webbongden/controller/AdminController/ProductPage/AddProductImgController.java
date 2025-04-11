@@ -1,6 +1,7 @@
 package com.example.webbongden.controller.AdminController.ProductPage;
 
 import com.example.webbongden.dao.ProductDao;
+import com.example.webbongden.utils.LogUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;
@@ -35,6 +36,7 @@ public class AddProductImgController extends HttpServlet {
             productDao.addImage(productId, imageUrl, false);
 
             request.setAttribute("actionStatus", "success");
+            LogUtils.logAddProductImage(request, productId, imageUrl);
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write("{\"message\":\"Lưu ảnh thành công\"}");
         } catch (Exception e) {

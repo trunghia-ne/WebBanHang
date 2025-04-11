@@ -1,6 +1,7 @@
 package com.example.webbongden.controller.AdminController.ProductPage;
 
 import com.example.webbongden.dao.ProductDao;
+import com.example.webbongden.utils.LogUtils;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -16,11 +17,12 @@ public class DeleteProductImgController extends HttpServlet {
             throws ServletException, IOException {
         try {
             int imageId = Integer.parseInt(request.getParameter("id"));
-
+            int productId = productDao.getProductIdByImageId(imageId);
             boolean deleted = productDao.deleteImageById(imageId);
 
             if (deleted) {
                 request.setAttribute("actionStatus", "success");
+                LogUtils.logDeleteProductImage(request, imageId, productId);
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Không thể xóa ảnh");
