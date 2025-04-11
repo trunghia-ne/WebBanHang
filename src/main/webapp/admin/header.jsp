@@ -22,25 +22,22 @@
 
     <div class="noti-dropdown" id="notiDropdown">
         <div class="noti-header">Thông báo</div>
-        <div class="noti-list">
-            <!-- 1 thông báo -->
-            <div class="noti-item">
-                <div class="noti-dot"></div>
-                <div class="noti-content">
-                    <p class="noti-title">Hệ thống • <span>1 tháng trước</span></p>
-                    <p class="noti-text">Khóa học <strong>[Mới ra mắt]</strong> ReactJS từ cơ bản đến nâng cao 2025 vừa có bài học mới.</p>
-                </div>
-            </div>
-
-            <div class="noti-item">
-                <div class="noti-dot"></div>
-                <div class="noti-content">
-                    <p class="noti-title">Hệ thống • <span>1 tháng trước</span></p>
-                    <p class="noti-text">Khóa học <strong>DSA (Data Structure and Algorithms)</strong> vừa có bài học mới.</p>
-                </div>
-            </div>
-        </div>
+        <div class="noti-list"></div>
     </div>
 </header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

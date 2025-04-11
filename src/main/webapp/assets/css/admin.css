@@ -22,6 +22,15 @@ select:focus {
   opacity: 1;          /* Không trong suốt */
 }
 
+.noti-dropdown {
+  display: none;
+  /* thêm styling khác nếu cần */
+}
+.noti-dropdown.show {
+  display: block;
+}
+
+
 /* Code header */
 .wrapper .header { 
   display: flex;

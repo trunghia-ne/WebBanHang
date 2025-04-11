@@ -1,9 +1,11 @@
 package com.example.webbongden.controller.AdminController.ProductPage;
 
+import com.example.webbongden.controller.AdminController.AdminNotificationSocket;
 import com.example.webbongden.dao.model.ProductDetail;
 import com.example.webbongden.dao.model.ProductImage;
 import com.example.webbongden.services.ProductServices;
 import com.example.webbongden.utils.LogUtils;
+import com.example.webbongden.utils.NotificationUtils;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -76,6 +78,7 @@ public class EditProductController extends HttpServlet {
             if (isUpdated) {
                 request.setAttribute("actionStatus", "success");
                 LogUtils.logUpdateProduct(request, productBefore, productDetail);
+                NotificationUtils.notifyAllAdmins("Admin vua update thong tin san pham", "https://www.nimo.tv");
                 response.getWriter().write("{\"success\": true, \"message\": \"Cập nhật sản phẩm thành công!\"}");
             } else {
                 response.getWriter().write("{\"success\": false, \"message\": \"Không thể cập nhật sản phẩm!\"}");

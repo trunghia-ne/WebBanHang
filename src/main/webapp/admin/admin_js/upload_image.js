@@ -1,4 +1,4 @@
-const cloudName = "dptmqc8lj";
+﻿const cloudName = "dptmqc8lj";
 const uploadPreset = "web_upload";
 
 document.getElementById("upload-image").addEventListener("change", function (e) {

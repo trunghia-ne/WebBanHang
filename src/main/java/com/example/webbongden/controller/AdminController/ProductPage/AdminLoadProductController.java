@@ -20,6 +20,9 @@ public class AdminLoadProductController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json; charset=UTF-8");
+
         // Lấy tham số tìm kiếm từ request
         String keyword = request.getParameter("searchValue");
 
@@ -32,10 +35,6 @@ public class AdminLoadProductController extends HttpServlet {
             // Nếu không có từ khóa, lấy toàn bộ sản phẩm
             productList = productServices.getListProductForAdminPage();
         }
-
-        // Thiết lập kiểu dữ liệu trả về là JSON
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
 
         // Chuyển danh sách sản phẩm thành JSON
         ObjectMapper objectMapper = new ObjectMapper();

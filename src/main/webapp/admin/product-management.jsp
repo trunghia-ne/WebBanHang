@@ -1,12 +1,6 @@
 <%@ page import="com.example.webbongden.dao.model.SubCategory" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="java.util.List" %><%--
-  Created by IntelliJ IDEA.
-  User: Admin
-  Date: 12/19/2024
-  Time: 8:25 PM
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -941,9 +935,10 @@
       ${error}
   </div>
 </c:if>
-
+<script src="${pageContext.request.contextPath}/admin/admin_js/noti.js?v=${System.currentTimeMillis()}" defer></script>
 <script src="${pageContext.request.contextPath}/admin/admin_js/productAdmin.js?v=${System.currentTimeMillis()}" defer></script>
 <script src="${pageContext.request.contextPath}/admin/admin_js/upload_image.js?v=${System.currentTimeMillis()}" defer></script>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

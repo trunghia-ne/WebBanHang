@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
     $(document).ready(function () {
         const table = $(".customer-table").DataTable({
             ajax: {
@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 data: function (d) {
                     d.searchValue = $("#customer-search").val(); // Truyền giá trị tìm kiếm
                 },
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Accept-Charset", "UTF-8");
+                }
             },
             error: function (xhr, error, thrown) {
                 console.log("Error:", error);
@@ -63,6 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 info: "Hiển thị _START_ đến _END_ của _TOTAL_ sản phẩm",
             },
         });
+
         $("#search-btn-cus").on("click", function () {
             table.ajax.reload(); // Reload lại bảng với dữ liệu lọc mới
         });
