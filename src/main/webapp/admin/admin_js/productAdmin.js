@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
     const editButton = document.getElementById("edit-image-btn");
     const cancelEditButton = document.getElementById("cancel-edit-btn");
     const imageSection = document.getElementById("image-section");
@@ -120,12 +120,13 @@ document.addEventListener("DOMContentLoaded", function () {
             info: true,
             language: {
                 paginate: {
-                    previous: "Trước",
-                    next: "Tiếp",
+                    previous: "Previous",
+                    next: "Next",
                 },
                 info: "Hiển thị _START_ đến _END_ của _TOTAL_ sản phẩm",
-            },
+            }
         });
+        console.log("skvkma")
 
         // Hàm chuyển ảnh từ URL sang base64
         function toDataURL(url) {

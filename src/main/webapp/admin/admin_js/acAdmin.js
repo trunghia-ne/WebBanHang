@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
     $(document).ready(function () {
         const table = $("#account-table").DataTable({
             ajax: {

@@ -1,4 +1,4 @@
-
+﻿
 // Hàm hiển thị/ẩn input cho thống kê theo tháng
 function showDateInputs(value) {
     const monthInputGroup = document.getElementById("month-input-group");

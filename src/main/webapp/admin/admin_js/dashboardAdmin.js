@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
     // Lấy dữ liệu JSON từ thuộc tính data-chart
     const customerChartElement = document.querySelector('.customer-chart');
     const userChartData = JSON.parse(customerChartElement.dataset.chart);

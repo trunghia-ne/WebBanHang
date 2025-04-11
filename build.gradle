@@ -40,6 +40,8 @@ dependencies {
     testImplementation libs.org.junit.jupiter.junit.jupiter.api
     testImplementation libs.org.junit.jupiter.junit.jupiter.engine
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+    implementation 'jakarta.websocket:jakarta.websocket-api:2.1.1'
+    providedCompile 'org.apache.tomcat.embed:tomcat-embed-websocket:10.1.16'
 }
 
 group = 'com.example'
@@ -64,6 +66,8 @@ tasks.withType(Javadoc) {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_23
-    targetCompatibility = JavaVersion.VERSION_23
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
+
+

@@ -1,4 +1,4 @@
-document.getElementById("promotion-form").addEventListener("submit", async function (e) {
+﻿document.getElementById("promotion-form").addEventListener("submit", async function (e) {
     e.preventDefault(); // Ngăn form gửi dữ liệu mặc định
 
     const formData = {
