@@ -3,6 +3,7 @@ package com.example.webbongden.controller.AdminController.ProductPage;
 import com.example.webbongden.dao.model.ProductDetail;
 import com.example.webbongden.dao.model.ProductImage;
 import com.example.webbongden.services.ProductServices;
+import com.example.webbongden.utils.LogUtils;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -34,6 +35,7 @@ public class EditProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("application/json");
         try {
+
             // Lấy các tham số từ form
             int id = Integer.parseInt(request.getParameter("id"));
             String productName = request.getParameter("productName");
@@ -50,7 +52,7 @@ public class EditProductController extends HttpServlet {
             double discountPercent = Double.parseDouble(request.getParameter("discountPercent"));
             int subCategoryId = Integer.parseInt(request.getParameter("subCategoryId"));
 
-
+            ProductDetail productBefore = productServices.getProductDetailById(id);
             // Tạo đối tượng ProductDetail từ dữ liệu form
             ProductDetail productDetail = new ProductDetail();
             productDetail.setId(id);
@@ -73,6 +75,7 @@ public class EditProductController extends HttpServlet {
 
             if (isUpdated) {
                 request.setAttribute("actionStatus", "success");
+                LogUtils.logUpdateProduct(request, productBefore, productDetail);
                 response.getWriter().write("{\"success\": true, \"message\": \"Cập nhật sản phẩm thành công!\"}");
             } else {
                 response.getWriter().write("{\"success\": false, \"message\": \"Không thể cập nhật sản phẩm!\"}");

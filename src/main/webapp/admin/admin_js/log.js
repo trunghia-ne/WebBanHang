@@ -36,8 +36,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     data: null,
                     title: "Chi tiết thay đổi",
                     render: function (data, type, row) {
-                        const before = row.beforeData ? row.before_data.replace(/'/g, "&apos;") : "";
-                        const after = row.afterData ? row.after_data.replace(/'/g, "&apos;") : "";
+                        const before = row.beforeData ? row.beforeData.replace(/'/g, "&apos;") : "";
+                        const after = row.afterData ? row.afterData.replace(/'/g, "&apos;") : "";
                         return `
             <button class="btn-show-diff btn-view-icon" 
                     data-before='${before}' 

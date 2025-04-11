@@ -6,9 +6,12 @@ import com.example.webbongden.dao.model.ProductDetail;
 import com.example.webbongden.dao.model.ProductImage;
 import com.example.webbongden.services.ProductServices;
 import com.example.webbongden.utils.CloudinaryConfig;
+import com.example.webbongden.utils.LogUtils;
+import com.google.gson.JsonObject;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -90,8 +93,9 @@ public class AddProductController extends HttpServlet {
 
             // Gọi service để lưu sản phẩm
             boolean isAdded = productServices.addProduct(product, subCategoryName);
-
+            LogUtils.logAddProduct(request, product);
             if (isAdded) {
+
                 request.setAttribute("actionStatus", "success");
                 request.setAttribute("message", "Thêm sản phẩm thành công!");
             } else {

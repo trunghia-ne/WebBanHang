@@ -948,6 +948,19 @@ public class ProductDao {
         );
     }
 
+    public int getProductIdByImageId(int imageId) {
+        String sql = "SELECT product_id FROM product_images WHERE id = :id";
+
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("id", imageId)
+                        .mapTo(int.class)
+                        .findOne()
+                        .orElse(-1) // trả về -1 nếu không tìm thấy
+        );
+    }
+
+
     public static void main(String[] args) {
         // Khởi tạo dịch vụ sản phẩm
         ProductDao productServices = new ProductDao();
