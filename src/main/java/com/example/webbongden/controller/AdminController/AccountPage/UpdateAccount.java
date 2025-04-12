@@ -2,6 +2,7 @@ package com.example.webbongden.controller.AdminController.AccountPage;
 
 import com.example.webbongden.dao.model.Account;
 import com.example.webbongden.services.AccountServices;
+import com.example.webbongden.utils.LogUtils;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -76,12 +77,13 @@ public class UpdateAccount extends HttpServlet {
             // Parse JSON thành đối tượng Account
             ObjectMapper mapper = new ObjectMapper();
             Account account = mapper.readValue(json.toString(), Account.class);
-
+            Account before = accountSevices.getAccountById(account.getId());
             // Cập nhật tài khoản
             boolean isUpdated = accountSevices.updateAccount(account);
 
             if (isUpdated) {
                 request.setAttribute("actionStatus", "success");
+                LogUtils.logUpdateAccount(request, before, account);
                 response.getWriter().write("{\"success\":true, \"message\":\"Cập nhật thành công!\"}");
             } else {
                 response.getWriter().write("{\"success\":false, \"message\":\"Cập nhật thất bại!\"}");

@@ -2,6 +2,7 @@ package com.example.webbongden.controller.AdminController.PromotionPage;
 
 import com.example.webbongden.dao.model.Promotion;
 import com.example.webbongden.services.PromotionService;
+import com.example.webbongden.utils.LogUtils;
 import com.google.gson.Gson;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -39,6 +40,7 @@ public class AddPromotionController extends HttpServlet {
             boolean success = promotionService.addPromotion(promotion);
             if(success) {
                 request.setAttribute("actionStatus", "success");
+                LogUtils.logAddPromotion(request, promotion);
             }
             String message = success
                     ? "Thêm chương trình khuyến mãi thành công!"

@@ -2,6 +2,7 @@ package com.example.webbongden.controller.AdminController.AccountPage;
 
 import com.example.webbongden.dao.model.Account;
 import com.example.webbongden.services.AccountServices;
+import com.example.webbongden.utils.LogUtils;
 import com.google.gson.Gson;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -26,17 +27,10 @@ public class AddAccountController extends HttpServlet {
         }
 
         String jsonData = jsonBuilder.toString();
-        System.out.println("JSON Received: " + jsonData);
 
         // Parse JSON sang đối tượng Java
         Gson gson = new Gson();
         Account account = gson.fromJson(jsonData, Account.class);
-
-//        System.out.println("Username: " + account.getUsername());
-//        System.out.println("Email: " + account.getEmail());
-//        System.out.println("Password: " + account.getPassword());
-//        System.out.println("Role: " + account.getRole());
-//        System.out.println("Customer Name: " + account.getCusName());
 
         boolean success = false;
         String message;
@@ -47,6 +41,7 @@ public class AddAccountController extends HttpServlet {
             if (success) {
                 message = "Thêm tài khoản thành công!";
                 request.setAttribute("actionStatus", "success");
+                LogUtils.logAddAccount(request, account);
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 message = "Username đã tồn tại! Không thể thêm tài khoản.";

@@ -3,6 +3,7 @@ package com.example.webbongden.filter;
 import com.example.webbongden.dao.LogDao;
 import com.example.webbongden.dao.model.Account;
 import com.example.webbongden.dao.model.Log;
+import com.example.webbongden.utils.NotificationUtils;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.*;
@@ -104,7 +105,9 @@ public class AdminActionLoggingFilter implements Filter {
                 logEntry.setBeforeData(beforeDataObj != null ? beforeDataObj.toString() : null);
                 logEntry.setAfterData(afterDataObj != null ? afterDataObj.toString() : null);
 
-                logDao.insertLog(logEntry);
+                int logId = logDao.insertLog(logEntry);
+                NotificationUtils.notifyAllAdmins("Admin vua cap nhat san pham", "/WebBongDen_war/search-log?logId=" + logId);
+
             } catch (Exception e) {
                 System.err.println("⚠️ Logging failed: " + e.getMessage());
                 e.printStackTrace(); // log chi tiết lỗi

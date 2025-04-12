@@ -13,11 +13,11 @@ public class LogDao {
         jdbi = JDBIConnect.get();
     }
 
-    public void insertLog(Log log) {
-        String sql = "INSERT INTO logs (account_id, level, action, resource, before_data, after_data) " +
-                "VALUES (:accountId, :level, :action, :resource, :beforeData, :afterData)";
+    public int insertLog(Log log) {
+        String sql = "INSERT INTO logs (account_id, level, action, resource, before_data, after_data, time) " +
+                "VALUES (:accountId, :level, :action, :resource, :beforeData, :afterData, NOW())";
 
-        jdbi.useHandle(handle ->
+        return JDBIConnect.get().withHandle(handle ->
                 handle.createUpdate(sql)
                         .bind("accountId", log.getAccountId())
                         .bind("level", log.getLevel())
@@ -25,9 +25,12 @@ public class LogDao {
                         .bind("resource", log.getResource())
                         .bind("beforeData", log.getBeforeData())
                         .bind("afterData", log.getAfterData())
-                        .execute()
+                        .executeAndReturnGeneratedKeys("id")
+                        .mapTo(int.class)
+                        .one()
         );
     }
+
 
     public List<Log> getAllLogs() {
         String sql = "SELECT * FROM logs ORDER BY time DESC";

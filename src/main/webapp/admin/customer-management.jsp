@@ -319,6 +319,7 @@
 
 <!-- Custom Script -->
 <script src="${pageContext.request.contextPath}/admin/admin_js/cusAdmin.js?v=1.0" defer></script>
+<script src="${pageContext.request.contextPath}/admin/admin_js/noti.js?v=${System.currentTimeMillis()}" defer></script>
 
 </body>
 </html>
