@@ -1,6 +1,7 @@
 package com.example.webbongden.controller.AdminController.OrderPage;
 
 import com.example.webbongden.services.OrderSevices;
+import com.example.webbongden.utils.LogUtils;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -32,7 +33,7 @@ public class UpdateOrderController extends HttpServlet {
 
             int orderId = Integer.parseInt(data.get("orderId"));
             String status = data.get("status");
-
+            String oldStatus = orderServices.getOrderStatus(orderId);
             // Log để kiểm tra dữ liệu nhận được
             System.out.println("Order ID: " + orderId);
             System.out.println("Status: " + status);
@@ -40,8 +41,10 @@ public class UpdateOrderController extends HttpServlet {
             // Cập nhật trạng thái đơn hàng
             boolean updated = orderServices.updateOrderStatus(orderId, status);
 
+
             if (updated) {
                 request.setAttribute("actionStatus", "success");
+                LogUtils.logUpdateOrderStatus(request, orderId, oldStatus, status);
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write("{\"message\": \"Trạng thái đơn hàng đã được cập nhật\"}");
             } else {

@@ -17,11 +17,12 @@
     };
 
     // ✅ Hàm hiển thị 1 thông báo
-    function appendNotification(msg) {
+    function appendNotification(msg,link) {
         const now = new Date();
         const time = now.toLocaleTimeString("vi-VN", { hour: '2-digit', minute: '2-digit' });
 
         const newNoti = `
+        <a href="${link}" class="noti-link" target="_target">
             <div class="noti-item">
                 <div class="noti-dot"></div>
                 <div class="noti-content">
@@ -29,7 +30,8 @@
                     <p class="noti-text">${msg}</p>
                 </div>
             </div>
-        `;
+        </a>
+    `;
         notiList.insertAdjacentHTML("afterbegin", newNoti);
     }
 
@@ -40,7 +42,7 @@
             if (data.length > 0) badge.style.display = "inline-block";
 
             data.forEach(noti => {
-                appendNotification(noti.message);
+                appendNotification(noti.message, noti.link);
             });
         });
 

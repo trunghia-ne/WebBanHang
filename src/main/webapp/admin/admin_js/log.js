@@ -1,5 +1,6 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
     $(document).ready(function () {
+        console.log(logIdToSearch)
         const table = $("#log-table").DataTable({
             ajax: {
                 url: "/WebBongDen_war/list-log",
@@ -10,6 +11,7 @@
                 console.log("Error:", error);
                 console.log("Response Text:", xhr.responseText);
             },
+            searching: true,
             destroy: true,
             autoWidth: false,
             paging: true,
@@ -57,7 +59,6 @@
                 }
             ],
             lengthChange: false,
-            searching: false,
             ordering: true,
             info: true,
             language: {
@@ -68,6 +69,15 @@
                 info: "Hiển thị _START_ đến _END_ của _TOTAL_ log",
             },
         });
+
+        // ✅ Sau khi table load xong, tìm logId nếu có
+        setTimeout(() => {
+            if (typeof logIdToSearch !== "undefined" && logIdToSearch.trim() !== "") {
+                table.search(logIdToSearch).draw();
+            }
+        }, 500);
+
+
 
         $(document).on("click", ".btn-show-diff", function () {
             const beforeRaw = $(this).data("before");

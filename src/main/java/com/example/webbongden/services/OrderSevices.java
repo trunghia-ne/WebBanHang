@@ -95,4 +95,8 @@ public class OrderSevices {
             throw new RuntimeException("Đã xảy ra lỗi trong quá trình tạo hóa đơn và đơn hàng.", e);
         }
     }
+
+    public String getOrderStatus(int orderId) {
+        return orderDao.getOrderStatus(orderId);
+    }
 }

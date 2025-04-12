@@ -300,6 +300,18 @@ public class OrderDao {
         );
     }
 
+    public String getOrderStatus(int orderId) {
+        String sql = "SELECT order_status FROM orders WHERE id = :orderId";
+
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("orderId", orderId)
+                        .mapTo(String.class)
+                        .one()
+        );
+    }
+
+
 
     public static void main(String[] args) {
         // Tạo một đối tượng UserDao (được giả định là chứa phương thức getOrdersByUsername)

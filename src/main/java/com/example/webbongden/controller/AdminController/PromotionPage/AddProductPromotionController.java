@@ -1,6 +1,7 @@
 package com.example.webbongden.controller.AdminController.PromotionPage;
 
 import com.example.webbongden.services.PromotionService;
+import com.example.webbongden.utils.LogUtils;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -59,6 +60,7 @@ public class AddProductPromotionController extends HttpServlet {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             if (success) {
+                LogUtils.logAddProductToPromotion(request, promotionId, productId);
                 request.setAttribute("actionStatus", "success");
                 response.getWriter().write("{\"status\":\"success\",\"message\":\"Thêm sản phẩm vào chương trình thành công!\"}");
             } else {

@@ -139,6 +139,7 @@
                                     <th>Số Lượng</th>
                                     <th>Đơn Giá</th>
                                     <th>Thành Tiền</th>
+                                    <th>LinkSP</th>
                                 </tr>
                                 </thead>
                                 <tbody id="order-items-body">
@@ -183,6 +184,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="${pageContext.request.contextPath}/admin/admin_js/orderAdmin.js?v=${System.currentTimeMillis()}" defer></script>
+<script src="${pageContext.request.contextPath}/admin/admin_js/noti.js?v=${System.currentTimeMillis()}" defer></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <!-- DataTables Buttons Extension -->

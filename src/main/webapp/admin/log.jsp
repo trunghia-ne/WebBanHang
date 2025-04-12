@@ -133,6 +133,9 @@
         </div>
     </div>
 </div>
+<script>
+    const logIdToSearch = "<%= request.getAttribute("logId") != null ? request.getAttribute("logId") : "" %>";
+</script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="${pageContext.request.contextPath}/admin/admin_js/log.js?v=${System.currentTimeMillis()}" defer></script>
@@ -148,5 +151,6 @@
 
 <!-- JSZip (hỗ trợ xuất Excel) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="${pageContext.request.contextPath}/admin/admin_js/noti.js?v=${System.currentTimeMillis()}" defer></script>
 </body>
 </html>

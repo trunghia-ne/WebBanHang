@@ -78,7 +78,6 @@ public class EditProductController extends HttpServlet {
             if (isUpdated) {
                 request.setAttribute("actionStatus", "success");
                 LogUtils.logUpdateProduct(request, productBefore, productDetail);
-                NotificationUtils.notifyAllAdmins("Admin vua update thong tin san pham", "https://www.nimo.tv");
                 response.getWriter().write("{\"success\": true, \"message\": \"Cập nhật sản phẩm thành công!\"}");
             } else {
                 response.getWriter().write("{\"success\": false, \"message\": \"Không thể cập nhật sản phẩm!\"}");

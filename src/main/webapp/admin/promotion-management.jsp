@@ -246,5 +246,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <script src="${pageContext.request.contextPath}/admin/admin_js/promotionAdmin.js?v=${System.currentTimeMillis()}" defer></script>
+<script src="${pageContext.request.contextPath}/admin/admin_js/noti.js?v=${System.currentTimeMillis()}" defer></script>
 </body>
 </html>
