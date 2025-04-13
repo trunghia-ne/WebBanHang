@@ -34,9 +34,6 @@ public class UpdateOrderController extends HttpServlet {
             int orderId = Integer.parseInt(data.get("orderId"));
             String status = data.get("status");
             String oldStatus = orderServices.getOrderStatus(orderId);
-            // Log để kiểm tra dữ liệu nhận được
-            System.out.println("Order ID: " + orderId);
-            System.out.println("Status: " + status);
 
             // Cập nhật trạng thái đơn hàng
             boolean updated = orderServices.updateOrderStatus(orderId, status);
@@ -44,6 +41,8 @@ public class UpdateOrderController extends HttpServlet {
 
             if (updated) {
                 request.setAttribute("actionStatus", "success");
+                request.setAttribute("orderId", orderId);
+                request.setAttribute("newStatus", status);
                 LogUtils.logUpdateOrderStatus(request, orderId, oldStatus, status);
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write("{\"message\": \"Trạng thái đơn hàng đã được cập nhật\"}");

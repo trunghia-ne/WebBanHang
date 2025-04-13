@@ -36,6 +36,7 @@ public class AddProductImgController extends HttpServlet {
             productDao.addImage(productId, imageUrl, false);
 
             request.setAttribute("actionStatus", "success");
+            request.setAttribute("productId", productId);
             LogUtils.logAddProductImage(request, productId, imageUrl);
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write("{\"message\":\"Lưu ảnh thành công\"}");

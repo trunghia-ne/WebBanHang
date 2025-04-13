@@ -76,6 +76,7 @@ public class EditProductController extends HttpServlet {
             boolean isUpdated = productServices.editProductDetail(productDetail);
 
             if (isUpdated) {
+                request.setAttribute("productId", productDetail.getId());
                 request.setAttribute("actionStatus", "success");
                 LogUtils.logUpdateProduct(request, productBefore, productDetail);
                 response.getWriter().write("{\"success\": true, \"message\": \"Cập nhật sản phẩm thành công!\"}");

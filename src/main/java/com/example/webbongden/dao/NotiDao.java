@@ -49,4 +49,27 @@ public class NotiDao {
                         .list()
         );
     }
+
+    public static void main(String[] args) {
+        NotiDao dao = new NotiDao();
+
+        // Giả sử admin có accountId = 2
+        Integer accountId = null;
+
+        List<Notifications> notifications = dao.getNotificationsForAdmin(accountId);
+
+        if (notifications.isEmpty()) {
+            System.out.println("⚠️ Không có thông báo nào cho admin có accountId = " + accountId);
+        } else {
+            System.out.println("📥 Danh sách thông báo:");
+            for (Notifications n : notifications) {
+                System.out.printf("- [#%d] %s\n  → Link: %s\n  ⏱ Thời gian: %s\n\n",
+                        n.getId(),
+                        n.getMessage(),
+                        n.getLink(),
+                        n.getCreatedAt()
+                );
+            }
+        }
+    }
 }

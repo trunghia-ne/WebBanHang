@@ -48,7 +48,7 @@
                 <p>Quản lý tài khoản</p>
             </div>
         </a>
-        <a href="admin?page=log" class="nav-link" data-index="account">
+        <a href="admin?page=log" class="nav-link" data-index="log">
             <div class="nav-item">
                 <i class="fas fa-clipboard-list"></i>
                 <p>Log</p>
