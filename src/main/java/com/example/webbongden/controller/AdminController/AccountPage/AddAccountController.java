@@ -41,6 +41,7 @@ public class AddAccountController extends HttpServlet {
             if (success) {
                 message = "Thêm tài khoản thành công!";
                 request.setAttribute("actionStatus", "success");
+                request.setAttribute("username", account.getUsername());
                 LogUtils.logAddAccount(request, account);
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

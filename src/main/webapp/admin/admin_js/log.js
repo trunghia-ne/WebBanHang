@@ -70,12 +70,7 @@
             },
         });
 
-        // ✅ Sau khi table load xong, tìm logId nếu có
-        setTimeout(() => {
-            if (typeof logIdToSearch !== "undefined" && logIdToSearch.trim() !== "") {
-                table.search(logIdToSearch).draw();
-            }
-        }, 500);
+        table.column(0).search(String(logIdToSearch)).draw(); // 0 là index cột ID
 
 
 

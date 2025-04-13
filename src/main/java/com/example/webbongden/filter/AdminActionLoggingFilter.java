@@ -106,7 +106,8 @@ public class AdminActionLoggingFilter implements Filter {
                 logEntry.setAfterData(afterDataObj != null ? afterDataObj.toString() : null);
 
                 int logId = logDao.insertLog(logEntry);
-                NotificationUtils.notifyAllAdmins("Admin vua cap nhat san pham", "/WebBongDen_war/search-log?logId=" + logId);
+                String message = buildNotificationMessage(action, req);
+                NotificationUtils.notifyAllAdmins(message, "/WebBongDen_war/search-log?logId=" + logId);
 
             } catch (Exception e) {
                 System.err.println("⚠️ Logging failed: " + e.getMessage());
@@ -148,6 +149,85 @@ public class AdminActionLoggingFilter implements Filter {
                 || page.contains("report")
                 || page.contains("view")
                 || page.contains("detail");
+    }
+
+    private String buildNotificationMessage(String action, HttpServletRequest req) {
+        String verb;
+        if (action.startsWith("ADD")) {
+            verb = "thêm mới";
+        } else if (action.startsWith("UPDATE")) {
+            verb = "cập nhật";
+        } else if (action.startsWith("DELETE") || action.startsWith("REMOVE")) {
+            verb = "xoá";
+        } else {
+            verb = "thực hiện";
+        }
+
+        String resource = detectResourceFromAction(action).toLowerCase();
+        String detail = "";
+
+        switch (action) {
+            case "ADD_PRODUCT_IMAGE":
+                Object productIdObj = req.getAttribute("productId");
+                if (productIdObj != null) {
+                    detail = " cho sản phẩm có ID " + productIdObj;
+                }
+                break;
+
+            case "UPDATE_ORDER_STATUS":
+                Object orderId = req.getAttribute("orderId");
+                Object status = req.getAttribute("newStatus"); // bạn cần set thêm cái này nếu có
+                if (orderId != null && status != null) {
+                    detail = " đơn hàng #" + orderId + " sang trạng thái \"" + status + "\"";
+                } else if (orderId != null) {
+                    detail = " đơn hàng #" + orderId;
+                }
+                break;
+
+            case "ADD_ACCOUNT":
+                Object username = req.getAttribute("username");
+                if (username != null) {
+                    detail = " \"" + username + "\"";
+                }
+                break;
+
+            case "UPDATE_ACCOUNT":
+                Object accountName = req.getAttribute("accountName");
+                if (accountName != null) {
+                    detail = " tài khoản \"" + accountName + "\"";
+                }
+                break;
+
+            case "ADD_PRODUCT":
+                Object productName = req.getAttribute("productName");
+                if (productName != null) {
+                    detail = " sản phẩm \"" + productName + "\"";
+                }
+                break;
+
+            case "UPDATE_PRODUCT_DETAIL":
+                Object productId = req.getAttribute("productId");
+                if (productId != null) {
+                    detail = " sản phẩm \"" + productId + "\"";
+                }
+                break;
+
+            case "DELETE_PRODUCT":
+                Object deletedProductId = req.getAttribute("productId");
+                if (deletedProductId != null) {
+                    detail = " sản phẩm có ID \"" + deletedProductId + "\"";
+                }
+                break;
+
+            case "DELETE_PRODUCT_IMAGE":
+                Object deletedImgProductId = req.getAttribute("productId");
+                if (deletedImgProductId != null) {
+                    detail = " ảnh của sản phẩm có ID \"" + deletedImgProductId + "\"";
+                }
+                break;
+        }
+
+        return "Admin vừa " + verb + " " + resource + detail;
     }
 }
 

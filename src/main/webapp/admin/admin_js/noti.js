@@ -11,9 +11,8 @@
     };
 
     socket.onmessage = function(event) {
-        const msg = event.data;
-        appendNotification(msg);
-        badge.style.display = "inline-block";
+        const data = JSON.parse(event.data);
+        appendNotification(data.message, data.link);
     };
 
     // ✅ Hàm hiển thị 1 thông báo
@@ -41,7 +40,7 @@
         .then(data => {
             if (data.length > 0) badge.style.display = "inline-block";
 
-            data.forEach(noti => {
+            data.reverse().forEach(noti => {
                 appendNotification(noti.message, noti.link);
             });
         });
@@ -50,7 +49,5 @@
     document.getElementById('notiBtn').addEventListener('click', () => {
         notiDropdown.classList.toggle('show');
         badge.style.display = 'none';
-
-        // (Optional) Gọi API đánh dấu đã đọc ở đây nếu bạn muốn
     });
 });

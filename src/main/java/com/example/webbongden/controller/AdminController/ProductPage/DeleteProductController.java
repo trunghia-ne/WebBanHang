@@ -33,9 +33,6 @@ public class DeleteProductController extends HttpServlet {
         String page = request.getParameter("page");
         String idParam = request.getParameter("id");
 
-        System.out.println(page);
-        System.out.println(idParam);
-
         try {
             int id = Integer.parseInt(idParam);
             ProductDetail productDetail = productServices.getProductDetailById(id);
@@ -52,6 +49,8 @@ public class DeleteProductController extends HttpServlet {
     }
 
     public void deleteProduct(HttpServletRequest request, HttpServletResponse response){
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         try {
             // 1. Lấy `id` của sản phẩm từ request
             int productId = Integer.parseInt(request.getParameter("id"));
@@ -61,22 +60,17 @@ public class DeleteProductController extends HttpServlet {
 
             // 4. Xử lý phản hồi
             if (isDeleted) {
+                request.setAttribute("productId", productId);
                 request.setAttribute("actionStatus", "success");
                 LogUtils.logDeleteProduct(request, productId);
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
                 response.getWriter().write("{\"status\": \"success\", \"message\": \"Xóa sản phẩm thành công!\"}");
             } else {
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.getWriter().write("{\"status\": \"error\", \"message\": \"Không thể xóa sản phẩm!\"}");
             }
         } catch (Exception e) {
             // Xử lý lỗi nếu có
             e.printStackTrace();
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             try {
                 response.getWriter().write("{\"status\": \"error\", \"message\": \"Đã xảy ra lỗi khi xóa sản phẩm!\"}");

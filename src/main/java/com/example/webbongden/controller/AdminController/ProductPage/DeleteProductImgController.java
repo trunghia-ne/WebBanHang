@@ -21,6 +21,7 @@ public class DeleteProductImgController extends HttpServlet {
             boolean deleted = productDao.deleteImageById(imageId);
 
             if (deleted) {
+                request.setAttribute("productId", productId);
                 request.setAttribute("actionStatus", "success");
                 LogUtils.logDeleteProductImage(request, imageId, productId);
                 response.setStatus(HttpServletResponse.SC_OK);

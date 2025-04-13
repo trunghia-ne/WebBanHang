@@ -83,6 +83,7 @@ public class UpdateAccount extends HttpServlet {
 
             if (isUpdated) {
                 request.setAttribute("actionStatus", "success");
+                request.setAttribute("accountName", account.getCusName());
                 LogUtils.logUpdateAccount(request, before, account);
                 response.getWriter().write("{\"success\":true, \"message\":\"Cập nhật thành công!\"}");
             } else {
