@@ -4,23 +4,37 @@
 <html>
 <head>
     <title>Liên hệ</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/header-footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"/>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">
 </head>
 <style>
     body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        margin: 0;
+        font-family: Arial, sans-serif;
         background-image: url('<c:url value="/assets/img/background-login.png" />');
         background-size: cover;
         background-position: center;
         height: 100vh;
-        margin: 0;
-        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .main {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 0;
     }
 
     .notification {
         position: fixed;
-        top: 20px;
+        top: 150px;
         right: -300px; /* ban đầu ẩn ra ngoài bên phải */
         width: 250px;
         padding: 15px;
@@ -34,7 +48,7 @@
     }
 
     .notification.show {
-        right: 20px; /* khi có class .show sẽ trượt vào */
+        right: 20px;
     }
 
     .contact-wrapper {
@@ -49,16 +63,17 @@
         text-align: center;
         margin-bottom: 20px;
         color: #333;
+        font-size: 18px;
     }
 
-    label {
+    .contact-wrapper label {
         font-weight: 600;
         color: #333;
         display: block;
         margin-bottom: 5px;
     }
 
-    input[type="text"], input[type="email"], textarea {
+    .contact-wrapper input[type="text"], input[type="email"], textarea {
         width: 100%;
         padding: 10px;
         border: 1px solid #ccc;
@@ -68,24 +83,25 @@
         background-color: #fff;
     }
 
-    textarea {
+    .contact-wrapper textarea {
         resize: vertical;
     }
 
-    button[type="submit"] {
+    .contact-wrapper button[type="submit"] {
         width: 100%;
         padding: 10px;
-        background-color: #4288e5;
-        color: white;
+        background-color: #ffe31a;
+        color: #333;
         font-size: 16px;
         border: none;
         border-radius: 4px;
         cursor: pointer;
         transition: background-color 0.3s ease;
+        font-weight: 600;
     }
 
-    button[type="submit"]:hover {
-        background-color: #306fd0;
+    .contact-wrapper button[type="submit"]:hover {
+        background-color:  #ffe31a;
     }
 
     #resultMessage {
@@ -96,28 +112,35 @@
 </style>
 
 <body>
-<div class="contact-wrapper">
-    <h2>Liên hệ với chúng tôi</h2>
-    <form id="contactForm">
-        <label>Họ tên:</label>
-        <input type="text" name="name" required>
+<div class="wrapper">
+    <jsp:include page="../reuse/header.jsp" />
+    <div class="main">
+        <div class="contact-wrapper">
+            <h2>Liên hệ với chúng tôi</h2>
+            <form id="contactForm">
+                <label for="contactName">Họ tên:</label>
+                <input type="text" id="contactName" name="name" required>
 
-        <label>Email:</label>
-        <input type="email" name="email" required>
+                <label for="contactEmail">Email:</label>
+                <input type="email" id="contactEmail" name="email" required>
 
-        <label>Tiêu đề:</label>
-        <input type="text" name="subject" required>
+                <label for="contactSubject">Tiêu đề:</label>
+                <input type="text" id="contactSubject" name="subject" required>
 
-        <label>Nội dung:</label>
-        <textarea name="message" rows="5" required></textarea>
+                <label for="contactMessage">Nội dung:</label>
+                <textarea id="contactMessage" name="message" rows="5" required></textarea>
 
-        <button type="submit">Gửi</button>
-    </form>
+                <button type="submit">Gửi</button>
+            </form>
 
-    <div class="notification" id="resultMessage"></div>
+            <div class="notification" id="resultMessage"></div>
+        </div>
+    </div>
 </div>
+<jsp:include page="../reuse/footer.jsp" />
 
 <script>
+    // Lắng nghe sự kiện submit trên form với ID là 'contactForm'
     const form = document.getElementById("contactForm");
     const submitButton = form.querySelector("button[type='submit']");
     const result = document.getElementById("resultMessage");
@@ -126,7 +149,7 @@
         event.preventDefault();
         submitButton.disabled = true;
 
-        // Thêm class show để hiện thông báo
+        // Hiển thị thông báo gửi dữ liệu
         result.textContent = "⏳ Đang gửi liên hệ...";
         result.className = "notification show";
         result.style.backgroundColor = "#4288e5";
@@ -161,9 +184,7 @@
                 }, 4000);
             });
     });
-
 </script>
-
 
 </body>
 </html>
