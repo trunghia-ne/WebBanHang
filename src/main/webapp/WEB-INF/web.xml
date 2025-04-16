@@ -8,7 +8,7 @@
         <session-timeout>30</session-timeout> <!-- Thời gian session là 30 phút -->
     </session-config>
     <welcome-file-list>
-        <welcome-file>home</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
 </web-app>
