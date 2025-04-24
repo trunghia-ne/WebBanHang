@@ -7,9 +7,10 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'java'
+    id 'org.hidetake.ssh' version '2.10.1'
     id 'war'
 }
+
 
 repositories {
     mavenLocal()
@@ -72,3 +73,50 @@ java {
 }
 
 
+apply plugin: 'org.hidetake.ssh'
+remotes {
+    host {
+        host = '192.168.188.128'
+        user = 'tivua'
+        password = '292004'
+    }
+}
+ssh.settings {
+    knownHosts = allowAnyHosts
+}
+
+task docker_app_start {
+    doLast {
+        println 'begin docker_app_start'
+        ssh.run {
+            session(remotes.host) {
+                execute 'docker stop tomcat', ignoreError: true
+                execute 'docker run -it --rm -d ' +
+                        '--name tomcat ' +
+                        '-v /usr/deploy:/usr/local/tomcat/webapps ' +
+                        '-p 80:8080 ' +
+                        'tomcat:latest&'
+            }
+        }
+    }
+}
+task docker_upload_file_to_server {
+    doLast {
+        println 'begin docker_upload_file_to_server'
+        ssh.run {
+            session(remotes.host) {
+                remove '/usr/deploy/WebBongDen_war.war'
+                remove '/usr/deploy/WebBongDen_war/'
+                put from: "${project.projectDir}/build/libs/WebBongDen-1.0-SNAPSHOT.war",
+                        into: "/usr/deploy/WebBongDen_war.war"
+            }
+        }
+    }
+}
+
+task docker_deploy {
+    docker_deploy.dependsOn docker_app_start
+    docker_deploy.dependsOn docker_upload_file_to_server
+    docker_deploy.dependsOn build
+    tasks.getByName('docker_app_start').mustRunAfter docker_upload_file_to_server
+}
