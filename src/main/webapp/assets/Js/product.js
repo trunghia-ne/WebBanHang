@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+﻿document.addEventListener('DOMContentLoaded', function() {
     $(document).ready(function(){
         $('.product-image-list').slick({
           infinite: true,

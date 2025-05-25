@@ -64,6 +64,32 @@
     <%--    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">--%>
     <%--    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/Detail.css">--%>
     <style>
+
+        .chat-box-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #ffc107;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease;
+            z-index: 9999; /* ưu tiên hiển thị trên hết */
+        }
+
+        .chat-box-button img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .chat-box-button:hover {
+            background-color: #e0a800;
+        }
         :root {
             --color-black: #171C24;
             --color-white: #fff;

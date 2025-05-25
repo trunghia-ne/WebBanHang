@@ -1,4 +1,4 @@
-
+﻿
 window.addEventListener("load", function () {
   // Use SlickSlider
   $(document).ready(function () {
@@ -127,5 +127,65 @@ window.addEventListener("load", function () {
     // Cập nhật countdown mỗi giây
     updateCountdown(); // Cập nhật ngay khi trang được load
     setInterval(updateCountdown, 1000);
+  });
+
+  const input = $('#search-input');
+  const results = $('#results');
+
+  input.on('input', function () {
+    const val = $(this).val().trim();
+    if (!val) {
+      results.html('');
+      results.hide();
+      return;
+    }
+
+    $.ajax({
+      url: `/WebBongDen_war/autocomplete`,
+      method: 'GET',
+      data: { query: val },
+      dataType: 'json',
+      success: function(data) {
+        if (data.length === 0) {
+          results.html('<div style="padding: 8px;">Không tìm thấy sản phẩm</div>');
+          results.show();
+          return;
+        }
+
+        const html = data.map(p => {
+          const mainImage = (p.listImg && p.listImg.find(img => img.mainImage)) || null;
+          const imageUrl = mainImage ? mainImage.url : 'https://via.placeholder.com/40';
+
+          return `
+          <div onclick="location.href='/WebBongDen_war/product-detail?id=${p.id}'" style="cursor:pointer; display:flex; padding:15px; border-bottom:1px solid #eee;">
+            <img src="${imageUrl}" width="50" height="50" alt="${p.productName}" style="margin-right: 10px; border-radius: 4px; object-fit: cover;" />
+            <div style="flex: 1; overflow: hidden;">
+              <div style="font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ${p.productName}
+              </div>
+              <div style="color: #f00; margin-top: 4px; font-weight: 400; font-size: 13px; white-space: nowrap;">
+                ${p.unitPrice.toLocaleString()} đ
+              </div>
+            </div>
+          </div>
+        `;
+        }).join('');
+
+        results.html(html);
+        results.show();
+      },
+      error: function() {
+        results.html('<div style="padding: 8px; color: red;">Lỗi tải dữ liệu</div>');
+        results.show();
+      }
+    });
+  });
+
+
+// Ẩn kết quả khi click ngoài vùng input hoặc results
+  $(document).on('click', function(e) {
+    if (!$(e.target).closest('#search-input').length && !$(e.target).closest('#results').length) {
+      $('#results').hide();
+    }
   });
 });

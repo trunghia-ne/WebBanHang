@@ -34,7 +34,7 @@
             rel="stylesheet"
     />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel/slick/slick.css"/>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/header-footer.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/header-footer.css?v=${System.currentTimeMillis()}">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/product.css">
 </head>

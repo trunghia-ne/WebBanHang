@@ -1,3 +1,69 @@
+:root {
+  --color-black: #171C24;
+  --color-white: #fff;
+  --color-yellow: #ffe31a;
+  --color-yellow-dark: #ffd900;
+  --color-gray-light: #e9e9e9;
+  --color-gray-dark: #ddd;
+  --color-gray-mid: #555;
+  --color-gray-darkest: #333;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+}
+
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+input,
+select,
+textarea {
+  background-color: transparent;
+  outline: none;
+}
+button {
+  cursor: pointer;
+  background-color: transparent;
+  outline: none;
+  border: 0;
+}
+body {
+  min-height: 100vh;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1;
+  background-color: var(--color-gray-light);
+}
+
+ul li {
+  list-style: none;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background-color: #cfcfcf;
+  color: #cfcfcf;
+}
+
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
 .wrapper {
   min-height: 100vh;
   padding-top: 110px;
@@ -174,7 +240,7 @@ a {
   display: flex;
   justify-content: space-between;
   position: absolute;
-  top: 0; 
+  top: 0;
   left: 0;
   right: 0;
   padding: 10px;
@@ -358,20 +424,20 @@ a {
   color: black;
   position: absolute;
   top: 100%;
-  transform: translateX(-220px) translateY(12px); 
+  transform: translateX(-220px) translateY(12px);
   width: 270px;
   padding: 15px;
   border-radius: 3px;
-  opacity: 0; 
-  visibility: hidden; 
-  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s ease 0.3s; 
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s ease 0.3s;
   z-index: 10000;
 }
 
 .header-user:hover .user-info-dropdown {
-  opacity: 1; 
-  visibility: visible; 
-  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s ease 0s; 
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s ease 0s;
 }
 
 
@@ -654,11 +720,11 @@ a {
 .product-hot-item .product-info .product-name {
   height: 40px;
   line-height: 1.5em;
-  display: -webkit-box; 
+  display: -webkit-box;
   -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical; 
-  overflow: hidden; 
-  text-overflow: ellipsis; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
   margin-bottom: 12px;
 }
 
@@ -719,11 +785,11 @@ a {
 .list-product .product-item .product-name {
   height: 40px;
   line-height: 1.5em;
-  display: -webkit-box; 
+  display: -webkit-box;
   -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical; 
-  overflow: hidden; 
-  text-overflow: ellipsis; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
   margin-bottom: 12px;
 }
 
@@ -1027,341 +1093,6 @@ a {
   background-color: #12161d;
 }
 
-/* Reponsive ============================================== */
-
-/* Desktop lớn */
-/* Desktop lớn */
-@media (min-width: 1024px) {
-  /* Các kiểu cho desktop lớn */
- 
-}
-
-/* Laptop và màn hình trung bình */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .container {
-    padding: 0 30px !important;
-  }
-
-  .list-product .product-item {
-    width: calc(25% - 15px) !important;
-  }
-
-  .header-top {
-    padding: 10px 30px !important;
-  }
-
-  .container .banner {
-    display: none;
-  }
-
-  .header-right .info-item:nth-child(2)>span {
-    display: none;
-    width: fit-content !important;
-  }
-
-  .footer-top {
-    gap: 10px !important;
-  }
-
-  .footer-item .tittle {
-    font-size: 14px !important;
-  }
-
-  .footer-top div,
-  .footer-top p {
-    font-size: 12px !important;
-  }
-
-  .slider {
-    width: 100%;
-  }
-
-  .search-bar form {
-    width: 260px !important;
-  }
-
-  .footer .footer-top {
-    flex-wrap: nowrap !important;
-  }
-}
-
-/* Tablet */
-@media (min-width: 600px) and (max-width: 768px) {
-  .container {
-    padding: 0 10px !important;
-  }
-  .container .banner {
-    display: none;
-  }
-
-  .header-top .info-item:nth-child(1) {
-    display: none;
-  }
-
-  .header-right .info-item:nth-child(2) span {
-    display: none;
-    width: fit-content !important;
-  }
-
-  .search-bar form {
-    width: 260px !important;
-  }
-
-  .navbar {
-    display: none !important;
-  }
-
-  .list-product .product-item {
-    width: calc(33.333% - 14px) !important;
-  }
-
-  .footer-top {
-    gap: 10px !important;
-  }
-
-  .footer-item .tittle {
-    font-size: 14px !important;
-  }
-
-  .footer-top div,
-  .footer-top p {
-    font-size: 12px !important;
-  }
-
-  .footer-item:nth-child(4) {
-    margin-top: 30px;
-  }
-
-  .slider {
-    height: 350px;
-  }
-
-  .header {
-    height: fit-content;
-  }
-
-  .wrapper {
-    padding-top: 67px;
-  }
-
-  .header-top {
-    padding: 10px !important;
-  }
-
-  .header-top .fa-bars {
-    display: block;
-  }
-
-  .footer .footer-top {
-    flex-wrap: wrap;
-  }
-}
-
-/* Điện thoại (mobile) */
-@media (max-width: 600px) {
-
-  .slick-prev,
-  .slick-next {
-    display: none !important;
-  }
-
-  .slider .slick-list,
-  .slider .slick-track {
-    height: 200px;
-  }
-
-  .slider .slick-dots li button {
-    width: 6px;
-    height: 6px;
-  }
-
-  .wrapper .product-wrapper .product-name {
-    font-size: 14px !important;
-  }
-
-  .product-hot-item {
-    margin: 4px !important;
-    cursor: pointer;
-  }
-
-  .info-wrapper .list-info {
-    flex-direction: column !important;
-  }
-
-  .info-wrapper .list-info .info-item {
-    width: 100% !important;
-  }
-
-  .wrapper .container .product-wrapper {
-    margin-top: 20px;
-  }
-
-  .container {
-    padding: 0 10px !important;
-  }
-  .container .banner {
-    display: none;
-  }
-
-  .header-top .info-item:nth-child(1) {
-    display: none;
-  }
-
-  .header-right .info-item:nth-child(2)>span {
-    display: none;
-    width: fit-content !important;
-  }
-
-  .header .header-top .info .login {
-    display: none !important;
-  }
-
-  .header-left {
-    justify-content: space-between !important;
-    width: 100% !important;
-  }
-
-  .header .header-top .info {
-    margin-left: 0;
-    padding: 8px;
-    border-radius: 4px;
-  }
-
-  .header .header-top .info .info-item {
-    margin-left: 0;
-  }
-
-  .header .header-top .info .info-item:nth-child(1) {
-    display: none;
-  }
-
-  .home-info .info-wrapper .list-info .info-item .info-img img {
-    width: 100%;
-  }
-
-  .sale-info h2 {
-    font-size: 16px !important;
-    width: 180px;
-  }
-
-  .time-box {
-    padding: 5px !important;
-    margin: 0 7px !important;
-  }
-
-  .header-right a {
-    margin-left: 0 !important;
-  }
-
-
-  .header-right {
-    width: fit-content !important;
-    margin-left: 10px;
-  }
-
-  .navbar {
-    display: none !important;
-  }
-  
-  .list-product .product-item {
-    width: calc(50% - 10px) !important;
-  }
-
-  .feedback-item {
-    margin-left: 5px;
-  }
-
-  .footer {
-    margin-top: 20px !important;
-  }
-
-  .feedback-img {
-    width: 80px !important;
-    height: 80px !important;
-  }
-
-  .footer-top {
-    gap: 40px !important;
-    flex-direction: column !important;
-  }
-
-  .footer-item .tittle {
-    font-size: 14px !important;
-    margin-bottom: 4px !important;
-  }
-
-  .footer-top div,
-  .footer-top p {
-    font-size: 12px !important;
-  }
-
-  .slider {
-    height: 200px;
-    width: 100%;
-  }
-
-  .header {
-    height: fit-content;
-  }
-
-  .wrapper {
-    padding-top: 67px;
-  }
-
-  .header-top {
-    padding: 5px 10px !important;
-  }
-
-  .header-top .header-right {
-    text-align: right;
-  }
-
-  .header-top .fa-bars {
-    display: block;
-  }
-
-  .product-item .img {
-    height: 160px !important;
-  } 
-
-  .product-wrapper {
-    padding: 5px !important;
-  }
-
-  .list-product {
-    padding: 0 !important ;
-  }
-
-  .wrapper-top {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-
-  .header .header-top .search-bar form { 
-    display: none !important;
-  }
-
-  .header .header-top .search-bar button {
-    padding: 4px 10px;
-    border-radius: 4px;
-  }
-
-  .mobile-search-bar.active {
-    display: flex;
-    opacity: 1;
-    transform: translateY(0);
-    top: 100%;
-  }  
-
-  .header-right {
-    margin-left: 0 !important;
-  }
-
-  .footer .footer-top {
-    flex-wrap: wrap;
-  }
-}
-
 .sale-info {
   font-size: 18px;
   color: #ff5722;
@@ -1389,7 +1120,7 @@ a {
 }
 
 .countdown-timer {
-  display: flex;  
+  display: flex;
   width: 50%;
 }
 
@@ -1432,4 +1163,3 @@ a {
   background-color: #fff;
   padding: 15px 0;
 }
-

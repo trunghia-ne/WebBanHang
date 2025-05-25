@@ -609,49 +609,7 @@ public class ProductDao {
     }
 
 
-    public List<Product> searchProductsByName(String productName) {
-        String sql = "SELECT p.id AS product_id, p.product_name, p.unit_price, p.discount_percent, " +
-                "pi.url AS image_url, pi.main_image " +
-                "FROM products p " +
-                "LEFT JOIN product_images pi ON p.id = pi.product_id " +
-                "WHERE p.product_name LIKE :productName " + // Tìm kiếm theo tên sản phẩm
-                "ORDER BY p.created_at DESC ";
 
-        return jdbi.withHandle(handle -> {
-            Query query = handle.createQuery(sql)
-                    .bind("productName", "%" + productName + "%"); // Sử dụng LIKE với ký tự đại diện (%)
-
-            Map<Integer, Product> productMap = new HashMap<>();
-
-            query.map((rs, ctx) -> {
-                int productId = rs.getInt("product_id");
-                Product product = productMap.get(productId);
-
-                if (product == null) {
-                    product = new Product(
-                            productId,
-                            rs.getString("product_name"),
-                            rs.getDouble("unit_price"),
-                            rs.getDouble("discount_percent"),
-                            new ArrayList<>()
-                    );
-                    productMap.put(productId, product);
-                }
-
-                String imageUrl = rs.getString("image_url");
-                if (imageUrl != null) {
-                    product.getListImg().add(new ProductImage(
-                            imageUrl,
-                            rs.getBoolean("main_image")
-                    ));
-                }
-
-                return product;
-            }).list();
-
-            return new ArrayList<>(productMap.values());
-        });
-    }
 
     // Trừ số lượng sản phẩm trong kho
     public void decreaseStockQuantity(int productId, int quantity) {
@@ -958,6 +916,49 @@ public class ProductDao {
                         .findOne()
                         .orElse(-1) // trả về -1 nếu không tìm thấy
         );
+    }
+
+    // Tìm sản phẩm theo tên (autocomplete)
+    public List<Product> searchProductsByName(String keyword) {
+        String sql = "SELECT p.id AS product_id, p.product_name, p.unit_price, p.discount_percent, " +
+                "pi.url AS image_url, pi.main_image " +
+                "FROM products p " +
+                "LEFT JOIN product_images pi ON p.id = pi.product_id AND pi.main_image = TRUE " +
+                "WHERE p.product_name LIKE :keyword " +
+                "ORDER BY p.created_at DESC " +
+                "LIMIT 10";
+
+        return jdbi.withHandle(handle -> {
+            Query query = handle.createQuery(sql)
+                    .bind("keyword", "%" + keyword + "%");
+
+            Map<Integer, Product> productMap = new LinkedHashMap<>();
+
+            query.map((rs, ctx) -> {
+                int productId = rs.getInt("product_id");
+                Product product = productMap.get(productId);
+
+                if (product == null) {
+                    product = new Product(
+                            productId,
+                            rs.getString("product_name"),
+                            rs.getDouble("unit_price"),
+                            rs.getDouble("discount_percent"),
+                            new ArrayList<>()
+                    );
+                    productMap.put(productId, product);
+                }
+
+                String imageUrl = rs.getString("image_url");
+                if (imageUrl != null && product.getListImg().isEmpty()) {
+                    product.getListImg().add(new ProductImage(imageUrl, true));
+                }
+
+                return product;
+            }).list();
+
+            return new ArrayList<>(productMap.values());
+        });
     }
 
 

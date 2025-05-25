@@ -31,13 +31,6 @@
             type="text/css"
             href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"
     />
-<%--    <link rel="stylesheet" type="text/css"--%>
-<%--          href="${pageContext.request.contextPath}/assets/css/reset.css">--%>
-
-<%--    <link rel="stylesheet" type="text/css"--%>
-<%--          href="${pageContext.request.contextPath}/assets/css/header-footer.css">--%>
-<%--    <link rel="stylesheet" type="text/css"--%>
-<%--          href="${pageContext.request.contextPath}/assets/css/home.css">--%>
     <style>
         :root {
             --color-black: #171C24;
@@ -1205,9 +1198,31 @@
             padding: 15px 0;
         }
 
+        .chat-box-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #ffc107;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease;
+            z-index: 9999; /* ưu tiên hiển thị trên hết */
+        }
 
+        .chat-box-button img {
+            width: 30px;
+            height: 30px;
+        }
 
-
+        .chat-box-button:hover {
+            background-color: #e0a800;
+        }
     </style>
 </head>
 <body>
@@ -1446,270 +1461,6 @@
             </section>
         </c:forEach>
 
-<%--        <section class="home-product">--%>
-<%--            <div class="container">--%>
-<%--                <div class="product-wrapper">--%>
-<%--                    <div class="wrapper-top">--%>
-<%--                        <div class="wrapper-category">ĐÈN CHÙM</div>--%>
-<%--                        <a href="Detail.html">Xem thêm</a>--%>
-<%--                    </div>--%>
-
-<%--                    <div class="wrapper-bottom">--%>
-<%--                        <ul class="list-product" id="list-product1">--%>
-<%--                            <c:forEach var="product" items="${denChumList}">--%>
-<%--                                <li class="product-item">--%>
-<%--                                    <a href="home/product-detail?id=${product.id}">--%>
-<%--                                        <div class="img">--%>
-<%--                                            <img src="${product.imageUrl}" alt="${product.productName}" />--%>
-<%--                                        </div>--%>
-
-<%--                                        <div class="product-info">--%>
-<%--                                            <div class="product-name">--%>
-<%--                                                    ${product.productName}--%>
-<%--                                            </div>--%>
-
-<%--                                            <p class="original-price">--%>
-<%--                                                    ${String.format('%,.0f', product.unitPrice)} VND--%>
-<%--                                            </p>--%>
-
-<%--                                            <div class="price-discount">--%>
-<%--                                                <p class="product-price">--%>
-<%--                                                        ${String.format('%,.0f', product.discountedPrice)} VND--%>
-<%--                                                </p>--%>
-<%--                                                <p class="discount-percentage">--%>
-<%--                                                    -${product.discountPercent}%--%>
-<%--                                                </p>--%>
-<%--                                            </div>--%>
-<%--                                        </div>--%>
-<%--                                    </a>--%>
-<%--                                </li>--%>
-<%--                            </c:forEach>--%>
-<%--                        </ul>--%>
-<%--                    </div>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-<%--        </section>--%>
-
-<%--        <section class="home-product">--%>
-<%--            <div class="container">--%>
-<%--                <div class="product-wrapper">--%>
-<%--                    <div class="wrapper-top">--%>
-<%--                        <div class="wrapper-category">ĐÈN THẢ</div>--%>
-<%--                        <a href="Detail.html">Xem thêm</a>--%>
-<%--                    </div>--%>
-
-<%--                    <div class="wrapper-bottom">--%>
-<%--                        <ul class="list-product" id="list-product2">--%>
-<%--                            <c:forEach var="product" items="${denThaList}">--%>
-<%--                                <li class="product-item">--%>
-<%--                                    <a href="home/product-detail?id=${product.id}">--%>
-<%--                                        <div class="img">--%>
-<%--                                            <img src="${product.imageUrl}" alt="${product.productName}" />--%>
-<%--                                        </div>--%>
-
-<%--                                        <div class="product-info">--%>
-<%--                                            <div class="product-name">--%>
-<%--                                                    ${product.productName}--%>
-<%--                                            </div>--%>
-
-<%--                                            <p class="original-price">--%>
-<%--                                                    ${String.format('%,.0f', product.unitPrice)} VND--%>
-<%--                                            </p>--%>
-
-<%--                                            <div class="price-discount">--%>
-<%--                                                <p class="product-price">--%>
-<%--                                                        ${String.format('%,.0f', product.discountedPrice)} VND--%>
-<%--                                                </p>--%>
-<%--                                                <p class="discount-percentage">--%>
-<%--                                                    -${product.discountPercent}%--%>
-<%--                                                </p>--%>
-<%--                                            </div>--%>
-<%--                                        </div>--%>
-<%--                                    </a>--%>
-<%--                                </li>--%>
-<%--                            </c:forEach>--%>
-<%--                        </ul>--%>
-<%--                    </div>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-<%--        </section>--%>
-
-<%--        <section class="home-product">--%>
-<%--            <div class="container">--%>
-<%--                <div class="product-wrapper">--%>
-<%--                    <div class="wrapper-top">--%>
-<%--                        <div class="wrapper-category">ĐÈN BÀN</div>--%>
-<%--                        <a href="Detail.html">Xem thêm</a>--%>
-<%--                    </div>--%>
-
-<%--                    <div class="wrapper-bottom">--%>
-<%--                        <ul class="list-product" id="list-product3">--%>
-<%--                            <c:forEach var="product" items="${denBanList}">--%>
-<%--                                <li class="product-item">--%>
-<%--                                    <a href="home/product-detail?id=${product.id}">--%>
-<%--                                        <div class="img">--%>
-<%--                                            <img src="${product.imageUrl}" alt="${product.productName}" />--%>
-<%--                                        </div>--%>
-
-<%--                                        <div class="product-info">--%>
-<%--                                            <div class="product-name">--%>
-<%--                                                    ${product.productName}--%>
-<%--                                            </div>--%>
-
-<%--                                            <p class="original-price">--%>
-<%--                                                    ${String.format('%,.0f', product.unitPrice)} VND--%>
-<%--                                            </p>--%>
-
-<%--                                            <div class="price-discount">--%>
-<%--                                                <p class="product-price">--%>
-<%--                                                        ${String.format('%,.0f', product.discountedPrice)} VND--%>
-<%--                                                </p>--%>
-<%--                                                <p class="discount-percentage">--%>
-<%--                                                    -${product.discountPercent}%--%>
-<%--                                                </p>--%>
-<%--                                            </div>--%>
-<%--                                        </div>--%>
-<%--                                    </a>--%>
-<%--                                </li>--%>
-<%--                            </c:forEach>--%>
-<%--                        </ul>--%>
-<%--                    </div>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-<%--        </section>--%>
-
-<%--        <section class="home-product">--%>
-<%--            <div class="container">--%>
-<%--                <div class="product-wrapper">--%>
-<%--                    <div class="wrapper-top">--%>
-<%--                        <div class="wrapper-category">ĐÈN ỐP TRẦN</div>--%>
-<%--                        <a href="Detail.html">Xem thêm</a>--%>
-<%--                    </div>--%>
-
-<%--                    <div class="wrapper-bottom">--%>
-<%--                        <ul class="list-product" id="list-product4">--%>
-<%--                            <c:forEach var="product" items="${denOpTranList}">--%>
-<%--                                <li class="product-item">--%>
-<%--                                    <a href="home/product-detail?id=${product.id}">--%>
-<%--                                        <div class="img">--%>
-<%--                                            <img src="${product.imageUrl}" alt="${product.productName}" />--%>
-<%--                                        </div>--%>
-
-<%--                                        <div class="product-info">--%>
-<%--                                            <div class="product-name">--%>
-<%--                                                    ${product.productName}--%>
-<%--                                            </div>--%>
-
-<%--                                            <p class="original-price">--%>
-<%--                                                    ${String.format('%,.0f', product.unitPrice)} VND--%>
-<%--                                            </p>--%>
-
-<%--                                            <div class="price-discount">--%>
-<%--                                                <p class="product-price">--%>
-<%--                                                        ${String.format('%,.0f', product.discountedPrice)} VND--%>
-<%--                                                </p>--%>
-<%--                                                <p class="discount-percentage">--%>
-<%--                                                    -${product.discountPercent}%--%>
-<%--                                                </p>--%>
-<%--                                            </div>--%>
-<%--                                        </div>--%>
-<%--                                    </a>--%>
-<%--                                </li>--%>
-<%--                            </c:forEach>--%>
-<%--                        </ul>--%>
-<%--                    </div>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-<%--        </section>--%>
-
-<%--        <section class="home-product">--%>
-<%--            <div class="container">--%>
-<%--                <div class="product-wrapper">--%>
-<%--                    <div class="wrapper-top">--%>
-<%--                        <div class="wrapper-category">ĐÈN QUẠT</div>--%>
-<%--                        <a href="Detail.html">Xem thêm</a>--%>
-<%--                    </div>--%>
-
-<%--                    <div class="wrapper-bottom">--%>
-<%--                        <ul class="list-product" id="list-product5">--%>
-<%--                            <c:forEach var="product" items="${denQuatList}">--%>
-<%--                                <li class="product-item">--%>
-<%--                                    <a href="home/product-detail?id=${product.id}">--%>
-<%--                                        <div class="img">--%>
-<%--                                            <img src="${product.imageUrl}" alt="${product.productName}" />--%>
-<%--                                        </div>--%>
-
-<%--                                        <div class="product-info">--%>
-<%--                                            <div class="product-name">--%>
-<%--                                                    ${product.productName}--%>
-<%--                                            </div>--%>
-
-<%--                                            <p class="original-price">--%>
-<%--                                                    ${String.format('%,.0f', product.unitPrice)} VND--%>
-<%--                                            </p>--%>
-
-<%--                                            <div class="price-discount">--%>
-<%--                                                <p class="product-price">--%>
-<%--                                                        ${String.format('%,.0f', product.discountedPrice)} VND--%>
-<%--                                                </p>--%>
-<%--                                                <p class="discount-percentage">--%>
-<%--                                                    -${product.discountPercent}%--%>
-<%--                                                </p>--%>
-<%--                                            </div>--%>
-<%--                                        </div>--%>
-<%--                                    </a>--%>
-<%--                                </li>--%>
-<%--                            </c:forEach>--%>
-<%--                        </ul>--%>
-<%--                    </div>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-<%--        </section>--%>
-
-<%--        <section class="home-product">--%>
-<%--            <div class="container">--%>
-<%--                <div class="product-wrapper">--%>
-<%--                    <div class="wrapper-top">--%>
-<%--                        <div class="wrapper-category">ĐÈN KHÁC</div>--%>
-<%--                        <a href="Detail.html">Xem thêm</a>--%>
-<%--                    </div>--%>
-
-<%--                    <div class="wrapper-bottom">--%>
-<%--                        <ul class="list-product" id="list-product6">--%>
-<%--                            <c:forEach var="product" items="${denKhacList}">--%>
-<%--                                <li class="product-item">--%>
-<%--                                    <a href="home/product-detail?id=${product.id}">--%>
-<%--                                        <div class="img">--%>
-<%--                                            <img src="${product.imageUrl}" alt="${product.productName}" />--%>
-<%--                                        </div>--%>
-
-<%--                                        <div class="product-info">--%>
-<%--                                            <div class="product-name">--%>
-<%--                                                    ${product.productName}--%>
-<%--                                            </div>--%>
-
-<%--                                            <p class="original-price">--%>
-<%--                                                    ${String.format('%,.0f', product.unitPrice)} VND--%>
-<%--                                            </p>--%>
-
-<%--                                            <div class="price-discount">--%>
-<%--                                                <p class="product-price">--%>
-<%--                                                        ${String.format('%,.0f', product.discountedPrice)} VND--%>
-<%--                                                </p>--%>
-<%--                                                <p class="discount-percentage">--%>
-<%--                                                    -${product.discountPercent}%--%>
-<%--                                                </p>--%>
-<%--                                            </div>--%>
-<%--                                        </div>--%>
-<%--                                    </a>--%>
-<%--                                </li>--%>
-<%--                            </c:forEach>--%>
-<%--                        </ul>--%>
-<%--                    </div>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-<%--        </section>--%>
-
         <!-- Tin tức -->
         <section class="home-info">
             <div class="container">
@@ -1904,7 +1655,7 @@
     <!-- Footer -->
     <jsp:include page="/reuse/footer.jsp" />
 </div>
-<script src="assets/Js/home.js?v=2.0"></script>
+<script src="${pageContext.request.contextPath}/assets/Js/home.js?v=2.0"></script>
 <script
         type="text/javascript"
         src="https://code.jquery.com/jquery-1.11.0.min.js"
