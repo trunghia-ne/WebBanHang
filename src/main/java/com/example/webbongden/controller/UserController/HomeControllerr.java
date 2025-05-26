@@ -20,22 +20,6 @@ public class HomeControllerr extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        // Lấy danh sách sản phẩm theo danh mục trong db
-//        List<Product> denChumList = productServices.getProductsByCategory("ĐÈN CHÙM");
-//        List<Product> denThaList = productServices.getProductsByCategory("ĐÈN THẢ");
-//        List<Product> denBanList = productServices.getProductsByCategory("ĐÈN BÀN");
-//        List<Product> denOpTranList = productServices.getProductsByCategory("ĐÈN ỐP TRẦN");
-//        List<Product> denQuatList = productServices.getProductsByCategory("ĐÈN QUẠT");
-//        List<Product> denKhacList = productServices.getProductsByCategory("ĐÈN KHÁC");
-//
-//        request.setAttribute("denChumList", denChumList);
-//        request.setAttribute("denThaList", denThaList);
-//        request.setAttribute("denBanList", denBanList);
-//        request.setAttribute("denOpTranList", denOpTranList);
-//        request.setAttribute("denQuatList", denQuatList);
-//        request.setAttribute("denKhacList", denKhacList);
-//
-//        System.out.println("Forwarding to register.jsp...");
         List<Promotion> listPromotion = promotionService.getAllPromotionsWithProducts();
         List<Product> listHotProduct = productServices.getBestSellingProducts();
         request.setAttribute("listPromotion", listPromotion);

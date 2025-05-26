@@ -35,6 +35,17 @@
         color: white;
         border-radius: 4px;
     }
+
+    .customer-info img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        transition: 0.3s;
+    }
+    .customer-info img:hover {
+        opacity: 0.8;
+    }
 </style>
 <body>
 <div class="wrapper">
@@ -43,12 +54,19 @@
         <div class="container container-cus">
             <div class="sidebar-info-customer">
                 <div class="customer-info">
-                    <img
-                            src="./img/b79144e03dc4996ce319ff59118caf65.jpg"
-                            alt="avatarUser"
-                    />
+                    <form id="avatarForm" enctype="multipart/form-data" method="post">
+                        <label for="avatarInput" title="Click để thay đổi ảnh đại diện" style="cursor: pointer;">
+                            <img
+                                    id="avatarPreview"
+                                    src="${userInfo.avatar != null ? userInfo.avatar : 'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg'}"
+                                    alt="avatarUser"
+                            />
+                        </label>
+                        <input type="file" id="avatarInput" name="avatar" accept="image/*" style="display: none;" />
+                    </form>
                     <p class="customer-name">${userInfo.customerName}</p>
                 </div>
+
                 <div class="menu-user">
                     <nav>
                         <ul class="menu-user">
@@ -385,6 +403,65 @@
                 }).showToast();
             }
         });
+
+    $('#avatarInput').on('change', async function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "web_upload");
+        formData.append("folder", "avatars");
+
+        try {
+            const res = await fetch(`https://api.cloudinary.com/v1_1/dptmqc8lj/image/upload`, {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await res.json();
+            if (!data.secure_url) throw new Error("Upload thất bại");
+
+            console.log("Sending avatar update payload:", {
+                customerId: $('#userInfo').data('customer-id'),
+                avatarUrl: data.secure_url
+            });
+
+            // Gửi URL ảnh avatar về server để lưu vào DB
+            await fetch("/WebBongDen_war/update-avatar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    customerId: $('#userInfo').data('customer-id'),
+                    avatarUrl: data.secure_url
+                }),
+            });
+
+            $('#avatarPreview').attr('src', data.secure_url);
+
+            Toastify({
+                text: "Cập nhật avatar thành công!",
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                style: {
+                    background: "linear-gradient(to right, #00b09b, #96c93d)",
+                    color: "#fff",
+                },
+            }).showToast();
+        } catch (error) {
+            console.error("Upload thất bại:", error);
+            Toastify({
+                text: "Tải avatar thất bại!",
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc3545",
+                close: true,
+            }).showToast();
+        }
+    });
+
 </script>
 </html>
 
