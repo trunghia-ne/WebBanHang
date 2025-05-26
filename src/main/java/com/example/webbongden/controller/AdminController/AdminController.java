@@ -127,7 +127,6 @@ public class AdminController extends HttpServlet {
     }
 
 
-
     //Trang order
     public void loadOrderStats(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int totalOrders = orderServices.getTotalOrders();
