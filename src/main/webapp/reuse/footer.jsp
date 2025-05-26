@@ -95,3 +95,7 @@
         </div>
     </div>
 </footer>
+<div class="chat-box-button" id="chatBoxButton" title="Chat với chúng tôi">
+    <img src="${pageContext.request.contextPath}/assets/img/imagesWeb/chat.png" alt="Chat" />
+</div>
+

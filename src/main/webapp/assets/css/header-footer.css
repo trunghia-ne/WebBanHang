@@ -541,229 +541,28 @@ a {
   background-color: #12161d;
 }
 
-
-
-@media (min-width: 768px) and (max-width: 1024px) {
-  .container {
-    padding: 0 30px !important;
-  }
-
-  .header-top {
-    padding: 10px 30px !important;
-  }
-
-  .header-right .info-item:nth-child(2)>span {
-    display: none;
-    width: fit-content !important;
-  }
-
-  .footer-top {
-    gap: 10px !important;
-  }
-
-  .footer-item .tittle {
-    font-size: 14px !important;
-  }
-
-  .footer-top div,
-  .footer-top p {
-    font-size: 12px !important;
-  }
-
-  .search-bar form {
-    width: 260px !important;
-  }
-
-  .footer .footer-top {
-    flex-wrap: nowrap !important;
-  }
+.chat-box-button {
+  position: fixed; /* nằm cứng ở viewport */
+  bottom: 20px;    /* cách đáy màn hình 20px */
+  right: 20px;     /* cách phải màn hình 20px */
+  width: 60px;
+  height: 60px;
+  background-color: #ffc107;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease;
+  z-index: 9999; /* ưu tiên hiển thị trên hết */
 }
 
-/* Tablet */
-@media (min-width: 600px) and (max-width: 768px) {
-  .container {
-    padding: 0 10px !important;
-  }
-  .container .banner {
-    display: none;
-  }
-
-  .header-top .info-item:nth-child(1) {
-    display: none;
-  }
-
-  .header-right .info-item:nth-child(2) span {
-    display: none;
-    width: fit-content !important;
-  }
-
-  .search-bar form {
-    width: 260px !important;
-  }
-
-  .navbar {
-    display: none !important;
-  }
-
-  .footer-top {
-    gap: 10px !important;
-  }
-
-  .footer-item .tittle {
-    font-size: 14px !important;
-  }
-
-  .footer-top div,
-  .footer-top p {
-    font-size: 12px !important;
-  }
-
-  .footer-item:nth-child(4) {
-    margin-top: 30px;
-  }
-
-  .header {
-    height: fit-content;
-  }
-
-  .header-top {
-    padding: 10px !important;
-  }
-
-  .header-top .fa-bars {
-    display: block;
-  }
-
-  .footer .footer-top {
-    flex-wrap: wrap;
-  }
+.chat-box-button img {
+  width: 30px;
+  height: 30px;
 }
 
-/* Điện thoại (mobile) */
-@media (max-width: 600px) {
-
-  .container {
-    padding: 0 10px !important;
-  }
-
-  .header-top .info-item:nth-child(1) {
-    display: none;
-  }
-
-  .header-right .info-item:nth-child(2)>span {
-    display: none;
-    width: fit-content !important;
-  }
-
-  .header .header-top .info .login {
-    display: none !important;
-  }
-
-  .header-left {
-    justify-content: space-between !important;
-    width: 100% !important;
-  }
-
-  .header .header-top .info {
-    margin-left: 0;
-    padding: 8px;
-    border-radius: 4px;
-  }
-
-  .header .header-top .info .info-item {
-    margin-left: 0;
-  }
-
-  .header .header-top .info .info-item:nth-child(1) {
-    display: none;
-  }
-
-
-  .header-right a {
-    margin-left: 0 !important;
-  }
-
-
-  .header-right {
-    width: fit-content !important;
-    margin-left: 10px;
-  }
-
-  .navbar {
-    display: none !important;
-  }
-
-
-  .footer {
-    margin-top: 20px !important;
-  }
-
-  .footer-top {
-    gap: 40px !important;
-    flex-direction: column !important;
-  }
-
-  .footer-item .tittle {
-    font-size: 14px !important;
-    margin-bottom: 4px !important;
-  }
-
-  .footer-top div,
-  .footer-top p {
-    font-size: 12px !important;
-  }
-
-  .slider {
-    height: 200px;
-    width: 100%;
-  }
-
-  .header {
-    height: fit-content;
-  }
-
-  .wrapper {
-    padding-top: 67px;
-  }
-
-  .header-top {
-    padding: 5px 10px !important;
-  }
-
-  .header-top .header-right {
-    text-align: right;
-  }
-
-  .header-top .fa-bars {
-    display: block;
-  }
-
-  .wrapper-top {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-
-  .header .header-top .search-bar form { 
-    display: none !important;
-  }
-
-  .header .header-top .search-bar button {
-    padding: 4px 10px;
-    border-radius: 4px;
-  }
-
-  .mobile-search-bar.active {
-    display: flex;
-    opacity: 1;
-    transform: translateY(0);
-    top: 100%;
-  }  
-
-  .header-right {
-    margin-left: 0 !important;
-  }
-
-  .footer .footer-top {
-    flex-wrap: wrap;
-  }
+.chat-box-button:hover {
+  background-color: #e0a800;
 }

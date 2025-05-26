@@ -15,36 +15,40 @@
 <header class="header">
     <div class="header-top">
         <div class="header-left">
-            <!-- Hamburger icon for opening sidebar -->
             <div style="display: flex; align-items: center">
-                <i class="fa-solid fa-bars" id="menu-toggle"></i>
                 <a href="/WebBongDen_war/home" class="logo">
                     <img src="./assets/img/logo2.png" alt="Description">
                 </a>
             </div>
-            <div class="search-bar">
-                <form action="/WebBongDen_war/search" method="GET" id="search-form">
-                    <input placeholder="Bạn cần tìm gì?" type="text" name="value" />
+            <div class="search-bar" style="position: relative;">
+                <form action="/WebBongDen_war/search" method="GET" id="search-form" autocomplete="off">
+                    <input
+                            placeholder="Bạn cần tìm gì?"
+                            type="text"
+                            name="value"
+                            id="search-input"
+                            autocomplete="off"
+                    />
                     <button type="submit" aria-label="Search" class="search-btn">
                         <i class="fas fa-search"></i>
                     </button>
                 </form>
+                <!-- Thẻ chứa kết quả autocomplete -->
+                <div id="results" style="
+                  position: absolute;
+                  top: 100%;
+                  left: 0;
+                  right: 0;
+                  background: white;
+                  border: 1px solid #ccc;
+                  max-height: 300px;
+                  overflow-y: auto;
+                  display: none;
+                  z-index: 9999;
+                ">
+                </div>
             </div>
-            <div class="mobile-search-bar" id="mobile-search-bar">
-                <form action="/search" method="GET">
-                    <input type="text" name="query" placeholder="Bạn cần tìm gì?" />
-                    <button type="submit" aria-label="mobile-search">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </form>
-                <button
-                        type="button"
-                        id="close-search-button"
-                        aria-label="Close Search"
-                >
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
+
         </div>
 
         <div class="header-right">
@@ -66,7 +70,7 @@
                 </a>
 
                 <%
-                    if (username != null) { // Người dùng đã đăng nhập
+                    if (username != null) {
                 %>
                 <div class="header-user" style="display:block;">
                     <img src="${sessionScope.avatar != null ? sessionScope.avatar : 'images/default-avatar.png'}"
