@@ -541,28 +541,79 @@ a {
   background-color: #12161d;
 }
 
+/* Nút mở chat */
 .chat-box-button {
-  position: fixed; /* nằm cứng ở viewport */
-  bottom: 20px;    /* cách đáy màn hình 20px */
-  right: 20px;     /* cách phải màn hình 20px */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
   width: 60px;
   height: 60px;
   background-color: #ffc107;
   border-radius: 50%;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   display: flex;
-  justify-content: center;
   align-items: center;
-  transition: background-color 0.3s ease;
-  z-index: 9999; /* ưu tiên hiển thị trên hết */
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
 }
-
 .chat-box-button img {
   width: 30px;
   height: 30px;
 }
 
-.chat-box-button:hover {
-  background-color: #e0a800;
+/* Khung chat */
+.chat-container {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 360px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header chat */
+.chat-header {
+  background-color: #00c5cc;
+  color: white;
+  font-weight: bold;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+}
+.chat-header button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* Tuỳ chỉnh BotUI */
+#botui-app .botui-container {
+  background: white;
+  padding: 10px 15px;
+}
+.botui-message-content {
+  font-size: 15px;
+}
+.botui-actions-text-input {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px;
+}
+.botui-actions-buttons-button {
+  background: #00c5cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  margin-left: 5px;
 }

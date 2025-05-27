@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", async function () {
+﻿document.addEventListener("DOMContentLoaded", async function () {
   // === PHẦN LẤY ĐỊA CHỈ TỪ provinces.open-api.vn ===
   const fetchData = async (url) => {
     try {

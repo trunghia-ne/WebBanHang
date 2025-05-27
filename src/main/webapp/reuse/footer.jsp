@@ -6,6 +6,12 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" %>
+<!-- Vue 2 -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+<!-- BotUI -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/botui/build/botui.min.css">
+<script src="https://cdn.jsdelivr.net/npm/botui/build/botui.min.js"></script>
 <footer class="footer">
     <div class="container">
         <div class="footer-top">
@@ -98,4 +104,44 @@
 <div class="chat-box-button" id="chatBoxButton" title="Chat với chúng tôi">
     <img src="${pageContext.request.contextPath}/assets/img/imagesWeb/chat.png" alt="Chat" />
 </div>
+<!-- Chat container -->
+<div class="chat-container" id="chatContainer" style="display: none;">
+    <div class="chat-header">
+        Hỗ trợ khách hàng
+        <button id="closeChatBtn">&times;</button>
+    </div>
+    <div id="botui-app">
+        <bot-ui></bot-ui>
+    </div>
+</div>
+<script>
+    let botui; // Khai báo ngoài để tránh tạo lại nhiều lần
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const chatBtn = document.getElementById("chatBoxButton");
+        const chatContainer = document.getElementById("chatContainer");
+        const closeBtn = document.getElementById("closeChatBtn");
+        let chatOpened = false;
+        let botui;
+
+        chatBtn.addEventListener("click", function () {
+            chatContainer.style.display = "block"; // ← sửa dòng này
+            if (!chatOpened) {
+                botui = new BotUI('botui-app'); // Khởi tạo lần đầu
+                botui.message.add({ content: 'Xin chào! Bạn cần hỗ trợ gì?' });
+                botui.action.text({
+                    action: { placeholder: 'Nhập câu hỏi...' }
+                }).then(function (res) {
+                    botui.message.add({ content: `Bạn vừa hỏi: ${res.value}` });
+                });
+                chatOpened = true;
+            }
+        });
+
+        closeBtn.addEventListener("click", () => {
+            chatContainer.style.display = "none";
+        });
+    });
+</script>
+
 
