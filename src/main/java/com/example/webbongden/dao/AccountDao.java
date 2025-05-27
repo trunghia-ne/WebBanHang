@@ -357,4 +357,14 @@ public class AccountDao {
         // In ra mật khẩu đã băm
         System.out.println("Hashed Password: " + hashedPassword);
     }
+
+    public void updateAvatar(int customerId, String avatarUrl) {
+        String sql = "UPDATE accounts SET avatar = :avatar WHERE customer_id = :id";
+        jdbi.useHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("avatar", avatarUrl)
+                        .bind("id", customerId)
+                        .execute()
+        );
+    }
 }

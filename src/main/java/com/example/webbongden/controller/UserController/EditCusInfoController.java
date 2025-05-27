@@ -29,7 +29,7 @@ public class EditCusInfoController extends HttpServlet {
             // Lấy dữ liệu từ request
             String json = request.getReader().lines().reduce("", (accumulator, actual) -> accumulator + actual);
             Gson gson = new GsonBuilder()
-                    .serializeNulls()  // 👈 cho phép hiện cả field có giá trị null
+                    .serializeNulls()
                     .create();
 
             CustomerUpdate updateRequest = gson.fromJson(json, CustomerUpdate.class);

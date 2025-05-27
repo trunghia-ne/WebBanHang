@@ -88,14 +88,4 @@ public class EditProductController extends HttpServlet {
             response.getWriter().write("{\"success\": false, \"message\": \"Có lỗi xảy ra trong quá trình cập nhật!\"}");
         }
     }
-
-    private String extractFileName(Part part) {
-        String contentDisposition = part.getHeader("content-disposition");
-        for (String content : contentDisposition.split(";")) {
-            if (content.trim().startsWith("filename")) {
-                return content.substring(content.indexOf("=") + 2, content.length() - 1);
-            }
-        }
-        return null;
-    }
 }
