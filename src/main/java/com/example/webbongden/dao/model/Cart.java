@@ -67,4 +67,20 @@ public class Cart {
     public boolean isEmpty() {
         return cartItems.isEmpty();
     }
+
+    public int getTotalWeight() {
+        int totalWeight = 0;
+        for (CartItem item : cartItems) {
+            totalWeight += item.getWeight() * item.getQuantity(); // Giả sử có item.getWeight()
+        }
+        // Nếu không có weight chi tiết, bạn có thể đặt một giá trị mặc định
+        // ví dụ: return 500; // 500 gram
+        return totalWeight > 0 ? totalWeight : 500; // Trả về 500g nếu không có thông tin
+    }
+
+    // Tương tự có thể thêm getTotalLength, getTotalWidth, getTotalHeight
+    // Hoặc API GHN có thể chỉ cần tổng trọng lượng và một kích thước gói hàng ước tính
+    public int getEstimatedLength() { return 20; } // cm, ví dụ
+    public int getEstimatedWidth() { return 15; }  // cm, ví dụ
+    public int getEstimatedHeight() { return 10; } //
 }
