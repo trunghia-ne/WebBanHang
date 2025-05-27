@@ -11,6 +11,7 @@ public class Customer {
     private String address; // Địa chỉ
     private String phone; // Số điện thoại
     private String note;
+    private double shippingFee; // <-- Thêm trường này
 
     // Constructor không tham số
     public Customer(int id, String cusName, String address, String phone, String note) {
@@ -26,7 +27,7 @@ public class Customer {
     }
 
     // Constructor đầy đủ tham số
-    public Customer(int id, String cusName, String idNumber, String sex, Date birthday, String address, String phone) {
+    public Customer(int id, String cusName, String idNumber, String sex, Date birthday, String address, String phone, double shippingFee) { // Thêm shippingFee
         this.id = id;
         this.cusName = cusName;
         this.idNumber = idNumber;
@@ -34,6 +35,7 @@ public class Customer {
         this.birthday = birthday;
         this.address = address;
         this.phone = phone;
+        this.shippingFee = shippingFee; // <-- Gán giá trị
     }
 
     // Getter và Setter cho từng thuộc tính
@@ -101,6 +103,16 @@ public class Customer {
         this.phone = phone;
     }
 
+    // Getter và Setter cho shippingFee
+    public double getShippingFee() { // <-- Thêm getter
+        return shippingFee;
+    }
+
+    public void setShippingFee(double shippingFee) { // <-- Thêm setter
+        this.shippingFee = shippingFee;
+    }
+
+
     // Phương thức toString để hiển thị thông tin khách hàng
     @Override
     public String toString() {
@@ -112,7 +124,8 @@ public class Customer {
                 ", birthday=" + birthday +
                 ", address='" + address + '\'' +
                 ", phone='" + phone + '\'' +
+                ", note='" + note + '\'' + // Thêm note vào toString nếu cần
+                ", shippingFee=" + shippingFee + // Thêm shippingFee vào toString
                 '}';
     }
 }
-

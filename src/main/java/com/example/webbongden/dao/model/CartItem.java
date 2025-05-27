@@ -11,6 +11,11 @@ public class CartItem {
     private String imageUrl;
     private String giftName;
 
+    private int weight = 500;
+    private int length = 12;
+    private int width = 2;
+    private int height = 15;
+
     public CartItem() {
 
     }
@@ -93,6 +98,22 @@ public class CartItem {
 
     public double getAmount() {
         return this.quantity * this.price;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public String getFormattedPrice() {
