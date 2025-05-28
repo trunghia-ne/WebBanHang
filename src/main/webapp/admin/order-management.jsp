@@ -149,10 +149,8 @@
                         </div>
 
                         <div class="total-price">
-                            <p>
-                                <strong>TỔNG TIỀN:</strong>
-                                <span id="total-amount">0 VND</span>
-                            </p>
+                            <p>Phí vận chuyển: <span id="shipping-fee"></span></p>
+                            <p>Tổng cộng: <span id="total-final"></span></p>
                         </div>
                     </div>
                 </div>
@@ -165,7 +163,7 @@
                             <th>Id</th>
                             <th>Tên KH</th>
                             <th>Ngày đặt hàng</th>
-                            <th>Ngày giao dự kiến</th>
+                            <th>Tổng tiền</th>
                             <th>Địa chỉ</th>
                             <th>Trạng thái</th>
                             <th>Chi tiết</th>

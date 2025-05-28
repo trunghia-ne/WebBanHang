@@ -378,7 +378,16 @@
                 },
                 body: JSON.stringify(formData)
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        // Ghi log nội dung HTML lỗi để dễ debug
+                        return response.text().then(text => {
+                            console.error("Server error HTML:", text);
+                            throw new Error("Server error " + response.status);
+                        });
+                    }
+                    return response.json(); // chỉ parse JSON nếu response hợp lệ
+                })
                 .then(data => {
                     if (data.success) {
                         if (data.role === "admin") {
@@ -392,7 +401,10 @@
                         grecaptcha.reset(); // Reset CAPTCHA nếu lỗi
                     }
                 })
-                .catch(error => console.error("Lỗi:", error));
+                .catch(error => {
+                    console.error("Lỗi:", error.message);
+                });
+
         });
     });
 </script>

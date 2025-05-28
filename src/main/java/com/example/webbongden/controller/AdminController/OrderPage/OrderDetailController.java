@@ -1,6 +1,7 @@
 package com.example.webbongden.controller.AdminController.OrderPage;
 
 import com.example.webbongden.dao.model.OrderDetail;
+import com.example.webbongden.dao.model.OrderDetailResponse;
 import com.example.webbongden.services.OrderSevices;
 import com.google.gson.Gson;
 import jakarta.servlet.*;
@@ -24,7 +25,6 @@ public class OrderDetailController extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 
         try {
-            // Lấy orderId từ request
             String orderIdParam = request.getParameter("orderId");
             if (orderIdParam == null || orderIdParam.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -34,11 +34,12 @@ public class OrderDetailController extends HttpServlet {
 
             int orderId = Integer.parseInt(orderIdParam);
 
-            // Gọi service để lấy danh sách OrderDetail
             List<OrderDetail> orderDetails = orderServices.getOrderDetailsById(orderId);
+            double shippingFee = orderServices.getShippingFeeById(orderId); // THÊM HÀM NÀY TRONG service
 
-            // Chuyển đổi danh sách sang JSON và gửi về client
-            String jsonResponse = new Gson().toJson(orderDetails);
+            OrderDetailResponse orderDetailResponse = new OrderDetailResponse(orderDetails, shippingFee);
+
+            String jsonResponse = new Gson().toJson(orderDetailResponse);
             response.getWriter().write(jsonResponse);
 
         } catch (NumberFormatException e) {
@@ -50,6 +51,7 @@ public class OrderDetailController extends HttpServlet {
             response.getWriter().write("{\"error\": \"Unable to fetch order details\"}");
         }
     }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

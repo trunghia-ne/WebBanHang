@@ -35,9 +35,10 @@
                 { data: "customerName" }, // Tên khách hàng
                 { data: "createdAt" }, // Ngày đặt hàng
                 {
-                    data: "totalPrice", // Tổng tiền
+                    data: null, // Dùng null vì sẽ tính toán từ nhiều trường
                     render: function (data) {
-                        return parseInt(data).toLocaleString("vi-VN", {
+                        const totalWithShipping = (parseInt(data.totalPrice) + parseInt(data.shippingFee || 0));
+                        return totalWithShipping.toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
                         });
@@ -189,37 +190,45 @@
                 type: "GET",
                 data: { orderId: orderId },
                 success: function (data) {
-                    // Parse dữ liệu từ response
-                    const orderDetails = data;
-                    const $orderItemsBody = $("#order-items-body");
+                    const orderDetails = data.orderDetails;
+                    const shippingFee = parseFloat(data.shippingFee || 0);
 
-                    // Xóa nội dung cũ
+                    const $orderItemsBody = $("#order-items-body");
                     $orderItemsBody.empty();
 
-                    // Duyệt qua danh sách sản phẩm và thêm vào bảng
                     orderDetails.forEach((item) => {
                         $orderItemsBody.append(`
-                              <tr>
+                            <tr>
                                 <td>${item.productId}</td>
                                 <td>${item.productName}</td>
                                 <td>${item.quantity}</td>
                                 <td>${parseFloat(item.unitPrice).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</td>
                                 <td>${parseFloat(item.amount).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</td>
                                 <td>
-                                  <a href="http://localhost:8080/WebBongDen_war/product-detail?id=${item.productId}" target="_blank">link</a>
+                                    <a href="http://localhost:8080/WebBongDen_war/product-detail?id=${item.productId}" target="_blank">link</a>
                                 </td>
-                              </tr>
-                            `);
+                            </tr>
+                        `);
                     });
 
-                    // Tính tổng tiền và cập nhật
                     const totalAmount = orderDetails.reduce((total, item) => total + parseFloat(item.amount), 0);
+                    const totalWithShipping = totalAmount + shippingFee;
+
                     $("#total-amount").text(totalAmount.toLocaleString("vi-VN", {
                         style: "currency",
                         currency: "VND",
                     }));
 
-                    // Hiển thị overlay
+                    $("#shipping-fee").text(shippingFee.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                    }));
+
+                    $("#total-final").text(totalWithShipping.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                    }));
+
                     $(".overlay").addClass("active");
                 },
                 error: function (xhr, status, error) {

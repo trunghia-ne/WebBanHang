@@ -80,8 +80,10 @@ public class PayCartController extends HttpServlet {
 
             invoice.setPromotionId(promotionId);
 
+            System.out.println(customerInfo.toString());
             // Lưu hóa đơn và chi tiết đơn hàng
             orderServices.createOrderAndInvoice(invoice, orderDetails, customerInfo);
+
 
             // Nếu chọn COD, kết thúc tại đây
             if ("COD".equals(paymentMethod)) {
