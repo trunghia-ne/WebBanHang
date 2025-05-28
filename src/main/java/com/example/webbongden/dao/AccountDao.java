@@ -116,20 +116,6 @@ public class AccountDao {
         );
     }
 
-    //Kiểm tra tài khoản có trong Database k
-//    public Account authenticate(String username, String password) {
-//        String sql = "SELECT id, username, password, role FROM accounts WHERE username = :username AND password = :password";
-//
-//        return jdbi.withHandle(handle ->
-//                handle.createQuery(sql)
-//                        .bind("username", username)
-//                        .bind("password", password)
-//                        .mapToBean(Account.class)
-//                        .findOne() // Trả về Optional<Account>
-//                        .orElse(null) // Trả về null nếu không tìm thấy
-//        );
-//    }
-
     public Account authenticate(String username) {
         String sql = "SELECT id, email, username, password, role FROM accounts WHERE username = :username";
 
@@ -294,18 +280,6 @@ public class AccountDao {
                         .execute() > 0
         );
     }
-
-    //User
-    public boolean updatePassword2(String email, String hashedPassword) {
-        String sql = "UPDATE accounts SET password = :password WHERE email = :email";
-        return jdbi.withHandle(handle ->
-                handle.createUpdate(sql)
-                        .bind("password", hashedPassword)
-                        .bind("email", email)
-                        .execute() > 0
-        );
-    }
-
 
     // =========================Dang nhap bang facebook==============================
     // Kiểm tra tài khoản dựa vào email
