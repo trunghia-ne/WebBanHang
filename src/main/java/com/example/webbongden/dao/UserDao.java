@@ -112,6 +112,7 @@ public class UserDao {
                                 rs.getDouble("totalPrice"),
                                 null,
                                 rs.getString("orderStatus"),
+
                                 null
                         ))
                         .list()

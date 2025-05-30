@@ -12,8 +12,8 @@ public class ShippingDao {
     }
 
     public void insertShipping(Shipping shipping) {
-        String sql = "INSERT INTO shipping (order_id, pickup_date, shipping_status, address, carrier) " +
-                "VALUES (:orderId, :pickupDate, :shippingStatus, :address, :carrier)";
+        String sql = "INSERT INTO shipping (order_id, pickup_date, shipping_status, address, carrier, phone_number, cus_name, shipping_fee) " +
+                "VALUES (:orderId, :pickupDate, :shippingStatus, :address, :carrier, :phoneNumber, :cusName, :shippingFee)";
 
         jdbi.useHandle(handle -> handle.createUpdate(sql)
                 .bind("orderId", shipping.getOrderId())
@@ -21,6 +21,9 @@ public class ShippingDao {
                 .bind("shippingStatus", shipping.getShippingStatus())
                 .bind("address", shipping.getAddress())
                 .bind("carrier", shipping.getCarrier())
+                .bind("phoneNumber", shipping.getPhoneNumber())
+                .bind("cusName", shipping.getCusName())
+                .bind("shippingFee", shipping.getShippingFee())
                 .execute());
     }
 }

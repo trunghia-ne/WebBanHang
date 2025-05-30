@@ -86,6 +86,9 @@ public class OrderSevices {
             shipping.setShippingStatus("Pending"); // Trạng thái mặc định
             shipping.setAddress(customerInfo.getAddress()); // Địa chỉ giao hàng từ thông tin khách hàng
             shipping.setCarrier("J&T Express"); // Nhà vận chuyển mặc định
+            shipping.setPhoneNumber(customerInfo.getPhone());
+            shipping.setShippingFee(customerInfo.getShippingFee());
+            shipping.setCusName(customerInfo.getCusName());
 
             // Lưu thông tin vận chuyển
             shippingDao.insertShipping(shipping);
@@ -99,4 +102,13 @@ public class OrderSevices {
     public String getOrderStatus(int orderId) {
         return orderDao.getOrderStatus(orderId);
     }
+
+    public double getShippingFeeById(int orderId) {
+        Double fee = orderDao.getShippingFeeByOrderId(orderId);
+        if (fee == null) {
+            return 0.0; // hoặc bất kỳ giá trị mặc định nào bạn muốn
+        }
+        return fee;
+    }
+
 }

@@ -39,6 +39,18 @@ public class Order {
         this.orderDetails = orderDetails;
     }
 
+    public Order(int id, String customerName, java.util.Date createdAt, double totalPrice,
+                 String address, String orderStatus,double ShippingFee, List<OrderDetail> orderDetails) {
+        this.id = id;
+        this.customerName = customerName;
+        this.createdAt = createdAt;
+        this.totalPrice = totalPrice;
+        this.address = address;
+        this.orderStatus = orderStatus;
+        this.shippingFee = ShippingFee;
+        this.orderDetails = orderDetails;
+    }
+
     public int getAccountId() {
         return accountId;
     }

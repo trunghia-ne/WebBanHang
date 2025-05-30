@@ -79,8 +79,9 @@ public class OrderDao {
     }
 
     public List<Order> getListOrders() {
-        String sql = "SELECT o.id AS orderId, c.cus_name AS customerName, " +
+        String sql = "SELECT o.id AS orderId, s.cus_name AS customerName, " +
                 "o.created_at AS orderDate, " +
+                "s.shipping_fee AS shippingFee, " +
                 "o.total_price AS totalPrice, " +
                 "s.address AS shippingAddress, o.order_status AS status " + // Lấy địa chỉ từ bảng shipping
                 "FROM orders o " +
@@ -97,6 +98,7 @@ public class OrderDao {
                                 rs.getDouble("totalPrice"), // Sử dụng getDouble
                                 rs.getString("shippingAddress"), // Lấy địa chỉ vận chuyển từ bảng shipping
                                 rs.getString("status"),
+                                rs.getDouble("shippingFee"),
                                 getOrderDetailsByOrderId(rs.getInt("orderId")) // Lấy danh sách chi tiết đơn hàng
                         ))
                         .list()
@@ -138,6 +140,7 @@ public class OrderDao {
         String sql = "SELECT o.id AS orderId, c.cus_name AS customerName, " +
                 "o.created_at AS orderDate, " +
                 "o.total_price AS totalPrice, " +
+                "s.shipping_fee AS shippingFee, " +
                 "s.address AS shippingAddress, o.order_status AS status " + // Lấy địa chỉ từ bảng shipping
                 "FROM orders o " +
                 "JOIN accounts a ON o.account_id = a.id " +
@@ -155,6 +158,7 @@ public class OrderDao {
                                 rs.getDouble("totalPrice"),
                                 rs.getString("shippingAddress"),
                                 rs.getString("status"),
+                                rs.getDouble("shippingFee"),
                                 getOrderDetailsByOrderId(rs.getInt("orderId")) // Lấy danh sách chi tiết đơn hàng
                         ))
                         .list()
@@ -190,6 +194,7 @@ public class OrderDao {
         String sql = "SELECT o.id AS orderId, c.cus_name AS customerName, " +
                 "o.created_at AS orderDate, " +
                 "o.total_price AS totalPrice, " +
+                "s.shipping_fee AS shippingFee, " +
                 "s.address AS shippingAddress, o.order_status AS status " + // Lấy địa chỉ từ bảng shipping
                 "FROM orders o " +
                 "JOIN accounts a ON o.account_id = a.id " +
@@ -208,6 +213,7 @@ public class OrderDao {
                                 rs.getDouble("totalPrice"),
                                 rs.getString("shippingAddress"),
                                 rs.getString("status"),
+                                rs.getDouble("shippingFee"),
                                 getOrderDetailsByOrderId(rs.getInt("orderId")) // Lấy danh sách chi tiết đơn hàng
                         ))
                         .list()
@@ -277,12 +283,15 @@ public class OrderDao {
         String sql = "SELECT " +
                 "o.id AS orderId, " +
                 "o.created_at AS orderDate, " +
-                "o.order_status AS orderStatus, " + // Lấy trạng thái đơn hàng
-                "o.total_price AS totalPrice " +
+                "o.order_status AS orderStatus, " +
+                "o.total_price AS totalPrice, " +
+                "s.shipping_fee AS shippingFee " +
                 "FROM accounts a " +
-                "JOIN orders o ON a.id = o.account_id " +
+                "JOIN orders o ON a.id = o.account_id " +         // Không có dấu phẩy
+                "JOIN shipping s ON o.id = s.order_id " +         // Không có dấu phẩy
                 "WHERE a.username = :username " +
                 "ORDER BY o.created_at DESC";
+
 
         return jdbi.withHandle(handle ->
                 handle.createQuery(sql)
@@ -293,7 +302,9 @@ public class OrderDao {
                                 rs.getDate("orderDate"),
                                 rs.getDouble("totalPrice"),
                                 null, // Không dùng tổng số lượng
+
                                 rs.getString("orderStatus"), // Lấy trạng thái đơn hàng
+                                rs.getDouble("shippingFee"),
                                 null
                         ))
                         .list()
@@ -311,7 +322,16 @@ public class OrderDao {
         );
     }
 
-
+    public Double getShippingFeeByOrderId(int orderId) {
+        String sql = "SELECT shipping_fee FROM shipping WHERE order_id = :orderId";
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("orderId", orderId)
+                        .mapTo(Double.class)
+                        .findOne()
+                        .orElse(null)  // trả về null nếu không có kết quả
+        );
+    }
 
     public static void main(String[] args) {
         // Tạo một đối tượng UserDao (được giả định là chứa phương thức getOrdersByUsername)
