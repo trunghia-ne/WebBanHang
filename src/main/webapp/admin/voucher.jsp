@@ -12,6 +12,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="./img/logo-fold.png" sizes="180x180" />
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
     <title>Admin</title>
     <link
             rel="stylesheet"
@@ -141,6 +143,11 @@
         background-color: #1e8449;
         transition: 0.3s;
     }
+
+    div#editModal{
+        top: 10% !important;
+        width: 40%;
+    }
 </style>
 
 <body>
@@ -218,19 +225,31 @@
                                 <tr>
                                     <td>${voucher.code}</td>
                                     <td>${voucher.discountType}</td>
-                                    <td>${voucher.discountValue}</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${voucher.discountType == 'percent'}">
+                                                ${voucher.discountValue}%
+                                            </c:when>
+                                            <c:when test="${voucher.discountType == 'amount'}">
+                                                <fmt:formatNumber value="${voucher.discountValue}" type="currency" currencySymbol="₫" groupingUsed="true" />
+                                            </c:when>
+                                            <c:otherwise>
+                                                ${voucher.discountValue}
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
                                     <td>${voucher.startDate}</td>
                                     <td>${voucher.endDate}</td>
-                                    <td>${voucher.minOrderValue}</td>
+                                    <td><fmt:formatNumber value="${voucher.minOrderValue}" type="currency" currencySymbol="₫" />
+                                    </td>
                                     <td>${voucher.usageLimit}</td>
                                     <td>${voucher.usedCount}</td>
                                     <td>${voucher.status}</td>
                                     <td>
-                                        <form action="DeleteVoucherController" method="post" style="display:inline;">
-                                            <input type="hidden" name="id" value="${voucher.id}" />
-                                            <button type="submit" onclick="return confirm('Xóa voucher này?')">Xóa</button>
-                                        </form>
+                                        <button class="btn btn-danger btn-delete" data-id="${voucher.id}">Xóa</button>
+                                        <button type="button" class="btn btn-edit" onclick="editVoucher(${voucher.id}, '${voucher.code}', '${voucher.discountType}', '${voucher.discountValue}', '${voucher.startDate}', '${voucher.endDate}', '${voucher.minOrderValue}', '${voucher.usageLimit}', '${voucher.status}')">Sửa</button>
                                     </td>
+
                                 </tr>
                             </c:forEach>
                             </tbody>
@@ -239,6 +258,56 @@
                 </div>
             </div>
         </div>
+        <!-- MODAL CẬP NHẬT -->
+        <div id="editModal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); background:white; padding:20px; border:1px solid #ccc; z-index:999;">
+            <h3>Cập nhật Voucher</h3>
+            <form id="edit-form">
+                <input type="hidden" name="id" id="edit-id">
+                <div class="form-group">
+                    <label>Mã:</label>
+                    <input type="text" name="code" id="edit-code" required />
+                </div>
+                <div class="form-group">
+                    <label>Loại:</label>
+                    <select name="discountType" id="edit-discountType">
+                        <option value="percent">Phần trăm</option>
+                        <option value="amount">Số tiền</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Giá trị:</label>
+                    <input type="number" name="discountValue" id="edit-discountValue" required />
+                </div>
+                <div class="form-group">
+                    <label>Bắt đầu:</label>
+                    <input type="date" name="startDate" id="edit-startDate" required />
+                </div>
+                <div class="form-group">
+                    <label>Kết thúc:</label>
+                    <input type="date" name="endDate" id="edit-endDate" required />
+                </div>
+                <div class="form-group">
+                    <label>Đơn tối thiểu:</label>
+                    <input type="number" name="minOrderValue" id="edit-minOrderValue" />
+                </div>
+                <div class="form-group">
+                    <label>Số lần dùng:</label>
+                    <input type="number" name="usageLimit" id="edit-usageLimit" required />
+                </div>
+                <div class="form-group">
+                    <label>Trạng thái:</label>
+                    <select name="status" id="edit-status">
+                        <option value="active">Kích hoạt</option>
+                        <option value="inactive">Ngừng</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Cập nhật</button>
+                    <button type="button" onclick="$('#editModal').hide()">Hủy</button>
+                </div>
+            </form>
+        </div>
+
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -294,23 +363,87 @@
             });
         });
 
-        // Hàm load lại danh sách voucher bằng ajax GET
-        function loadVoucherList() {
-            $.ajax({
-                url: 'AddVoucherController',
-                method: 'GET',
-                success: function(html) {
-                    var newTbody = $(html).find('#voucher-table tbody').html();
-                    $('#voucher-table tbody').html(newTbody);
-                },
-                error: function() {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Không thể tải lại danh sách voucher',
+        // Xử lý sự kiện xóa voucher bằng Ajax
+        $(document).on('click', '.btn-delete', function () {
+            const id = $(this).data('id');
+
+            Swal.fire({
+                title: 'Bạn chắc chắn muốn xóa?',
+                text: "Hành động này không thể hoàn tác!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: 'DeleteVoucherController',
+                        method: 'POST',
+                        data: { id: id },
+                        success: function () {
+                            loadVoucherList();
+                            Swal.fire('Đã xóa!', 'Voucher đã được xóa.', 'success');
+                        },
+                        error: function (xhr) {
+                            Swal.fire('Lỗi!', xhr.responseText, 'error');
+                        }
                     });
                 }
             });
-        }
+        });
+
+    });
+
+    // Hàm load lại danh sách voucher bằng ajax GET
+    function loadVoucherList() {
+        $.ajax({
+            url: 'AddVoucherController',
+            method: 'GET',
+            success: function(html) {
+                var newTbody = $(html).find('#voucher-table tbody').html();
+                $('#voucher-table tbody').html(newTbody);
+            },
+            error: function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Không thể tải lại danh sách voucher',
+                });
+            }
+        });
+    }
+
+    window.editVoucher = function(id, code, discountType, discountValue, startDate, endDate, minOrderValue, usageLimit, status) {
+        $('#edit-id').val(id);
+        $('#edit-code').val(code);
+        $('#edit-discountType').val(discountType);
+        $('#edit-discountValue').val(discountValue);
+        $('#edit-startDate').val(startDate);
+        $('#edit-endDate').val(endDate);
+        $('#edit-minOrderValue').val(minOrderValue);
+        $('#edit-usageLimit').val(usageLimit);
+        $('#edit-status').val(status);
+        $('#editModal').show();
+    };
+
+    $('#edit-form').submit(function(e) {
+        e.preventDefault();
+        var formData = $(this).serialize();
+
+        $.ajax({
+            url: 'EditVoucherController',
+            method: 'POST',
+            data: formData,
+            success: function() {
+                $('#editModal').hide();
+                loadVoucherList();
+                Swal.fire('Thành công', 'Đã cập nhật voucher!', 'success');
+            },
+            error: function(xhr) {
+                Swal.fire('Lỗi', xhr.responseText, 'error');
+            }
+        });
     });
 
 </script>

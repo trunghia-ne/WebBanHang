@@ -60,4 +60,16 @@ public class VoucherDao {
                         .execute()
         );
 }
+
+// Update voucher
+    public void update(Voucher voucher) {
+        jdbi.useHandle(handle ->
+                handle.createUpdate("UPDATE vouchers SET code = :code, discount_type = :discountType, discount_value = :discountValue, " +
+                                "start_date = :startDate, end_date = :endDate, min_order_value = :minOrderValue, usage_limit = :usageLimit, status = :status " +
+                                "WHERE id = :id")
+                        .bindBean(voucher)
+                        .execute()
+        );
+    }
+
 }
