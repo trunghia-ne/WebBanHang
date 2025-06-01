@@ -2,50 +2,43 @@ package com.example.webbongden.controller.UserController;
 
 import com.example.webbongden.dao.AccountDao;
 import com.example.webbongden.dao.model.Account;
-import com.example.webbongden.dao.model.Order;
-import com.example.webbongden.dao.model.User;
+import com.example.webbongden.services.AccountServices;
 import com.example.webbongden.services.OrderSevices;
 import com.example.webbongden.services.UserSevices;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
-import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
-import com.google.api.client.auth.oauth2.AuthorizationCodeTokenRequest;
-import com.google.api.client.auth.oauth2.TokenResponse;
-import com.google.api.client.googleapis.auth.oauth2.*;
-import com.google.api.client.http.HttpTransport;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @WebServlet(name = "LoginGoogleServlet", value = "/login-google")
 public class LoginGoogleServlet extends HttpServlet {
     private static final String CLIENT_ID = "625158935097-jbd22lba0t05tm01j6m2bc4n801ncnfj.apps.googleusercontent.com";
     private static final String CLIENT_SECRET = "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";
     private static final String REDIRECT_URI = "http://localhost:8080/WebBongDen_war/login-google";
+
     private final AccountDao accountDAO = new AccountDao();
     private final UserSevices userSevices = new UserSevices();
     private final OrderSevices orderSevices = new OrderSevices();
+    private final AccountServices accountService = new AccountServices();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String code = request.getParameter("code");
         if (code == null || code.isEmpty()) {
             System.out.println("Lỗi: Không nhận được mã code từ Google!");
-            response.sendRedirect("login.jsp?error=google");
+            response.sendRedirect(request.getContextPath() + "/login?error=google_auth_failed");
             return;
         }
 
         try {
-            // Gửi mã code lên Google để đổi lấy Access Token và ID Token
             GoogleTokenResponse tokenResponse = new GoogleAuthorizationCodeTokenRequest(
                     new NetHttpTransport(),
                     JacksonFactory.getDefaultInstance(),
@@ -56,50 +49,50 @@ public class LoginGoogleServlet extends HttpServlet {
                     REDIRECT_URI
             ).execute();
 
-            // Lấy ID Token từ Access Token
             GoogleIdToken idToken = tokenResponse.parseIdToken();
             GoogleIdToken.Payload payload = idToken.getPayload();
 
-            // Lấy thông tin người dùng
-            String userId = payload.getSubject();  // ID Google User
             String email = payload.getEmail();
             String name = (String) payload.get("name");
             String pictureUrl = (String) payload.get("picture");
+            String usernameForNewAccount = email;
 
-            // Kiểm tra xem tài khoản đã tồn tại chưa
-            Optional<Account> existingAccount = accountDAO.findByEmail(email);
+            Optional<Account> existingAccountOpt = accountDAO.findByEmail(email);
             Account account;
 
-            if (existingAccount.isPresent()) {
-                account = existingAccount.get();
+            if (existingAccountOpt.isPresent()) {
+                account = existingAccountOpt.get();
             } else {
-                account = new Account(email, name, pictureUrl, userId, userId);
+                account = new Account(email, name, pictureUrl, usernameForNewAccount, "G00gl3P@sswOrd");
+
                 if (!accountDAO.addAccountUserFB(account)) {
-                    request.setAttribute("errorMessage", "Lỗi khi tạo tài khoản. Vui lòng thử lại.");
+                    request.setAttribute("errorMessage", "Lỗi khi tạo tài khoản Google. Vui lòng thử lại.");
                     request.getRequestDispatcher("/user/login.jsp").forward(request, response);
                     return;
                 }
+                account.setRoleId(1);
+                account.setRoleName("customer");
             }
 
-
-            User user = userSevices.getBasicInfoByUsername(userId);
-//            List<Order> orders = orderSevices.getOrdersByUsername(userId);
-            // Lưu thông tin vào session
             HttpSession session = request.getSession();
-            session.setAttribute("account", account);
-            session.setAttribute("username", account.getUsername());
-            session.setAttribute("role", account.getRole());
-            session.setAttribute("avatar", pictureUrl);
-            session.setAttribute("userInfo", user);
 
-            // Điều hướng dựa theo role
-            if ("admin".equals(account.getRole())) {
-                response.sendRedirect("admin?page=dashboard-management");
+            session.setAttribute("account", account);
+
+            Set<String> permissions = accountService.getPermissionsByRoleId(account.getRoleId());
+            session.setAttribute("userPermissions", permissions);
+            session.setAttribute("username", account.getUsername());
+            if (pictureUrl != null && !pictureUrl.isEmpty()) {
+                session.setAttribute("avatar", pictureUrl);
+            }
+            if ("admin".equalsIgnoreCase(account.getRoleName())) {
+                response.sendRedirect(request.getContextPath() + "/admin?page=dashboard-management");
             } else {
-                response.sendRedirect("home");
+                response.sendRedirect(request.getContextPath() + "/home");
             }
         } catch (Exception e) {
-            throw new ServletException("Lỗi khi xác thực Google Login", e);
+            System.err.println("Lỗi nghiêm trọng khi xác thực Google Login: " + e.getMessage());
+            e.printStackTrace();
+            response.sendRedirect(request.getContextPath() + "/login?error=google_processing_failed");
         }
     }
 }

@@ -20,9 +20,8 @@ public class ActionLoggingFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         String uri = req.getRequestURI().toLowerCase();
 
-        // ✅ Đọc session dữ liệu TRƯỚC khi xử lý
         int accountId = 0;
-        String role = "guest";
+        String roleName = "guest"; // Đổi tên biến cho rõ nghĩa
         String action = detectAction(uri);
 
         try {
@@ -31,28 +30,24 @@ public class ActionLoggingFilter implements Filter {
                 Object accObj = session.getAttribute("account");
                 if (accObj instanceof Account acc) {
                     accountId = acc.getId();
-                }
-
-                Object roleAttr = session.getAttribute("role");
-                if (roleAttr != null) {
-                    role = roleAttr.toString();
+                    // UPDATED: Lấy roleName từ đối tượng Account thay vì từ session
+                    roleName = acc.getRoleName();
                 }
             }
         } catch (IllegalStateException e) {
             System.out.println("⚠ Session đã bị invalidate, bỏ qua lấy account/role.");
         }
 
-        // ✅ Cho request xử lý
         chain.doFilter(request, response);
 
-        // ✅ Ghi log nếu cần
         Object status = req.getAttribute("actionStatus");
         boolean isSuccess = "success".equals(status);
 
         if (isSuccess && action != null && accountId > 0) {
             Log logEntry = new Log();
             logEntry.setAccountId(accountId);
-            logEntry.setLevel(role);
+            // UPDATED: Ghi log bằng roleName đã lấy ở trên
+            logEntry.setLevel(roleName);
             logEntry.setAction(action);
             logEntry.setResource("USER_ACTION");
 
@@ -72,6 +67,7 @@ public class ActionLoggingFilter implements Filter {
         }
     }
 
+    // Các phương thức khác giữ nguyên
     private String detectAction(String uri) {
         if (uri == null) return null;
         if (uri.contains("register")) return "USER_REGISTER";
@@ -83,7 +79,6 @@ public class ActionLoggingFilter implements Filter {
         if (uri.contains("paycartcontroller")) return "PAY_CART_CONTROLLER";
         return null;
     }
-
     public void init(FilterConfig config) {}
     public void destroy() {}
 }
