@@ -10,11 +10,15 @@ public class Account {
     private String username; // Tên đăng nhập
     private String password; // Mật khẩu
     private Date createdAt; // Ngày tạo tài khoản
-    private String role; // Vai trò của tài khoản
     private String rePassword;
     private String avatar;
 
-    // Constructor không tham số
+    private String role;
+
+    private int roleId;
+    private String roleName;
+    // -------------------------
+
     public Account() {
     }
 
@@ -26,12 +30,11 @@ public class Account {
         this.password = password;
     }
 
-    // Constructor đầy đủ tham số
     public Account(
             int id,
             int customerId,
-            String cusName, // Tên khách hàng
-            String email,   // Email
+            String cusName,
+            String email,
             String username,
             String password,
             Date createdAt,
@@ -44,9 +47,8 @@ public class Account {
         this.username = username;
         this.password = password;
         this.createdAt = createdAt;
-        this.role = role;
+        this.role = role; // Giữ lại để không lỗi code cũ
     }
-
 
     public Account(int id, String username, String email, java.util.Date createdAt, String role) {
         this.id = id;
@@ -72,6 +74,23 @@ public class Account {
         this.customerId = customerId;
     }
 
+    public int getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+    // ----------------------------
+
     public String getAvatar() {
         return avatar;
     }
@@ -79,6 +98,7 @@ public class Account {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
+
     public String getRePassword() {
         return rePassword;
     }
@@ -87,7 +107,6 @@ public class Account {
         this.rePassword = rePassword;
     }
 
-    // Getter và Setter cho từng thuộc tính
     public int getId() {
         return id;
     }
@@ -152,7 +171,6 @@ public class Account {
         this.role = role;
     }
 
-    // Phương thức toString để hiển thị thông tin tài khoản
     @Override
     public String toString() {
         return "Account{" +
@@ -163,8 +181,8 @@ public class Account {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", createdAt=" + createdAt +
-                ", role='" + role + '\'' +
+                ", roleId=" + roleId +      // Cập nhật toString
+                ", roleName='" + roleName + '\'' + // Cập nhật toString
                 '}';
     }
 }
-
