@@ -101,47 +101,14 @@
         </div>
     </div>
 </footer>
-<div class="chat-box-button" id="chatBoxButton" title="Chat với chúng tôi">
-    <img src="${pageContext.request.contextPath}/assets/img/imagesWeb/chat.png" alt="Chat" />
-</div>
-<!-- Chat container -->
-<div class="chat-container" id="chatContainer" style="display: none;">
-    <div class="chat-header">
-        Hỗ trợ khách hàng
-        <button id="closeChatBtn">&times;</button>
-    </div>
-    <div id="botui-app">
-        <bot-ui></bot-ui>
-    </div>
-</div>
-<script>
-    let botui; // Khai báo ngoài để tránh tạo lại nhiều lần
+<!-- Dialogflow Messenger Chatbot -->
+<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+<df-messenger
+        chat-title="Hỗ trợ khách hàng"
+        agent-id="50c8c31a-5c4f-4b9e-9c0e-f9e330ffca4e"
+        language-code="vi"
+></df-messenger>
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const chatBtn = document.getElementById("chatBoxButton");
-        const chatContainer = document.getElementById("chatContainer");
-        const closeBtn = document.getElementById("closeChatBtn");
-        let chatOpened = false;
-        let botui;
 
-        chatBtn.addEventListener("click", function () {
-            chatContainer.style.display = "block"; // ← sửa dòng này
-            if (!chatOpened) {
-                botui = new BotUI('botui-app'); // Khởi tạo lần đầu
-                botui.message.add({ content: 'Xin chào! Bạn cần hỗ trợ gì?' });
-                botui.action.text({
-                    action: { placeholder: 'Nhập câu hỏi...' }
-                }).then(function (res) {
-                    botui.message.add({ content: `Bạn vừa hỏi: ${res.value}` });
-                });
-                chatOpened = true;
-            }
-        });
-
-        closeBtn.addEventListener("click", () => {
-            chatContainer.style.display = "none";
-        });
-    });
-</script>
 
 
