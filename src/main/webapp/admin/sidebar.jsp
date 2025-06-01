@@ -54,6 +54,12 @@
                 <p>Log</p>
             </div>
         </a>
+        <a href="admin?page=voucher" class="nav-link" data-index="voucher">
+            <div class="nav-item">
+                <i class="fa-solid fa-ticket"></i>
+                <p>Voucher</p>
+            </div>
+        </a>
     </div>
 
     <a href="/WebBongDen_war/LogoutController" id="login-header-btn" style="display: block">
