@@ -326,6 +326,106 @@ $(document).on("click", ".delete-promotion", function () {
     });
 });
 
+// Hàm formatDate đã có (chuyển timestamp thành yyyy-MM-dd)
+function formatDate(timestamp) {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+// Hàm formatDate nếu bạn cần
+function formatDate(timestamp) {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = (date.getMonth()+1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+$(document).ready(function () {
+    // Click vào nút chỉnh sửa, load dữ liệu rồi hiện modal
+    $(document).on("click", ".edit-promotion", function () {
+        const promotionId = $(this).data("id");
+
+        $.ajax({
+            url: "/WebBongDen_war/get-promotion-detail",
+            type: "GET",
+            data: { promotionId: promotionId },
+            success: function (data) {
+                $("#editId").val(data.id);
+                $("#editName").val(data.promotionName);
+                $("#editStart").val(formatDate(data.startDay));
+                $("#editEnd").val(formatDate(data.endDay));
+                $("#editDiscount").val(data.discountPercent);
+                $("#editType").val(data.promotionType);
+
+                $("#editModal").css("display", "flex");
+            },
+            error: function () {
+                Swal.fire("Lỗi", "Không tải được thông tin chương trình.", "error");
+            }
+        });
+    });
+
+    // Xử lý submit form update promotion, đăng ký 1 lần duy nhất
+    $("#editForm").on("submit", function (e) {
+        e.preventDefault();
+
+        const updatedPromotion = {
+            id: $("#editId").val(),
+            promotionName: $("#editName").val(),
+            startDay: $("#editStart").val(),
+            endDay: $("#editEnd").val(),
+            discountPercent: parseFloat($("#editDiscount").val()),
+            promotionType: $("#editType").val()
+        };
+
+        $.ajax({
+            url: "/WebBongDen_war/update-promotion",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(updatedPromotion),
+            success: function (response) {
+                if (response.success) {
+                    // Ẩn modal NGAY TRƯỚC khi hiện Swal
+                    $("#editModal").hide();
+
+                    Swal.fire({
+                        icon: "success",
+                        title: "Thành công",
+                        text: response.message || "Cập nhật chương trình thành công!",
+                    }).then(() => {
+                        if ($.fn.dataTable.isDataTable("#promotion-table")) {
+                            $("#promotion-table").DataTable().ajax.reload(null, false);
+                        }
+                    });
+                } else {
+                    Swal.fire("Lỗi", response.message || "Cập nhật thất bại!", "error");
+                }
+            },
+            error: function () {
+                Swal.fire("Lỗi", "Lỗi hệ thống, vui lòng thử lại sau!", "error");
+            }
+        });
+    });
+
+    // Đóng modal khi click nút X
+    $("#editModalClose").on("click", function () {
+        $("#editModal").css("display", "none");
+    });
+
+    // Đóng modal khi click ra ngoài vùng modal-content (overlay)
+    $(window).on("click", function (event) {
+        if ($(event.target).is("#editModal")) {
+            $("#editModal").css("display", "none");
+        }
+    });
+});
+
+
+
 
 
 

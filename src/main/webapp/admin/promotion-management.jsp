@@ -92,6 +92,98 @@
         text-align: left; /* Canh giữa nội dung */
         vertical-align: middle;
     }
+
+    .modal-promotion {
+        display: none; /* Ẩn mặc định */
+        position: fixed;
+        z-index: 2000; /* cao hơn các thành phần khác */
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: rgba(0, 0, 0, 0.6); /* nền overlay mờ đen */
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 25px 30px 30px 30px;
+        width: 400px;
+        max-width: 90%;
+        box-shadow: 0 0 20px rgba(0,0,0,0.25);
+        position: relative;
+    }
+
+    .modal-content h3 {
+        margin-top: 0;
+        margin-bottom: 25px;
+        font-weight: 700;
+        font-size: 22px;
+        color: #333;
+        text-align: center;
+    }
+
+    .modal-content label {
+        font-weight: 600;
+        font-size: 14px;
+        color: #444;
+        display: block;
+        margin-bottom: 2px;
+    }
+
+    .modal-content input[type="text"],
+    .modal-content input[type="date"],
+    .modal-content input[type="number"],
+    .modal-content select {
+        width: 100%;
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        box-sizing: border-box;
+        margin-bottom: 5px;
+        transition: border-color 0.3s;
+    }
+
+    .modal-content input[type="text"]:focus,
+    .modal-content input[type="date"]:focus,
+    .modal-content input[type="number"]:focus,
+    .modal-content select:focus {
+        outline: none;
+        border-color: #007bff; /* màu xanh sáng */
+    }
+
+    .modal-content button[type="submit"] {
+        width: 100%;
+        padding: 10px 0;
+        background-color: #28a745; /* màu xanh lá */
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: 700;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .modal-content button[type="submit"]:hover {
+        background-color: #218838;
+    }
+
+    /* Nút đóng */
+    .close-btn {
+        position: absolute;
+        top: 14px;
+        right: 18px;
+        font-size: 26px;
+        font-weight: 900;
+        color: #666;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+
+    .close-btn:hover {
+        color: #333;
+    }
 </style>
 <body>
 <div class="wrapper">
@@ -228,6 +320,32 @@
                 </div>
             </div>
         </div>
+    </div>
+
+</div>
+<!-- Modal -->
+<div id="editModal" class="modal-promotion">
+    <div class="modal-content">
+        <span class="close-btn" id="editModalClose">&times;</span>
+        <h3>Chỉnh sửa chương trình khuyến mãi</h3>
+        <form id="editForm">
+            <input type="hidden" id="editId" />
+            <label for="editName">Tên chương trình:</label><br/>
+            <input type="text" id="editName" required /><br/><br/>
+            <label for="editStart">Ngày bắt đầu:</label><br/>
+            <input type="date" id="editStart" required /><br/><br/>
+            <label for="editEnd">Ngày kết thúc:</label><br/>
+            <input type="date" id="editEnd" required /><br/><br/>
+            <label for="editDiscount">Mức giảm (%)</label><br/>
+            <input type="number" id="editDiscount" min="0" max="100" required /><br/><br/>
+            <label for="editType">Loại chương trình:</label><br/>
+            <select id="editType" required>
+                <option value="discount">Giảm giá</option>
+                <option value="gift">Quà tặng</option>
+            </select><br/><br/>
+
+            <button type="submit">Lưu</button>
+        </form>
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

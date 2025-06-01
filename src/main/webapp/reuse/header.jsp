@@ -80,7 +80,7 @@
                     <div class="user-info-dropdown">
                         <div class="dropdown-header">
                             <img src="./img/icon-dropdownuser.png" alt="" />
-                            <p>Xin chào <span><%= username != null ? username : "Khách" %>.</span></p>
+                            <p>Xin chào <span>${userInfo.customerName != null ? userInfo.customerName : "Khách"}.</span></p>
                         </div>
                         <div class="dropdown-content">
                             <div class="dropdown-item">

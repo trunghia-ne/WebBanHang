@@ -206,4 +206,37 @@ public class PromotionDao {
                         .execute() > 0
         );
     }
+
+    public Promotion getPromotionDetailById(int promotionId) {
+        String sql = "SELECT * FROM promotions WHERE id = :promotionId";
+
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("promotionId", promotionId)
+                        .mapToBean(Promotion.class)
+                        .findOne()
+                        .orElse(null)
+        );
+    }
+
+    public boolean updatePromotion(Promotion promotion) {
+        String sql = "UPDATE promotions SET " +
+                "promotion_name = :name, " +
+                "start_day = :startDate, " +
+                "end_day = :endDate, " +
+                "discount_percent = :discount, " +
+                "promotion_type = :type " +
+                "WHERE id = :id";
+
+        return jdbi.withHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("name", promotion.getPromotionName())
+                        .bind("startDate", promotion.getStartDay())
+                        .bind("endDate", promotion.getEndDay())
+                        .bind("discount", promotion.getDiscountPercent())
+                        .bind("type", promotion.getPromotionType())
+                        .bind("id", promotion.getId())
+                        .execute() > 0
+        );
+    }
 }
