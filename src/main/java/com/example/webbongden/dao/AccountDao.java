@@ -2,8 +2,9 @@ package com.example.webbongden.dao;
 
 import com.example.webbongden.dao.db.JDBIConnect;
 import com.example.webbongden.dao.model.Account;
+import com.example.webbongden.dao.model.Role; // NEW: Import lớp Role
 import org.jdbi.v3.core.Jdbi;
-import org.mindrot.jbcrypt.BCrypt;
+// import org.mindrot.jbcrypt.BCrypt; // BCrypt không được dùng trực tiếp trong DAO này, có thể bỏ nếu không dùng ở đâu khác
 
 import java.util.HashSet;
 import java.util.List;
@@ -18,7 +19,9 @@ public class AccountDao {
         this.jdbi = JDBIConnect.get();
     }
 
+    // ================== PHƯƠNG THỨC LẤY QUYỀN (Đã có) ==================
     public Set<String> findPermissionsByRoleId(int roleId) {
+        // ... (code của bạn giữ nguyên) ...
         Set<String> permissions = new HashSet<>();
         String sql = "SELECT p.perm_name " +
                 "FROM permissions p " +
@@ -32,7 +35,26 @@ public class AccountDao {
                         .collect(Collectors.toSet())
         );
     }
+
+    // ================== NEW: PHƯƠNG THỨC LẤY TẤT CẢ VAI TRÒ ==================
+    /**
+     * Lấy danh sách tất cả các vai trò từ database.
+     * @return List các đối tượng Role.
+     */
+    public List<Role> getAllRoles() {
+        String sql = "SELECT id, role_name FROM roles ORDER BY role_name ASC"; // Thêm ORDER BY cho dễ nhìn
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .map((rs, ctx) -> new Role(rs.getInt("id"), rs.getString("role_name")))
+                        .list()
+        );
+    }
+    // ======================================================================
+
+
+    // UPDATED: Lấy tất cả tài khoản (Đã có)
     public List<Account> getAllAccounts() {
+        // ... (code của bạn giữ nguyên) ...
         String sql = "SELECT a.id, a.username, a.email, a.created_at, a.role_id, r.role_name " +
                 "FROM accounts a " +
                 "JOIN roles r ON a.role_id = r.id";
@@ -45,7 +67,6 @@ public class AccountDao {
                             acc.setUsername(rs.getString("username"));
                             acc.setEmail(rs.getString("email"));
                             acc.setCreatedAt(rs.getDate("created_at"));
-                            // UPDATED: Set giá trị cho các trường mới
                             acc.setRoleId(rs.getInt("role_id"));
                             acc.setRoleName(rs.getString("role_name"));
                             return acc;
@@ -54,7 +75,9 @@ public class AccountDao {
         );
     }
 
+    // UPDATED: Lấy ds account dựa vào username (Đã có)
     public List<Account> getAccountByUserName(String username) {
+        // ... (code của bạn giữ nguyên) ...
         String sql = "SELECT a.id, a.username, a.email, a.role_id, r.role_name " +
                 "FROM accounts a " +
                 "JOIN roles r ON a.role_id = r.id " +
@@ -68,7 +91,6 @@ public class AccountDao {
                             acc.setId(rs.getInt("id"));
                             acc.setUsername(rs.getString("username"));
                             acc.setEmail(rs.getString("email"));
-                            // UPDATED: Set giá trị cho các trường mới
                             acc.setRoleId(rs.getInt("role_id"));
                             acc.setRoleName(rs.getString("role_name"));
                             return acc;
@@ -77,7 +99,9 @@ public class AccountDao {
         );
     }
 
+    // UPDATED: Phương thức xác thực khi đăng nhập (Đã có)
     public Account authenticate(String username) {
+        // ... (code của bạn giữ nguyên) ...
         String sql = "SELECT a.*, r.role_name " +
                 "FROM accounts a " +
                 "JOIN roles r ON a.role_id = r.id " +
@@ -96,7 +120,6 @@ public class AccountDao {
                             acc.setPassword(rs.getString("password"));
                             acc.setCreatedAt(rs.getDate("created_at"));
                             acc.setAvatar(rs.getString("avatar"));
-                            // UPDATED: Set giá trị cho các trường mới
                             acc.setRoleId(rs.getInt("role_id"));
                             acc.setRoleName(rs.getString("role_name"));
                             return acc;
@@ -106,7 +129,9 @@ public class AccountDao {
         );
     }
 
+    // UPDATED: Lấy account theo id (Đã có)
     public Account getAccountById(int accountId) {
+        // ... (code của bạn giữ nguyên) ...
         String sql = "SELECT a.*, r.role_name " +
                 "FROM accounts a " +
                 "JOIN roles r ON a.role_id = r.id " +
@@ -125,7 +150,6 @@ public class AccountDao {
                             acc.setPassword(rs.getString("password"));
                             acc.setCreatedAt(rs.getDate("created_at"));
                             acc.setAvatar(rs.getString("avatar"));
-                            // UPDATED: Set giá trị cho các trường mới
                             acc.setRoleId(rs.getInt("role_id"));
                             acc.setRoleName(rs.getString("role_name"));
                             return acc;
@@ -135,10 +159,10 @@ public class AccountDao {
         );
     }
 
-    // UPDATED: Thêm tài khoản người dùng đăng ký thường
+    // UPDATED: Thêm tài khoản người dùng đăng ký thường (Đã có)
     public boolean addAccountUser(Account account) {
+        // ... (code của bạn giữ nguyên) ...
         return jdbi.inTransaction(handle -> {
-            // ... (Phần kiểm tra username, email, customer không đổi)
             String checkUsernameSql = "SELECT COUNT(*) FROM accounts WHERE username = :username";
             Integer count = handle.createQuery(checkUsernameSql)
                     .bind("username", account.getUsername())
@@ -169,7 +193,6 @@ public class AccountDao {
                         .one();
             }
 
-            // UPDATED: Thay 'role' bằng 'role_id'
             String sql = "INSERT INTO accounts (username, email, password, role_id, customer_id, cus_name, created_at) " +
                     "VALUES (:username, :email, :password, :role_id, :customerId, :cusName, NOW())";
 
@@ -177,7 +200,6 @@ public class AccountDao {
                     .bind("username", account.getUsername())
                     .bind("email", account.getEmail())
                     .bind("password", account.getPassword())
-                    // UPDATED: Gán role_id = 1 cho 'customer' theo yêu cầu
                     .bind("role_id", 1)
                     .bind("customerId", customerId)
                     .bind("cusName", account.getCusName())
@@ -187,10 +209,10 @@ public class AccountDao {
         });
     }
 
-    // UPDATED: Thêm tài khoản từ Facebook
+    // UPDATED: Thêm tài khoản từ Facebook (Đã có)
     public boolean addAccountUserFB(Account account) {
+        // ... (code của bạn giữ nguyên) ...
         return jdbi.inTransaction(handle -> {
-            // ... (Phần thêm customer không đổi)
             String addCustomerSql = "INSERT INTO customers (cus_name) VALUES (:cusName)";
             Integer customerId = handle.createUpdate(addCustomerSql)
                     .bind("cusName", account.getCusName())
@@ -198,7 +220,6 @@ public class AccountDao {
                     .mapTo(Integer.class)
                     .one();
 
-            // UPDATED: Thay 'role' bằng 'role_id'
             String sql = "INSERT INTO accounts (email, cus_name, username, avatar, password, role_id, customer_id, created_at) " +
                     "VALUES (:email, :cusName, :username, :avatar,:password, :role_id, :customerId, NOW())";
 
@@ -208,22 +229,21 @@ public class AccountDao {
                     .bind("username", account.getUsername())
                     .bind("avatar", account.getAvatar())
                     .bind("password", account.getPassword())
-                    // UPDATED: Gán role_id = 1 cho 'customer' theo yêu cầu
                     .bind("role_id", 1)
                     .bind("customerId", customerId)
                     .execute() > 0;
         });
     }
 
-    // UPDATED: Cập nhật tài khoản
+    // UPDATED: Cập nhật tài khoản (Đã có)
     public boolean updateAccount(Account account) {
-        // UPDATED: Thay 'role' bằng 'role_id'
+        // ... (code của bạn giữ nguyên) ...
         String sql = "UPDATE accounts " +
                 "SET cus_name = :cusName, " +
                 "username = :username, " +
                 "email = :email, " +
                 "password = :password, " +
-                "role_id = :roleId " + // Sửa thành role_id
+                "role_id = :roleId " +
                 "WHERE id = :id";
 
         return jdbi.withHandle(handle ->
@@ -232,17 +252,70 @@ public class AccountDao {
                         .bind("username", account.getUsername())
                         .bind("email", account.getEmail())
                         .bind("password", account.getPassword())
-                        .bind("roleId", account.getRoleId()) // Sửa thành roleId
+                        .bind("roleId", account.getRoleId())
                         .bind("id", account.getId())
                         .execute() > 0
         );
     }
 
-    // CÁC PHƯƠNG THỨC KHÁC KHÔNG THAY ĐỔI NHIỀU
-    // (addAccount, deleteAccountById, checkEmailExists, updatePassword,...)
-    // Tôi sẽ để nguyên chúng nếu không liên quan trực tiếp đến cột 'role'
-    // Hoặc bạn có thể tự cập nhật chúng theo logic tương tự nếu cần.
+    // Phương thức addAccount gốc (Đã có - Placeholder)
+    // Nếu bạn dùng phương thức này để admin thêm tài khoản và chọn vai trò
+    // bạn cần đảm bảo đối tượng 'account' truyền vào đã có account.setRoleId() đúng
+    // trước khi gọi phương thức này.
+    public boolean addAccount(Account account) {
+        return jdbi.inTransaction(handle -> {
+            // Kiểm tra username, email tồn tại (tương tự addAccountUser)
+            String checkUsernameSql = "SELECT COUNT(*) FROM accounts WHERE username = :username";
+            Integer count = handle.createQuery(checkUsernameSql)
+                    .bind("username", account.getUsername())
+                    .mapTo(Integer.class)
+                    .one();
+            if (count > 0) return false; // Username đã tồn tại
 
+            String checkEmailSql = "SELECT COUNT(*) FROM accounts WHERE email = :email";
+            Integer emailCount = handle.createQuery(checkEmailSql)
+                    .bind("email", account.getEmail())
+                    .mapTo(Integer.class)
+                    .one();
+            if (emailCount > 0) return false; // Email đã tồn tại
+
+
+            // Xử lý customer_id (tương tự addAccountUser)
+            String findCustomerSql = "SELECT id FROM customers WHERE cus_name = :cusName";
+            Integer customerId = handle.createQuery(findCustomerSql)
+                    .bind("cusName", account.getCusName()) // Cần cusName từ account object
+                    .mapTo(Integer.class)
+                    .findOne()
+                    .orElse(null);
+
+            if (customerId == null && account.getCusName() != null && !account.getCusName().isEmpty()) {
+                String addCustomerSql = "INSERT INTO customers (cus_name) VALUES (:cusName)";
+                customerId = handle.createUpdate(addCustomerSql)
+                        .bind("cusName", account.getCusName())
+                        .executeAndReturnGeneratedKeys("id")
+                        .mapTo(Integer.class)
+                        .one();
+            }
+
+
+            // Câu lệnh INSERT
+            String sql = "INSERT INTO accounts (username, email, password, role_id, customer_id, cus_name, created_at) " +
+                    "VALUES (:username, :email, :password, :roleId, :customerId, :cusName, NOW())";
+
+            int rowsAffected = handle.createUpdate(sql)
+                    .bind("username", account.getUsername())
+                    .bind("email", account.getEmail())
+                    .bind("password", account.getPassword()) // Giả sử mật khẩu đã được hash ở Service
+                    .bind("roleId", account.getRoleId())     // Lấy roleId từ đối tượng Account
+                    .bind("customerId", customerId)
+                    .bind("cusName", account.getCusName())
+                    .execute();
+
+            return rowsAffected > 0;
+        });
+    }
+
+    // Các phương thức khác giữ nguyên
     public boolean deleteAccountById(int accountId) {
         String sql = "DELETE FROM accounts WHERE id = :accountId";
         return jdbi.withHandle(handle ->
@@ -273,7 +346,6 @@ public class AccountDao {
     }
 
     public Optional<Account> findByEmail(String email) {
-        // Tương tự hàm authenticate, cần cập nhật để JOIN và map đầy đủ
         String sql = "SELECT a.*, r.role_name " +
                 "FROM accounts a " +
                 "JOIN roles r ON a.role_id = r.id " +
@@ -284,7 +356,6 @@ public class AccountDao {
                         .bind("email", email)
                         .map((rs, ctx) -> {
                             Account acc = new Account();
-                            // ... map tất cả các trường như trong hàm authenticate ...
                             acc.setId(rs.getInt("id"));
                             acc.setCustomerId(rs.getInt("customer_id"));
                             acc.setCusName(rs.getString("cus_name"));
@@ -309,15 +380,6 @@ public class AccountDao {
         );
     }
 
-    // Phương thức addAccount gốc nếu bạn vẫn cần (cần sửa để dùng role_id)
-    public boolean addAccount(Account account) {
-        //... Tương tự addAccountUser, nhưng thay vì hardcode role_id,
-        // bạn sẽ lấy role_id từ đối tượng account: .bind("role_id", account.getRoleId())
-        //...
-        return true; // Placeholder
-    }
-
-    // Các phương thức không ảnh hưởng có thể giữ nguyên
     public String getCustomerNameByAccountId(int accountId) {
         String sql = "SELECT cus_name FROM accounts WHERE id = :accountId";
         return jdbi.withHandle(handle ->

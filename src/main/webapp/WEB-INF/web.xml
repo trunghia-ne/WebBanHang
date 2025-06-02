@@ -3,13 +3,58 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
-    <!-- Cấu hình Session Timeout (đơn vị: phút) -->
+
     <session-config>
-        <session-timeout>30</session-timeout> <!-- Thời gian session là 30 phút -->
+        <session-timeout>30</session-timeout>
     </session-config>
+
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
-</web-app>
+    <filter>
+        <filter-name>CharsetFilter</filter-name>
+        <filter-class>com.example.webbongden.filter.CharsetFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CharsetFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
+    <filter>
+        <filter-name>CategoryFilter</filter-name>
+        <filter-class>com.example.webbongden.filter.CategoryFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CategoryFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>RoleFilter</filter-name>
+        <filter-class>com.example.webbongden.filter.RoleFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>RoleFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>ActionLoggingFilter</filter-name>
+        <filter-class>com.example.webbongden.filter.ActionLoggingFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ActionLoggingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>AdminActionLoggingFilter</filter-name>
+        <filter-class>com.example.webbongden.filter.AdminActionLoggingFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AdminActionLoggingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+</web-app>

@@ -13,15 +13,19 @@ public class Account {
     private String rePassword;
     private String avatar;
 
-    private String role;
+    // Các trường liên quan đến vai trò và phân quyền mới
+    private String role;     // Giữ lại để tương thích ngược (sẽ được Jackson map từ JSON nếu client gửi "role")
+    private int roleId;      // ID của vai trò (lấy từ DB)
+    private String roleName;  // Tên của vai trò (lấy từ DB)
 
-    private int roleId;
-    private String roleName;
-    // -------------------------
+    // NEW: Thêm trường permissionsVersion
+    private int permissionsVersion;
 
+    // Constructor không tham số
     public Account() {
     }
 
+    // Các constructor hiện tại của bạn, giữ nguyên để không làm lỗi code cũ
     public Account(String email, String cusName, String avatar, String username, String password) {
         this.email = email;
         this.cusName = cusName;
@@ -38,7 +42,7 @@ public class Account {
             String username,
             String password,
             Date createdAt,
-            String role
+            String role // Vẫn nhận role String từ các nguồn cũ nếu có
     ) {
         this.id = id;
         this.customerId = customerId;
@@ -47,7 +51,7 @@ public class Account {
         this.username = username;
         this.password = password;
         this.createdAt = createdAt;
-        this.role = role; // Giữ lại để không lỗi code cũ
+        this.role = role;
     }
 
     public Account(int id, String username, String email, java.util.Date createdAt, String role) {
@@ -74,6 +78,7 @@ public class Account {
         this.customerId = customerId;
     }
 
+    // --- GETTER & SETTER CHO CÁC TRƯỜNG MỚI VÀ CẬP NHẬT ---
     public int getRoleId() {
         return roleId;
     }
@@ -89,8 +94,18 @@ public class Account {
     public void setRoleName(String roleName) {
         this.roleName = roleName;
     }
-    // ----------------------------
 
+    // NEW: Getter và Setter cho permissionsVersion
+    public int getPermissionsVersion() {
+        return permissionsVersion;
+    }
+
+    public void setPermissionsVersion(int permissionsVersion) {
+        this.permissionsVersion = permissionsVersion;
+    }
+    // -----------------------------------------------------
+
+    // Các Getter & Setter cũ vẫn được giữ nguyên
     public String getAvatar() {
         return avatar;
     }
@@ -163,6 +178,8 @@ public class Account {
         this.createdAt = createdAt;
     }
 
+    // Getter/Setter cho trường 'role' (String) vẫn giữ lại để Jackson map JSON
+    // và để tương thích nếu có code cũ đang dùng
     public String getRole() {
         return role;
     }
@@ -171,6 +188,7 @@ public class Account {
         this.role = role;
     }
 
+    // Cập nhật toString() để bao gồm cả permissionsVersion
     @Override
     public String toString() {
         return "Account{" +
@@ -179,10 +197,11 @@ public class Account {
                 ", email='" + email + '\'' +
                 ", cusName='" + cusName + '\'' +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                // ", password='" + password + '\'' + // Thường không log password
                 ", createdAt=" + createdAt +
-                ", roleId=" + roleId +      // Cập nhật toString
-                ", roleName='" + roleName + '\'' + // Cập nhật toString
+                ", roleId=" + roleId +
+                ", roleName='" + roleName + '\'' +
+                ", permissionsVersion=" + permissionsVersion + // NEW
                 '}';
     }
 }

@@ -25,7 +25,7 @@ public class RoleFilter implements Filter {
             if (SecurityUtils.hasPermission(req, "access_admin_dashboard")) {
                 chain.doFilter(request, response);
             } else {
-                res.sendRedirect(contextPath + "/access-denied.jsp");
+                res.sendRedirect(contextPath + "/page-not-found");
             }
             return;
         }
