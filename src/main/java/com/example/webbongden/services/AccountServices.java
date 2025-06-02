@@ -7,6 +7,8 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+
 public class AccountServices {
     public final AccountDao accountDao;
 
@@ -50,10 +52,12 @@ public class AccountServices {
     public boolean updateAccount(Account account) {
         return accountDao.updateAccount(account);
     }
+
     // Hàm hash mật khẩu (DÙNG CHUNG)
     public String hashPassword(String plainPassword) {
         return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
     }
+
     // Hàm kiểm tra mật khẩu (DÙNG CHUNG)
     public boolean checkPassword(String plainPassword, String hashedPassword) {
         return BCrypt.checkpw(plainPassword, hashedPassword);
@@ -63,11 +67,13 @@ public class AccountServices {
     public boolean checkEmailExists(String email) {
         return accountDao.checkEmailExists(email);
     }
+
     // Cập nhật mật khẩu tạm thời (Dùng cho chức năng "Quên mật khẩu")
     public boolean updatePassword(String email, String temporaryPassword) {
         String hashedPassword = BCrypt.hashpw(temporaryPassword, BCrypt.gensalt());
         return accountDao.updatePassword(email, hashedPassword);
     }
+
     // User (Dùng cho chức năng "Đổi mật khẩu" khi đã đăng nhập)
     public boolean changePassword(String username, String oldPassword, String newPassword) {
         Account account = accountDao.authenticate(username); // Hoặc getAccountByUserName và xử lý list
@@ -196,6 +202,7 @@ public class AccountServices {
     public static class RegistrationResult {
         private final boolean success;
         private final String message;
+
         public RegistrationResult(boolean success, String message) {
             this.success = success;
             this.message = message;
@@ -208,5 +215,9 @@ public class AccountServices {
         public String getMessage() {
             return message;
         }
+    }
+
+    public Set<String> getPermissionsByRoleId(int roleId) {
+        return accountDao.findPermissionsByRoleId(roleId);
     }
 }
