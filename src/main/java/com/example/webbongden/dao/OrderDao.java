@@ -333,6 +333,36 @@ public class OrderDao {
         );
     }
 
+    public List<Order> getListOrdersByUserId(int userId) {
+        String sql = "SELECT o.id AS orderId, s.cus_name AS customerName, " +
+                "o.created_at AS orderDate, " +
+                "s.shipping_fee AS shippingFee, " +
+                "o.total_price AS totalPrice, " +
+                "s.address AS shippingAddress, o.order_status AS status " +
+                "FROM orders o " +
+                "JOIN accounts a ON o.account_id = a.id " +
+                "JOIN customers c ON a.customer_id = c.id " +
+                "JOIN shipping s ON o.id = s.order_id " +
+                "WHERE o.account_id = :userId";  // Thêm điều kiện lọc theo userId
+
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("userId", userId)   // bind tham số userId
+                        .map((rs, ctx) -> new Order(
+                                rs.getInt("orderId"),
+                                rs.getString("customerName"),
+                                rs.getDate("orderDate"),
+                                rs.getDouble("totalPrice"),
+                                rs.getString("shippingAddress"),
+                                rs.getString("status"),
+                                rs.getDouble("shippingFee"),
+                                getOrderDetailsByOrderId(rs.getInt("orderId"))
+                        ))
+                        .list()
+        );
+    }
+
+
     public static void main(String[] args) {
         // Tạo một đối tượng UserDao (được giả định là chứa phương thức getOrdersByUsername)
         OrderDao userDao = new OrderDao();
