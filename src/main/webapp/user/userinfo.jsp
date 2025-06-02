@@ -26,6 +26,8 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/header-footer.css?v=2.1">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/user.css?v=2">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 <style>
     .info-btn button {
@@ -45,6 +47,65 @@
     }
     .customer-info img:hover {
         opacity: 0.8;
+    }
+    /* Style tổng thể cho bảng ordersTable */
+    #ordersTable {
+        border-collapse: separate !important;
+        border-spacing: 0 10px !important; /* khoảng cách giữa các hàng */
+        width: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+        background-color: #fff;
+    }
+
+    /* Header bảng */
+    #ordersTable thead tr {
+        background-color: white; /* nền trắng */
+        color: black; /* chữ đen */
+        font-weight: 600;
+        border-radius: 10px;
+    }
+
+
+    #ordersTable thead th {
+        padding: 12px 20px;
+        text-align: left;
+    }
+
+    /* Các hàng dữ liệu */
+    #ordersTable tbody tr {
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+    }
+
+    #ordersTable tbody tr:hover {
+        background-color: #e9f1ff;
+    }
+
+    #ordersTable tbody td {
+        padding: 14px 20px;
+        vertical-align: middle;
+    }
+
+    /* Căn giữa cột Id và Tổng tiền */
+    #ordersTable tbody td:nth-child(1),
+    #ordersTable tbody td:nth-child(3) {
+        text-align: center;
+    }
+
+    .modal {
+        position: fixed;
+        z-index: 9999;
+        left: 0; top: 0; width: 100%; height: 100%;
+        background-color: rgba(0,0,0,0.4);
+        overflow: auto;
+    }
+    .modal-content tr, .modal-content th, .modal-content td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: center;
     }
 </style>
 <body>
@@ -145,11 +206,11 @@
 
                         <div class="info-btn">
 
-                                <button type="submit" id="save-info">Lưu</button>
+                            <button type="submit" id="save-info">Lưu</button>
 
 
 
-                                <button type="button" id="edit-info">Sửa thông tin</button>
+                            <button type="button" id="edit-info">Sửa thông tin</button>
 
                         </div>
                     </form>
@@ -163,46 +224,20 @@
                         <h2>ĐƠN HÀNG ĐÃ ĐẶT</h2>
                     </div>
 
-                    <div class="order-table-container" id="orderTableContainer">
-                        <%
-                            // Lấy danh sách orders từ request hoặc session
-                            List<Order> orders = (List<Order>) session.getAttribute("orders");
-
-                            // Kiểm tra nếu danh sách đơn hàng không rỗng
-                            if (orders != null && !orders.isEmpty()) {
-                        %>
-                        <table class="order-table">
-                            <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Ngày đặt</th>
-                                <th>Tổng tiền</th>
-                                <th>Trạng thái</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <%
-                                for (Order order : orders) {
-                            %>
-                            <tr>
-                                <td><%= order.getId() %></td>
-                                <td><%= order.getCreatedAt() %></td>
-                                <td><%= order.getTotalPrice() %></td>
-                                <td><%= order.getOrderStatus() %></td>
-                            </tr>
-                            <%
-                                }
-                            %>
-                            </tbody>
-                        </table>
-                        <%
-                        } else {
-                        %>
-                        <p>Không có đơn hàng nào.</p>
-                        <%
-                            }
-                        %>
-                    </div>
+                    <table id="ordersTable" class="display" style="width:100%">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Ngày đặt</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- Dữ liệu sẽ được load tự động -->
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- đổi mật khẩu -->
@@ -252,216 +287,8 @@
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script src="https://cdn.jsdelivr.net/npm/just-validate@latest/dist/just-validate.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="${pageContext.request.contextPath}/assets/Js/user.js?v=2.0" defer></script>
-<script>
-    document.getElementById('edit-info').addEventListener('click', function () {
-        // Lấy tất cả các input cần chỉnh sửa
-        const inputs = document.querySelectorAll('.info-form input:not([id="email"]):not([id="create-date"])');
+<script src="${pageContext.request.contextPath}/assets/Js/user.js?v=${System.currentTimeMillis()}"></script>
 
-        // Bật chế độ chỉnh sửa
-        inputs.forEach(input => {
-            input.readOnly = false; // Tắt chế độ readonly
-            input.classList.add('editable'); // Thêm lớp để có thể thay đổi kiểu dáng (nếu cần)
-        });
-
-        // Hiển thị nút lưu và ẩn nút sửa
-        document.getElementById('edit-info').style.display = 'none';
-        document.getElementById('save-info').style.display = 'inline-block';
-    });
-
-    // Khi lưu thông tin
-    document.getElementById('save-info').addEventListener('click', function (e) {
-        e.preventDefault();
-
-        // Lấy ID khách hàng từ thuộc tính data
-        const customerId = document.getElementById('userInfo').getAttribute('data-customer-id');
-
-        // Thu thập dữ liệu từ các input
-        const formData = {
-            customerId: customerId,
-            cusName: document.getElementById('username').value,
-            address: document.getElementById('address').value,
-            phone: document.getElementById('phone').value,
-        };
-
-        console.log(formData); // Kiểm tra dữ liệu trước khi gửi
-
-        // Gửi AJAX để cập nhật thông tin
-        $.ajax({
-            url: '/WebBongDen_war/edit-cus-info',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(formData),
-            success: function (response) {
-                if (response.success) {
-                    Swal.fire('Thành công!', 'Thông tin của bạn đã được cập nhật.', 'success');
-
-                    // Đặt lại trạng thái readonly sau khi lưu
-                    const inputs = document.querySelectorAll('.info-form input:not([id="email"]):not([id="create-date"])');
-                    inputs.forEach(input => {
-                        input.readOnly = true; // Bật lại chế độ readonly
-                        input.classList.remove('editable'); // Xóa lớp editable
-                    });
-
-                    // Ẩn nút lưu và hiển thị nút sửa
-                    document.getElementById('save-info').style.display = 'none';
-                    document.getElementById('edit-info').style.display = 'inline-block';
-                } else {
-                    Swal.fire('Thất bại!', 'Không thể cập nhật thông tin. Vui lòng thử lại.', 'error');
-                }
-            },
-            error: function () {
-                Swal.fire('Lỗi!', 'Đã xảy ra lỗi khi cập nhật thông tin.', 'error');
-            }
-        });
-    });
-
-    //Xử ly doi mk
-    const validator = new JustValidate('.change_password_form');
-
-    validator
-        .addField('#oldPassword', [
-            {
-                rule: 'required',
-                errorMessage: 'Vui lòng nhập mật khẩu cũ',
-            },
-        ])
-        .addField('#newPassword', [
-            {
-                rule: 'required',
-                errorMessage: 'Vui lòng nhập mật khẩu mới',
-            },
-            {
-                validator: (value) =>
-                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(value),
-                errorMessage:
-                    'Mật khẩu phải có chữ hoa, chữ thường, số, ký tự đặc biệt và ít nhất 8 ký tự',
-            },
-        ])
-        .addField('#confirm_password', [
-            {
-                rule: 'required',
-                errorMessage: 'Vui lòng nhập lại mật khẩu',
-            },
-            {
-                validator: (value, fields) => {
-                    return value === fields['#newPassword'].elem.value;
-                },
-                errorMessage: 'Mật khẩu xác nhận không khớp',
-            },
-        ])
-        .onSuccess((event) => {
-            event.preventDefault();
-
-            const form = event.target;
-            const data = new URLSearchParams();
-            data.append('oldPassword', form.oldPassword.value);
-            data.append('newPassword', form.newPassword.value);
-            data.append('confirmPassword', form.confirmPassword.value);
-
-            fetch('/WebBongDen_war/change-password', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: data,
-            })
-                .then((res) => res.json())
-                .then((res) => {
-                    Toastify({
-                        text: res.message,
-                        duration: 3000,
-                        gravity: 'top',
-                        position: 'right',
-                        close: true,
-                        style: {
-                            background: res.success
-                                ? 'linear-gradient(to right, #00b09b, #96c93d)'
-                                : 'linear-gradient(to right, #ff416c, #ff4b2b)',
-                            color: '#fff',
-                            borderRadius: '6px',
-                        },
-                    }).showToast();
-
-                    if (res.success) form.reset();
-                });
-        })
-
-        // ✅ Hiển thị lỗi bằng Toastify
-        .onFail((fields) => {
-            const firstErrorField = Object.values(fields)[0];
-            if (firstErrorField && firstErrorField.message) {
-                Toastify({
-                    text: firstErrorField.message,
-                    duration: 3000,
-                    gravity: 'top',
-                    position: 'right',
-                    close: true,
-                    style: {
-                        background: 'linear-gradient(to right, #ff416c, #ff4b2b)',
-                        color: '#fff',
-                        borderRadius: '6px',
-                    },
-                }).showToast();
-            }
-        });
-
-    $('#avatarInput').on('change', async function () {
-        const file = this.files[0];
-        if (!file) return;
-
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", "web_upload");
-        formData.append("folder", "avatars");
-
-        try {
-            const res = await fetch(`https://api.cloudinary.com/v1_1/dptmqc8lj/image/upload`, {
-                method: "POST",
-                body: formData,
-            });
-
-            const data = await res.json();
-            if (!data.secure_url) throw new Error("Upload thất bại");
-
-            console.log("Sending avatar update payload:", {
-                customerId: $('#userInfo').data('customer-id'),
-                avatarUrl: data.secure_url
-            });
-
-            // Gửi URL ảnh avatar về server để lưu vào DB
-            await fetch("/WebBongDen_war/update-avatar", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    customerId: $('#userInfo').data('customer-id'),
-                    avatarUrl: data.secure_url
-                }),
-            });
-
-            $('#avatarPreview').attr('src', data.secure_url);
-
-            Toastify({
-                text: "Cập nhật avatar thành công!",
-                duration: 3000,
-                gravity: "top",
-                position: "right",
-                style: {
-                    background: "linear-gradient(to right, #00b09b, #96c93d)",
-                    color: "#fff",
-                },
-            }).showToast();
-        } catch (error) {
-            console.error("Upload thất bại:", error);
-            Toastify({
-                text: "Tải avatar thất bại!",
-                duration: 3000,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "#dc3545",
-                close: true,
-            }).showToast();
-        }
-    });
-
-</script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 </html>
-
