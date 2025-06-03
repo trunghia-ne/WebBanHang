@@ -101,11 +101,47 @@
         .empty-cart-image:hover {
             opacity: 1;
         }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #3c763d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: opacity 0.5s ease;
+            z-index: 9999;
+        }
+        .toast.error {
+            background-color: #a94442;
+        }
+        .toast.hidden {
+            display: none;
+        }
+        .toast.show {
+            display: block;
+        }
+
     </style>
 </head>
 <body>
 <div class="wrapper">
     <jsp:include page="../reuse/header.jsp" />
+    <%
+        Boolean transResult = (Boolean) session.getAttribute("transResult");
+        if (transResult != null) {
+    %>
+    <script>
+        window.addEventListener("load", function () {
+            location.hash = "finish";
+        });
+    </script>
+    <%
+        }
+    %>
+
     <div class="main">
         <a class="direction" style="margin: 20px 140px; display: block; text-decoration: none; color: black;" href="${pageContext.request.contextPath}/home">
             <i class="fa-solid fa-arrow-left"></i>
@@ -291,12 +327,15 @@
                     </div>
                 </form>
             </div>
+            <div id="toast-message" class="toast hidden"></div>
 
             <%-- ======================= MODIFIED PAYMENT TAB ======================= --%>
             <form method="POST" action="${pageContext.request.contextPath}/PayCartController" id="payment-form">
                 <input type="hidden" name="finalShippingFee" id="final_shipping_fee_payment_form" value="<%= initialShippingFee %>">
                 <input type="hidden" name="finalTotalAmount" id="final_total_amount_payment_form" value="<%= initialTotalWithShipping %>">
-
+                <input type="hidden" name="discountAmount" id="discount_amount_input" value="0">
+                <input type="hidden" name="voucherId" id="voucher_id_input" value="">
+                <input type="hidden" id="initial_total_with_shipping" value="<%= initialTotalWithShipping %>" />
                 <div class="tab-content" id="payment" style="<%= (cus == null && !"#payment".equals(request.getParameter("tab"))) ? "display: none;" : "" %>">
                     <div class="container-top">
                         <div class="section order-info">
@@ -360,18 +399,32 @@
                         </div>
                         <hr />
                         <div class="discount-code">
-                            <div class="form-field">
+                            <div class="form-field" style="position: relative; display: inline-block; width: 100%;">
                                 <input
                                         type="text"
                                         class="form-input"
                                         id="discount-code-cus"
                                         name="discountCode"
                                         placeholder=" "
+                                        autocomplete="off"
                                 />
                                 <label for="discount-code-cus" class="form-label">Mã giảm giá</label>
+
+                                <!-- Mũi tên (icon) -->
+                                <span id="voucher-toggle-btn"
+                                      style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; user-select: none;">
+      &#9660;
+    </span>
                             </div>
+
                             <button type="button">Áp dụng mã</button>
+
+                            <!-- Vùng chứa danh sách voucher (ẩn ban đầu) -->
+                            <div id="voucher-list" style="display: none; border: 1px solid #ccc; margin-top: 200px; overflow-y: auto; background: #fff; position: absolute; width: 33%; z-index: 10;">
+                                <!-- Voucher sẽ được load vào đây -->
+                            </div>
                         </div>
+
                         <hr />
                         <div class="payment-method">
                             <h2>Chọn hình thức thanh toán</h2>
@@ -413,6 +466,11 @@
                                     <% } %>
                                 </p>
                             </div>
+                            <div class="b discount-summary" style="display: none;">
+                                <p>Đã giảm:</p>
+                                <p class="discount-amount-summary">0 VND</p>
+                            </div>
+
                             <div class="b">
                                 <p>Tổng tiền (gồm ship):</p>
                                 <p class="total-price-with-shipping-summary">
@@ -475,7 +533,7 @@
                             <a href="${pageContext.request.contextPath}/home" class="back-to-shopping-btn" style="margin-top: 20px;">Tiếp tục mua sắm</a>
                         </div>
                     </c:if>
-                    <%-- <% session.removeAttribute("transResult"); %> --%>
+                     <% session.removeAttribute("transResult"); %>
                 </section>
             </div>
         </div>
@@ -492,5 +550,182 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notiflix/dist/notiflix-3.2.6.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/notiflix/dist/notiflix-3.2.6.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    const discountBtn = document.querySelector(".discount-code button");
+    const finalTotalInput = document.getElementById("final_total_amount_payment_form");
+    const discountAmountInput = document.getElementById("discount_amount_input");
+    const voucherIdInput = document.getElementById("voucher_id_input");
+    const discountCodeInput = document.getElementById("discount-code-cus");
+    const discountSummary = document.querySelector(".discount-summary");
+    const discountAmountSummary = document.querySelector(".discount-amount-summary");
+
+    const initialTotalWithShipping = parseFloat(document.getElementById("initial_total_with_shipping").value);
+    const subtotal = <%= cartSubtotalForJs %>; // Tạm tính chưa ship
+
+    discountBtn.addEventListener("click", function () {
+        const code = discountCodeInput.value.trim();
+
+        if (!code) {
+            showToast("Vui lòng nhập mã giảm giá", true);
+            return;
+        }
+
+        fetch('<%= request.getContextPath() %>/ApplyVoucherController', {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({
+                discountCode: code,
+                subtotal: subtotal
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const totalAfterDiscount = initialTotalWithShipping - data.discountAmount;
+
+                    // Cập nhật giao diện
+                    document.querySelector(".total-amount-with-shipping").textContent = formatCurrency(totalAfterDiscount);
+                    document.querySelector(".total-price-with-shipping-summary").textContent = formatCurrency(totalAfterDiscount);
+
+                    // Hiện phần "Đã giảm"
+                    discountSummary.style.display = "flex";
+                    discountAmountSummary.textContent = formatCurrency(data.discountAmount);
+
+                    // Cập nhật hidden input
+                    finalTotalInput.value = totalAfterDiscount;
+                    discountAmountInput.value = data.discountAmount;
+                    voucherIdInput.value = data.voucherId;
+
+                    // Lưu sessionStorage
+                    sessionStorage.setItem("voucherInfo", JSON.stringify({
+                        totalAfterDiscount: totalAfterDiscount,
+                        discountAmount: data.discountAmount,
+                        voucherId: data.voucherId,
+                        discountCode: code
+                    }));
+
+                    showToast(data.message);
+                } else {
+                    // Reset nếu mã không hợp lệ
+                    showToast(data.message, true);
+                    sessionStorage.removeItem("voucherInfo");
+
+                    document.querySelector(".total-amount-with-shipping").textContent = formatCurrency(initialTotalWithShipping);
+                    document.querySelector(".total-price-with-shipping-summary").textContent = formatCurrency(initialTotalWithShipping);
+
+                    finalTotalInput.value = initialTotalWithShipping;
+                    discountAmountInput.value = 0;
+                    voucherIdInput.value = "";
+
+                    discountSummary.style.display = "none";
+                    discountAmountSummary.textContent = "0 VND";
+                }
+            })
+            .catch(() => {
+                showToast("Lỗi hệ thống, vui lòng thử lại sau", true);
+            });
+    });
+
+    // Khi reload, nếu đã từng áp dụng voucher thì khôi phục lại
+    window.addEventListener("load", () => {
+        const voucherInfo = sessionStorage.getItem("voucherInfo");
+        if (voucherInfo) {
+            const data = JSON.parse(voucherInfo);
+
+            finalTotalInput.value = data.totalAfterDiscount;
+            discountAmountInput.value = data.discountAmount;
+            voucherIdInput.value = data.voucherId;
+
+            document.querySelector(".total-amount-with-shipping").textContent = formatCurrency(data.totalAfterDiscount);
+            document.querySelector(".total-price-with-shipping-summary").textContent = formatCurrency(data.totalAfterDiscount);
+
+            discountCodeInput.value = data.discountCode;
+
+            discountSummary.style.display = "flex";
+            discountAmountSummary.textContent = formatCurrency(data.discountAmount);
+        }
+    });
+
+    // Hàm định dạng tiền VND
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+            minimumFractionDigits: 0
+        }).format(value);
+    }
+
+    // Hàm toast thông báo
+    function showToast(message, isError = false) {
+        const toast = document.getElementById('toast-message');
+        toast.textContent = message;
+        toast.className = 'toast show';
+        if (isError) toast.classList.add('error');
+
+        setTimeout(() => {
+            toast.className = 'toast hidden';
+        }, 3000);
+    }
+
+    $(document).ready(function () {
+        $('#voucher-toggle-btn').on('click', function () {
+            var $voucherList = $('#voucher-list');
+
+            if ($voucherList.is(':visible')) {
+                // Ẩn danh sách nếu đang hiện
+                $voucherList.hide();
+            } else {
+                // Nếu chưa load voucher, gọi ajax lấy voucher
+                if ($voucherList.children().length === 0) {
+                    $.ajax({
+                        url: '${pageContext.request.contextPath}/ApplyVoucherController',
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.length === 0) {
+                                $voucherList.html('<p style="padding: 10px;">Không có voucher nào.</p>');
+                            } else {
+                                var html = '<ul style="list-style: none; padding-left: 10px; margin: 5px 0;">';
+                                data.forEach(function (voucher) {
+                                    html += '<li style="padding: 5px; cursor: pointer; border-bottom: 1px solid #eee;" data-code="' + voucher.code + '">' +
+                                        '<strong>' + voucher.code + '</strong> - ' +
+                                        (voucher.discountType === 'percent' ? voucher.discountValue + '% giảm' : voucher.discountValue + ' VND giảm') +
+                                        '</li>';
+                                });
+                                html += '</ul>';
+                                $voucherList.html(html);
+                            }
+                            $voucherList.show();
+                        },
+                        error: function () {
+                            $voucherList.html('<p style="padding: 10px; color: red;">Lỗi khi tải voucher.</p>').show();
+                        }
+                    });
+                } else {
+                    // Đã load rồi thì chỉ show ra
+                    $voucherList.show();
+                }
+            }
+        });
+
+        // Khi click vào 1 voucher trong danh sách thì điền code vào ô input
+        $(document).on('click', '#voucher-list li', function () {
+            var code = $(this).data('code');
+            $('#discount-code-cus').val(code);
+            $('#voucher-list').hide();
+        });
+
+        // Ẩn danh sách khi click ra ngoài
+        $(document).click(function (e) {
+            if (!$(e.target).closest('.discount-code').length) {
+                $('#voucher-list').hide();
+            }
+        });
+    });
+
+</script>
+
 </body>
 </html>

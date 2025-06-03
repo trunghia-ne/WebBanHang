@@ -4,6 +4,7 @@ import com.example.webbongden.dao.db.JDBIConnect;
 import com.example.webbongden.dao.model.Voucher;
 import org.jdbi.v3.core.Jdbi;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class VoucherDao {
@@ -69,6 +70,26 @@ public class VoucherDao {
                                 "WHERE id = :id")
                         .bindBean(voucher)
                         .execute()
+        );
+    }
+
+
+    // Tìm mã voucher
+    public Voucher findValidVoucher(String code, BigDecimal subtotal) {
+        return jdbi.withHandle(handle ->
+                handle.createQuery("""
+                SELECT * FROM vouchers
+                WHERE code = :code
+                  AND status = 'active'
+                  AND CURRENT_DATE BETWEEN start_date AND end_date
+                  AND (usage_limit = 0 OR used_count < usage_limit)
+                  AND min_order_value <= :subtotal
+            """)
+                        .bind("code", code)
+                        .bind("subtotal", subtotal)
+                        .mapToBean(Voucher.class)
+                        .findOne()
+                        .orElse(null)
         );
     }
 }

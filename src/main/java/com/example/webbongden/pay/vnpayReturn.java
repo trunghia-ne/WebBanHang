@@ -38,6 +38,7 @@ public class vnpayReturn extends HttpServlet {
             if (fields.containsKey("vnp_SecureHash")) {
                 fields.remove("vnp_SecureHash");
             }
+
             String signValue = Config.hashAllFields(fields);
             if (signValue.equals(vnp_SecureHash)) {
                 String paymentCode = request.getParameter("vnp_TransactionNo");
@@ -45,8 +46,12 @@ public class vnpayReturn extends HttpServlet {
                 String orderId = request.getParameter("vnp_TxnRef");
                 System.out.println(orderId);
 
+                System.out.println("Generated sign: " + signValue);
+                System.out.println("Provided sign: " + vnp_SecureHash);
+
                 Invoices invoices = new Invoices();
-                invoices.setId(Integer.parseInt(orderId));
+                int invoiceId = Integer.parseInt(orderId.split("-")[0]);
+                invoices.setId(invoiceId);
                 HttpSession session = request.getSession();
                 boolean transSuccess = false;
                 if ("00".equals(request.getParameter("vnp_TransactionStatus"))) {

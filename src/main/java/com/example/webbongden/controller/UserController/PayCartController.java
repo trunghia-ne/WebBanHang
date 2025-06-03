@@ -37,6 +37,13 @@ public class PayCartController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
 
+        int finalTotalAmount = Integer.parseInt(request.getParameter("finalTotalAmount"));
+        int discountAmount = Integer.parseInt(request.getParameter("discountAmount"));
+        int shippingFee = Integer.parseInt(request.getParameter("finalShippingFee"));
+        String voucherIdStr = request.getParameter("voucherId");
+        int voucherId = (voucherIdStr != null && !voucherIdStr.isEmpty()) ? Integer.parseInt(voucherIdStr) : 0;
+
+
         // Lấy thông tin từ session
         Cart cart = (Cart) session.getAttribute("cart");
         Customer customerInfo = (Customer) session.getAttribute("customerInfo");
@@ -48,6 +55,10 @@ public class PayCartController extends HttpServlet {
             return;
         }
 
+        int subtotal = (int) cart.getTotalPriceNumber();
+        int totalAfterDiscount = subtotal - discountAmount;
+        int finalAmountWithShipping = totalAfterDiscount + shippingFee;
+
             // Lấy phương thức thanh toán từ request
             String paymentMethod = request.getParameter("paymentMethod");
 
@@ -55,7 +66,7 @@ public class PayCartController extends HttpServlet {
             Invoices invoice = new Invoices();
             invoice.setAccountId(account.getId());
             invoice.setCreatedAt(new Date());
-            invoice.setTotalPrice(cart.getTotalPriceNumber());
+            invoice.setTotalPrice(finalAmountWithShipping);
             invoice.setPaymentStatus("Pending");
 
             int promotionId = 0;
@@ -102,8 +113,8 @@ public class PayCartController extends HttpServlet {
                 String vnp_Command = "pay";
                 String orderType = "other";
 
-                long amount = (long) (cart.getTotalPriceNumber() * 100);
-                String vnp_TxnRef = hoadon + "";//dky ma rieng
+                long amount = (long) (finalAmountWithShipping * 100);
+                String vnp_TxnRef = hoadon + "-" + System.currentTimeMillis();
                 String vnp_IpAddr = Config.getIpAddress(request);
 
                 String vnp_TmnCode = Config.vnp_TmnCode;
