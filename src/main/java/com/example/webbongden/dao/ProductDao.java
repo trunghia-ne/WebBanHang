@@ -961,6 +961,39 @@ public class ProductDao {
         });
     }
 
+    public boolean updateProductImageById(int imgId, String newUrl, boolean setMainImage) {
+        return jdbi.withHandle(handle -> {
+            handle.begin();
+
+            if (setMainImage) {
+                Integer productId = handle.createQuery("SELECT product_id FROM product_images WHERE id = :id")
+                        .bind("id", imgId)
+                        .mapTo(Integer.class)
+                        .findOne()
+                        .orElseThrow(() -> new RuntimeException("Ảnh không tồn tại"));
+
+                handle.createUpdate("UPDATE product_images SET main_image = FALSE WHERE product_id = :productId")
+                        .bind("productId", productId)
+                        .execute();
+            }
+
+            int updatedRows = handle.createUpdate("UPDATE product_images SET url = :url, main_image = :mainImage WHERE id = :id")
+                    .bind("url", newUrl)
+                    .bind("mainImage", setMainImage)
+                    .bind("id", imgId)
+                    .execute();
+
+            if (updatedRows != 1) {
+                throw new RuntimeException("Cập nhật ảnh thất bại");
+            }
+
+            handle.commit();
+
+            return true;
+        });
+    }
+
+
 
     public static void main(String[] args) {
         // Khởi tạo dịch vụ sản phẩm
