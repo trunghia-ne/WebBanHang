@@ -6,9 +6,10 @@
     const imageUrlInput = document.getElementById("product-image-url");
     const fileInput = document.getElementById("upload-product-image");
     $(document).ready(function () {
+
         const table = $("#product-table").DataTable({
             ajax: {
-                url: "/WebBongDen_war/AdminLoadProductController", // URL Servlet
+                url: `${contextPath}/AdminLoadProductController`, // URL Servlet
                 type: "GET", // Phương thức HTTP
                 data: function (d) {
                     d.searchValue = $("#product-search").val();
@@ -174,11 +175,12 @@
                                   <button class="delete-img-btn" data-id="${img.id}" type="button">
                                     <i class="fa-solid fa-trash"></i>
                                   </button>
+                                   <input type="file" accept="image/*" class="edit-image-input" style="display: none;" data-image-id="${data.id}" 
                                 </div>
                               </div>
                             `;
-                                                });
-                                            }
+                        });
+                    }
                     document.getElementById("product-id-hidden").value = data.id;
                     // Cập nhật các trường trong modal
                     console.log(data);
@@ -228,52 +230,6 @@
                 });
         });
 
-        document.getElementById("product-images-list").addEventListener("click", function (e) {
-            if (e.target.closest(".edit-img-btn")) {
-                const imgId = e.target.closest(".edit-img-btn").dataset.id;
-                Swal.fire("Sửa ảnh ID: " + imgId);
-            }
-
-            if (e.target.closest(".delete-img-btn")) {
-                const btn = e.target.closest(".delete-img-btn");
-                const imgId = btn.dataset.id;
-
-                Swal.fire({
-                    title: "Bạn có chắc muốn xóa ảnh này?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Xóa",
-                    cancelButtonText: "Hủy"
-                }).then(async result => {
-                    if (result.isConfirmed) {
-                        try {
-                            const res = await fetch(`/WebBongDen_war/delete-product-image?id=${imgId}`, {
-                                method: "DELETE"
-                            });
-                            if (!res.ok) throw new Error();
-                            btn.closest(".image-wrapper").remove();
-                            Toastify({
-                                text: "Đã xóa ảnh!",
-                                duration: 3000,
-                                gravity: "top",
-                                position: "right",
-                                backgroundColor: "#28a745",
-                                close: true,
-                            }).showToast();
-                        } catch {
-                            Toastify({
-                                text: "Xóa ảnh thất bại!",
-                                duration: 3000,
-                                gravity: "top",
-                                position: "right",
-                                backgroundColor: "#dc3545",
-                                close: true,
-                            }).showToast();
-                        }
-                    }
-                });
-            }
-        });
 
         $("#close-details-btn").on("click", function () {
             $(".product-stats").show();

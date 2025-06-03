@@ -956,6 +956,8 @@
 
 <script>
   // Tự động ẩn thông báo sau 3 giây
+  const contextPath = '${pageContext.request.contextPath}';
+  console.log(contextPath)
   setTimeout(() => {
     const alertBox = document.querySelector('.alert');
     if (alertBox) {

@@ -73,7 +73,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url(../img/background-login.png);
+  background-image: url("https://mixivivu.com/section-background.png");
   height: 100vh;
 }
 
