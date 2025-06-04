@@ -25,7 +25,7 @@ import java.util.Set;
 public class LoginGoogleServlet extends HttpServlet {
     private static final String CLIENT_ID = "625158935097-jbd22lba0t05tm01j6m2bc4n801ncnfj.apps.googleusercontent.com";
     private static final String CLIENT_SECRET = "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";
-    private static final String REDIRECT_URI = "http://localhost:8080/WebBongDen_war/login-google";
+    private static final String REDIRECT_URI = "https://webbongden.khacthienit.click/login-google";
 
     private final AccountDao accountDAO = new AccountDao();
     private final UserSevices userSevices = new UserSevices();
