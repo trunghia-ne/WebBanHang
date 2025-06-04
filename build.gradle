@@ -77,9 +77,9 @@ java {
 apply plugin: 'org.hidetake.ssh'
 remotes {
     host {
-        host = '192.168.52.132'
-        user = 'root'
-        password = 'pvp'
+        host = '192.168.188.130'
+        user = 'vagrant'
+        password = 'vagrant'
     }
 }
 ssh.settings {
@@ -106,10 +106,10 @@ task docker_upload_file_to_server {
         println 'begin docker_upload_file_to_server'
         ssh.run {
             session(remotes.host) {
-                remove '/usr/deploy/WebBongDen_war.war'
-                remove '/usr/deploy/WebBongDen_war/'
+                remove '/usr/deploy/ROOT.war'
+                remove '/usr/deploy/ROOT/'
                 put from: "${project.projectDir}/build/libs/WebBongDen-1.0-SNAPSHOT.war",
-                        into: "/usr/deploy/WebBongDen_war.war"
+                        into: "/usr/deploy/ROOT.war"
             }
         }
     }
