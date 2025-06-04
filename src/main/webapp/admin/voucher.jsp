@@ -38,6 +38,21 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/admin.css?v=1">
 </head>
 <style>
+    div#voucher-table_filter {
+        float: left;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+    div.dt-buttons > .dt-button:first-child, div.dt-buttons > div.dt-button-split .dt-button:first-child {
+        /* margin-left: 0; */
+        color: white;
+        background: #007bff;
+        float: right;
+        margin-top: -10px;
+        border-radius: 4px;
+        cursor: pointer;
+        padding: 8px 15px;
+    }
     /* Bảng dữ liệu voucher */
     .voucher-table {
         width: 100%;
@@ -109,7 +124,7 @@
 
     .voucher-container h3 {
         font-size: 18px;
-        margin: 20px 0 20px;
+        margin: 30px 0 20px;
     }
 
     .form-group {
@@ -403,7 +418,9 @@
             method: 'GET',
             success: function(html) {
                 var newTbody = $(html).find('#voucher-table tbody').html();
+                $('#voucher-table').DataTable().destroy();
                 $('#voucher-table tbody').html(newTbody);
+                initDataTable();
             },
             error: function() {
                 Swal.fire({
@@ -413,6 +430,29 @@
             }
         });
     }
+
+    function initDataTable() {
+        $('#voucher-table').DataTable({
+            destroy: true,
+            pageLength: 5,
+            dom: 'Bfrtip',
+            buttons: [
+                'pdf'
+            ],
+            language: {
+                search: "Tìm kiếm:",
+                lengthMenu: "Hiển thị _MENU_ bản ghi",
+                info: "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
+                paginate: {
+                    first: "Đầu",
+                    last: "Cuối",
+                    next: "Tiếp",
+                    previous: "Trước"
+                },
+            }
+        });
+    }
+
 
     window.editVoucher = function(id, code, discountType, discountValue, startDate, endDate, minOrderValue, usageLimit, status) {
         $('#edit-id').val(id);
@@ -447,5 +487,6 @@
     });
 
 </script>
+
 </body>
 </html>
