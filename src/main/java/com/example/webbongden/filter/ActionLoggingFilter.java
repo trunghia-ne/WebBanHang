@@ -3,6 +3,7 @@ package com.example.webbongden.filter;
 import com.example.webbongden.dao.LogDao;
 import com.example.webbongden.dao.model.Account;
 import com.example.webbongden.dao.model.Log;
+import com.example.webbongden.utils.NotificationUtils;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.*;
@@ -12,6 +13,7 @@ import java.io.IOException;
 @WebFilter("/*")
 public class ActionLoggingFilter implements Filter {
     private final LogDao logDao = new LogDao();
+    private boolean isNotificationSent = false;  // Di chuyển biến ra ngoài
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -21,7 +23,7 @@ public class ActionLoggingFilter implements Filter {
         String uri = req.getRequestURI().toLowerCase();
 
         int accountId = 0;
-        String roleName = "guest"; // Đổi tên biến cho rõ nghĩa
+        String roleName = "guest";
         String action = detectAction(uri);
 
         try {
@@ -30,7 +32,6 @@ public class ActionLoggingFilter implements Filter {
                 Object accObj = session.getAttribute("account");
                 if (accObj instanceof Account acc) {
                     accountId = acc.getId();
-                    // UPDATED: Lấy roleName từ đối tượng Account thay vì từ session
                     roleName = acc.getRoleName();
                 }
             }
@@ -46,7 +47,6 @@ public class ActionLoggingFilter implements Filter {
         if (isSuccess && action != null && accountId > 0) {
             Log logEntry = new Log();
             logEntry.setAccountId(accountId);
-            // UPDATED: Ghi log bằng roleName đã lấy ở trên
             logEntry.setLevel(roleName);
             logEntry.setAction(action);
             logEntry.setResource("USER_ACTION");
@@ -58,8 +58,14 @@ public class ActionLoggingFilter implements Filter {
             logEntry.setAfterData(afterDataObj != null ? afterDataObj.toString() : null);
 
             try {
-                logDao.insertLog(logEntry);
-                System.out.println("✅ Logged: " + action);
+                int logId = logDao.insertLog(logEntry);
+                String message = buildNotificationMessage(action, req);
+
+                // Kiểm tra nếu chưa gửi thông báo
+                if (!isNotificationSent) {
+                    NotificationUtils.notifyAllAdmins(message, "/WebBongDen_war/search-log?logId=" + logId);
+                    isNotificationSent = true;  // Đánh dấu là đã gửi thông báo
+                }
             } catch (Exception e) {
                 System.err.println("❌ Failed to log: " + e.getMessage());
                 e.printStackTrace();
@@ -79,6 +85,31 @@ public class ActionLoggingFilter implements Filter {
         if (uri.contains("paycartcontroller")) return "PAY_CART_CONTROLLER";
         return null;
     }
-    public void init(FilterConfig config) {}
-    public void destroy() {}
+
+    private String buildNotificationMessage(String action, HttpServletRequest req) {
+        String verb;
+
+        if (action.startsWith("PAY_CART")) {
+            verb = "Nhận được đơn hàng mới ";
+        } else {
+            verb = "thực hiện hành động";
+        }
+
+        String detail = "";
+
+        switch (action) {
+            case "PAY_CART_CONTROLLER":
+                Object orderIdObj = req.getAttribute("orderId");
+                if (orderIdObj != null) {
+                    detail = " - Mã đơn hàng: " + orderIdObj.toString();
+                } else {
+                    detail = " - Không xác định mã đơn hàng";
+                }
+                break;
+
+            // Các trường hợp khác nếu cần xử lý thêm...
+        }
+
+        return verb + detail;
+    }
 }

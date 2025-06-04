@@ -92,6 +92,35 @@ body {
   align-items: center;
 }
 
+#login-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;    /* Cố định chiều rộng */
+  height: 40px;    /* Cố định chiều cao */
+  position: relative;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 3px solid rgba(255, 255, 255, 0.3); /* màu nền vòng tròn */
+  border-top-color: white; /* màu phần quay */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  vertical-align: middle;
+  margin-left: 8px; /* khoảng cách với chữ */
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .form-header .logo {
   display: flex;
   justify-content: center;

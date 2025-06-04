@@ -1,5 +1,6 @@
 package com.example.webbongden.controller.UserController;
 
+import com.example.webbongden.dao.LogDao;
 import com.example.webbongden.dao.model.*;
 import com.example.webbongden.pay.Config;
 import com.example.webbongden.pay.ConfigMomo;
@@ -8,6 +9,7 @@ import com.example.webbongden.services.OrderSevices;
 import com.example.webbongden.services.ProductServices;
 import com.example.webbongden.services.PromotionService;
 import com.example.webbongden.utils.LogUtils;
+import com.google.gson.Gson;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -91,14 +93,14 @@ public class PayCartController extends HttpServlet {
 
             invoice.setPromotionId(promotionId);
 
-            System.out.println(customerInfo.toString());
+
             // Lưu hóa đơn và chi tiết đơn hàng
             orderServices.createOrderAndInvoice(invoice, orderDetails, customerInfo);
-
 
             // Nếu chọn COD, kết thúc tại đây
             if ("COD".equals(paymentMethod)) {
                 request.setAttribute("actionStatus", "success");
+                request.setAttribute("orderId", invoice.getId());
                 LogUtils.logCreateOrder(request, invoice, cart, "COD");
                 session.setAttribute("transResult", true);
                 session.removeAttribute("cart");

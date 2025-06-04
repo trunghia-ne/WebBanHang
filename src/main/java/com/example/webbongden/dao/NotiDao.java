@@ -30,17 +30,19 @@ public class NotiDao {
 
 
     // Load all notifications by account ID (mới nhất trước)
+
     public List<Notifications> getNotificationsForAdmin(Integer accountId) {
         return jdbi.withHandle(handle ->
                 handle.createQuery("""
-            SELECT * FROM notifications
-            WHERE account_id = :accountId OR account_id IS NULL
-            ORDER BY created_at DESC
-        """)
+                SELECT DISTINCT id, message, link, account_id, is_read, created_at
+                FROM notifications
+                WHERE account_id = :accountId OR account_id IS NULL
+                ORDER BY created_at DESC
+            """)
                         .bind("accountId", accountId)
                         .map((rs, ctx) -> new Notifications(
                                 rs.getInt("id"),
-                                rs.getInt("account_id"), // hoặc dùng getObject("account_id", Integer.class)
+                                rs.getInt("account_id"),
                                 rs.getString("message"),
                                 rs.getString("link"),
                                 rs.getBoolean("is_read"),

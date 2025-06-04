@@ -44,14 +44,16 @@ public class RevenueDao {
     }
 
     public Map<String, Double> getRevenueByPeriodInMonth() {
+        // Sửa câu truy vấn SQL, thêm created_at vào GROUP BY
         String sql = "SELECT " +
                 "    CONCAT(DATE_FORMAT(created_at, '%d-%m-%Y'), ' - ', DATE_FORMAT(DATE_ADD(created_at, INTERVAL 4 DAY), '%d-%m-%Y')) AS period, " +
                 "    SUM(total_price) AS revenue " +
                 "FROM orders " +
                 "WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE()) " +
-                "GROUP BY FLOOR((DAY(created_at) - 1) / 5) " +
+                "GROUP BY FLOOR((DAY(created_at) - 1) / 5), created_at " +  // Thêm created_at vào GROUP BY
                 "ORDER BY created_at";
 
+        // Thực hiện truy vấn và trả kết quả
         return jdbi.withHandle(handle ->
                 handle.createQuery(sql)
                         .mapToMap()
@@ -61,6 +63,7 @@ public class RevenueDao {
                         })
         );
     }
+
 
 
 

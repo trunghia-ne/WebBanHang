@@ -3,13 +3,13 @@
 <%@ page import="jakarta.servlet.http.HttpSession" %>
 <%@ page import="com.example.webbongden.dao.model.Cart" %>
 <%
-    HttpSession httpSession  = request.getSession(false); // Lấy session hiện tại (nếu có)
+    HttpSession httpSession  = request.getSession(false);
     String username = (String) httpSession.getAttribute("username");
     Cart cart = (Cart) httpSession.getAttribute("cart");
     int totalQuantity = 0;
 
     if (cart != null) {
-        totalQuantity = cart.getTotalQuantity(); // Giả sử bạn đã có phương thức getTotalQuantity() trong lớp Cart
+        totalQuantity = cart.getTotalQuantity();
     }
 %>
 <header class="header">

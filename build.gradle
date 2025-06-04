@@ -77,9 +77,9 @@ java {
 apply plugin: 'org.hidetake.ssh'
 remotes {
     host {
-        host = '192.168.188.130'
-        user = 'vagrant'
-        password = 'vagrant'
+        host = '192.168.52.132'
+        user = 'root'
+        password = 'pvp'
     }
 }
 ssh.settings {

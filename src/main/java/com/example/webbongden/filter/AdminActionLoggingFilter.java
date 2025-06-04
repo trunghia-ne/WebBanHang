@@ -216,7 +216,6 @@ public class AdminActionLoggingFilter implements Filter {
                 }
                 break;
         }
-
         return "Admin vừa " + verb + " " + resource + detail;
     }
 }
