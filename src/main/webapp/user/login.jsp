@@ -48,7 +48,7 @@
           style="${showOtpForm || showNewPasswordForm ? 'display: none;' : 'display: block;'}">
         <%--    <form id="login-form" action="login" method="post">--%>
         <div class="form-header">
-            <a href="/WebBongDen_war/home" class="logo"
+            <a href="/home" class="logo"
             ><img src="./assets/img/logo-login.png" alt="Logo"></a>
             <p>ĐĂNG NHẬP</p>
         </div>
@@ -115,7 +115,7 @@
                     </div>
 
                     <div class="platform" id="login-google">
-                        <a class="google-link" href="https://accounts.google.com/o/oauth2/auth?scope=email%20profile&response_type=code&client_id=625158935097-jbd22lba0t05tm01j6m2bc4n801ncnfj.apps.googleusercontent.com&redirect_uri=http://localhost:8080/WebBongDen_war/login-google&access_type=offline&approval_prompt=force">
+                        <a class="google-link" href="https://accounts.google.com/o/oauth2/auth?scope=email%20profile&response_type=code&client_id=625158935097-jbd22lba0t05tm01j6m2bc4n801ncnfj.apps.googleusercontent.com&redirect_uri=https://webbongden.khacthienit.click/WebBongDen_war/login-google&access_type=offline&approval_prompt=force">
                             <img src="<%= request.getContextPath() %>/assets/img/imagesWeb/google.png" alt="Facebook Login">
                             <span>Google</span>
                         </a>

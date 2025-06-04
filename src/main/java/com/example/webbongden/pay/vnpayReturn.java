@@ -65,7 +65,7 @@ public class vnpayReturn extends HttpServlet {
                 OrderDao orderDao = new OrderDao();
                 orderDao.updateInvoicesStatus(invoices.getId(), invoices);
                 session.setAttribute("transResult", transSuccess);
-                response.sendRedirect("/WebBongDen_war/cart#finish");
+                response.sendRedirect("/cart#finish");
             } else {
                 //RETURN PAGE ERROR
                 System.out.println("GD KO HOP LE (invalid signature)");

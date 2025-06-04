@@ -104,7 +104,7 @@ public class PayCartController extends HttpServlet {
                 LogUtils.logCreateOrder(request, invoice, cart, "COD");
                 session.setAttribute("transResult", true);
                 session.removeAttribute("cart");
-                response.sendRedirect("/WebBongDen_war/cart#finish");
+                response.sendRedirect("/cart#finish");
                 return;
             }
 
@@ -140,8 +140,10 @@ public class PayCartController extends HttpServlet {
                 vnp_Params.put("vnp_ReturnUrl", Config.vnp_ReturnUrl);
                 vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
-                Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+                Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+                formatter.setTimeZone(TimeZone.getTimeZone("Asia/Ho_Chi_Minh")); // đảm bảo formatter dùng đúng timezone
+
                 String vnp_CreateDate = formatter.format(cld.getTime());
                 vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
 

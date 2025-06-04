@@ -24,6 +24,6 @@ public class MomoReturn extends HttpServlet {
             request.getSession().setAttribute("transResult", false);
         }
 
-        response.sendRedirect("/WebBongDen_war/cart#finish");
+        response.sendRedirect("/cart#finish");
     }
 }
