@@ -376,21 +376,21 @@
                     <input type="hidden" id="account-id" name="accountId"
                            value="${account != null ? account.getId() : ''}"/>
 
-                    <%--                    <!-- Bình luận -->--%>
-                    <%--                    <div class="review-input">--%>
-                    <%--                        <textarea id="comment-content" name="content" placeholder="Nhập nội dung bình luận"></textarea>--%>
-                    <%--                        <div class="rating-selection">--%>
-                    <%--                            <label for="rating">Chọn đánh giá:</label>--%>
-                    <%--                            <select id="rating" name="rating">--%>
-                    <%--                                <option value="1">1 Sao</option>--%>
-                    <%--                                <option value="2">2 Sao</option>--%>
-                    <%--                                <option value="3">3 Sao</option>--%>
-                    <%--                                <option value="4">4 Sao</option>--%>
-                    <%--                                <option value="5">5 Sao</option>--%>
-                    <%--                            </select>--%>
-                    <%--                        </div>--%>
-                    <%--                        <button type="submit" class="submit-review-btn">Gửi bình luận</button>--%>
-                    <%--                    </div>--%>
+                                        <!-- Bình luận -->
+                                        <div class="review-input">
+                                            <textarea id="comment-content" name="content" placeholder="Nhập nội dung bình luận"></textarea>
+                                            <div class="rating-selection">
+                                                <label for="rating">Chọn đánh giá:</label>
+                                                <select id="rating" name="rating">
+                                                    <option value="1">1 Sao</option>
+                                                    <option value="2">2 Sao</option>
+                                                    <option value="3">3 Sao</option>
+                                                    <option value="4">4 Sao</option>
+                                                    <option value="5">5 Sao</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="submit-review-btn">Gửi bình luận</button>
+                                        </div>
                 </form>
                 <!-- Phần hiển thị reviews -->
                 <div id="comments-list">
