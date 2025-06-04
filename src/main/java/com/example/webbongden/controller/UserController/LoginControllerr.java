@@ -1,6 +1,8 @@
 package com.example.webbongden.controller.UserController;
 
+import com.example.webbongden.dao.LogDao;
 import com.example.webbongden.dao.model.Account;
+import com.example.webbongden.dao.model.Log;
 import com.example.webbongden.services.AccountServices;
 import com.example.webbongden.services.OrderSevices;
 import com.example.webbongden.services.UserSevices;
@@ -28,6 +30,7 @@ public class LoginControllerr extends HttpServlet {
     private final UserSevices userSevices = new UserSevices();
     private final OrderSevices orderSevices = new OrderSevices();
     private static final String RECAPTCHA_SECRET_KEY = "6LehGvYqAAAAAB43BbPenYJ5tnrWU3V309hb3O6h"; // Thay bằng Secret Key của bạn
+    private final LogDao logDao = new LogDao();
 
     private boolean verifyRecaptcha(String captchaResponse) throws IOException {
         String url = "https://www.google.com/recaptcha/api/siteverify";
@@ -89,6 +92,16 @@ public class LoginControllerr extends HttpServlet {
         session.setAttribute("username", account.getUsername());
         session.setAttribute("userInfo", userSevices.getBasicInfoByUsername(username));
         session.setAttribute("orders", orderSevices.getOrdersByUsername(username));
+
+        Log logEntry = new Log();
+        logEntry.setAccountId(account.getId());
+        logEntry.setLevel(account.getRoleName());
+        logEntry.setAction("USER_LOGIN");
+        logEntry.setResource("USER_LOGIN");
+        logEntry.setBeforeData(null);
+        logEntry.setAfterData(null);
+
+        logDao.insertLog(logEntry);
 
         sendJsonResponse(response, true, "Đăng nhập thành công!", account.getRoleName());
     }
