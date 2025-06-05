@@ -74,6 +74,7 @@ public class PayCartController extends HttpServlet {
             invoice.setCreatedAt(new Date());
             invoice.setTotalPrice(finalAmountWithShipping);
             invoice.setPaymentStatus("Pending");
+            invoice.setPayment_method(paymentMethod);
 
             int promotionId = 0;
             List<OrderDetail> orderDetails = new ArrayList<>();

@@ -9,7 +9,7 @@ public class Invoices {
     private Date createdAt; // Ngày tạo hóa đơn
     private double totalPrice; // Tổng giá trị hóa đơn
     private String paymentStatus; // Trạng thái thanh toán (Paid, Unpaid, etc.)
-
+    private String payment_method;
     // Constructor mặc định
     public Invoices() {}
 
@@ -21,6 +21,24 @@ public class Invoices {
         this.createdAt = createdAt;
         this.totalPrice = totalPrice;
         this.paymentStatus = paymentStatus;
+    }
+
+    public Invoices(int id, int accountId, int promotionId, Date createdAt, double totalPrice, String paymentStatus, String payment_method) {
+        this.id = id;
+        this.accountId = accountId;
+        this.promotionId = promotionId;
+        this.createdAt = createdAt;
+        this.totalPrice = totalPrice;
+        this.paymentStatus = paymentStatus;
+        this.payment_method = payment_method;
+    }
+
+    public String getPayment_method() {
+        return payment_method;
+    }
+
+    public void setPayment_method(String payment_method) {
+        this.payment_method = payment_method;
     }
 
     // Getter và Setter

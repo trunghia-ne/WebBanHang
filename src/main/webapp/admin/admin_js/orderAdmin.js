@@ -195,6 +195,10 @@
 
                     const $orderItemsBody = $("#order-items-body");
                     $orderItemsBody.empty();
+                    $("#customer-phone").text(`${orderDetails[0].phoneNumber}`);
+                    $("#payment-method").text(`${orderDetails[0].paymentMethod}`);
+                    $("#status-payment").text(`${orderDetails[0].paymentStatus}`);
+
 
                     orderDetails.forEach((item) => {
                         $orderItemsBody.append(`
@@ -215,9 +219,9 @@
                     });
 
                     const totalAmount = orderDetails.reduce((total, item) => total + parseFloat(item.amount), 0);
-                    const totalWithShipping = totalAmount + shippingFee;
+                    const discountAmount = totalAmount + shippingFee - data.totalPrice;
 
-                    $("#total-amount").text(totalAmount.toLocaleString("vi-VN", {
+                    $("#total-order").text(totalAmount.toLocaleString("vi-VN", {
                         style: "currency",
                         currency: "VND",
                     }));
@@ -227,7 +231,12 @@
                         currency: "VND",
                     }));
 
-                    $("#total-final").text(totalWithShipping.toLocaleString("vi-VN", {
+                    $("#voucher-discount").text(discountAmount.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                    }));
+
+                    $("#total-final").text(data.totalPrice.toLocaleString("vi-VN", {
                         style: "currency",
                         currency: "VND",
                     }));
