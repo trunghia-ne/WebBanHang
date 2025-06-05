@@ -202,6 +202,7 @@
                   <option value="" disabled selected>Chọn vai trò</option>
                   <option value="admin">Quản trị viên</option>
                   <option value="customer">Khách hàng</option>
+                  <option value="Saler">Người bán</option>
                 </select>
               </div>
 
@@ -277,7 +278,7 @@
               <select id="edit-role" name="role">
                 <option value="admin">Quản trị viên</option>
                 <option value="customer">Khách hàng</option>
-                <option value="saler">Người bán</option>
+                <option value="Saler">Người bán</option>
               </select>
             </div>
             <div class="form-group">
