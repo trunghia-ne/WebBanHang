@@ -231,53 +231,67 @@ $(document).ready(function() {
     ajax: {
       url: '/WebBongDen_war/user-orders',
       data: function(d) {
-        d.userId = userId;
+        d.userId = userId;  // Kiểm tra xem `userId` có được định nghĩa hay chưa
       },
-      dataSrc: '',
+      dataSrc: '', // Đảm bảo dữ liệu trả về từ backend có dạng array
       error: function() {
         alert('Lỗi khi tải dữ liệu đơn hàng.');
       }
     },
     columns: [
       { data: 'id' },  // Cột Id
+      { data: 'address' },
+      {
+        data: 'phoneNumber',  // Cột SDT
+        render: function(data) {
+          return data ? data : '';  // Nếu `phoneNumber` là null, thay thế bằng chuỗi rỗng
+        }
+      },
       {
         data: 'createdAt',
         render: function(data) {
-          if (!data) return '';
-          const date = new Date(data);
-          return date.toLocaleDateString('vi-VN');
+          if (!data) return '';  // Nếu không có dữ liệu, trả về chuỗi rỗng
+          const date = new Date(data);  // Chuyển đổi thành đối tượng Date
+          return date.toLocaleDateString('vi-VN');  // Định dạng ngày tháng
         }
       },
       {
         data: 'totalPrice',
-        render: $.fn.dataTable.render.number('.', ',', 0, '₫')
+        render: $.fn.dataTable.render.number('.', ',', 0, '₫')  // Định dạng tiền tệ
       },
       { data: 'orderStatus' },
       {
         data: null,
         render: function(data, type, row) {
           return `
-          <button class="btn-detail" data-id="${row.id}">
-            <i class="fa fa-info-circle"></i> Chi tiết
-          </button>
-          <button class="btn-cancel" data-id="${row.id}">
-            <i class="fa fa-times"></i> Hủy
-          </button>
-        `;
+            <div style="display: flex; gap: 10px">
+              <button class="btn-detail" data-id="${row.id}">
+                 <i class="fa fa-info-circle"></i> Chi tiết
+              </button>
+              <button class="btn-cancel" data-id="${row.id}">
+                <i class="fa fa-times"></i> Hủy
+              </button>
+              <button class="btn-edit" data-id="${row.id}">
+                <i class="fa fa-edit"></i> Sửa
+              </button>
+            </div>
+          `;
         }
       }
     ],
     language: {
-      url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/vi.json'
+      url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/vi.json'  // Ngôn ngữ Tiếng Việt
     },
-    pageLength: 5,
-    lengthMenu: [5, 10, 20, 50],
-    processing: true,
-    responsive: true,
-    searching: true,
-    ordering: true,
-    order: [[0, 'desc']]  // Thêm cấu hình để sắp xếp cột 'id' theo thứ tự giảm dần
+    pageLength: 5,  // Số lượng bản ghi hiển thị trên mỗi trang
+    lengthMenu: [5, 10, 20, 50],  // Các lựa chọn hiển thị số lượng bản ghi
+    processing: true,  // Hiển thị thông báo đang xử lý
+    responsive: true,  // Tương thích với thiết bị di động
+    searching: true,  // Cho phép tìm kiếm
+    ordering: true,  // Cho phép sắp xếp cột
+    order: [[0, 'desc']],  // Mặc định sắp xếp cột 'id' theo thứ tự giảm dần
+    scrollX: true  // Cho phép cuộn theo chiều ngang
   });
+
 
 
   // Đăng ký sự kiện click đúng cách trên tbody, dùng event delegation
@@ -403,6 +417,53 @@ $(document).ready(function() {
             Swal.fire('Lỗi!', 'Đã xảy ra lỗi khi hủy đơn hàng. Vui lòng thử lại.', 'error');
           }
         });
+      }
+    });
+  });
+
+  // Sự kiện khi nhấn nút "Sửa"
+  $('#ordersTable').on('click', '.btn-edit', function() {
+    const rowData = table.row($(this).closest('tr')).data();  // Lấy dữ liệu của dòng đã nhấn
+
+    // Mở SweetAlert để chỉnh sửa địa chỉ và số điện thoại
+    Swal.fire({
+      title: 'Chỉnh sửa thông tin',
+      html: `
+      <div>
+        <label for="address">Địa chỉ:</label>
+        <input type="text" id="address" class="swal2-input" value="${rowData.address}">
+      </div>
+      <div>
+        <label for="phoneNumber">Số điện thoại:</label>
+        <input type="text" id="phoneNumber" class="swal2-input" value="${rowData.phoneNumber}">
+      </div>
+    `,
+      showCancelButton: true,
+      confirmButtonText: 'Lưu',
+      cancelButtonText: 'Hủy',
+      preConfirm: () => {
+        const address = document.getElementById('address').value;
+        const phoneNumber = document.getElementById('phoneNumber').value;
+
+        // Gửi yêu cầu cập nhật lên server
+        return fetch('/WebBongDen_war/update-order-user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',  // Cập nhật header cho đúng kiểu
+          },
+          body: `orderId=${rowData.id}&shippingAddress=${address}&phoneNumber=${phoneNumber}`  // Gửi dữ liệu qua body
+        }).then(response => response.json())  // Xử lý phản hồi trả về dưới dạng JSON
+            .then(result => {
+              if (result.success) {
+                Swal.fire('Thay đổi thông tin đơn hàng thành công!', '', 'success');
+                table.ajax.reload();  // Tải lại dữ liệu DataTable
+              } else {
+                Swal.fire('Lỗi!', 'Không thể lưu thông tin.', 'error');
+              }
+            })
+            .catch(error => {
+              Swal.fire('Lỗi!', 'Đã có lỗi xảy ra.', 'error');
+            });
       }
     });
   });

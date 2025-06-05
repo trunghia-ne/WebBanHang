@@ -342,7 +342,8 @@ public class OrderDao {
                 "o.created_at AS orderDate, " +
                 "s.shipping_fee AS shippingFee, " +
                 "o.total_price AS totalPrice, " +
-                "s.address AS shippingAddress, o.order_status AS status " +
+                "s.address AS shippingAddress, o.order_status AS status, " +
+                "s.phone_number AS phoneNumber " +
                 "FROM orders o " +
                 "JOIN accounts a ON o.account_id = a.id " +
                 "JOIN customers c ON a.customer_id = c.id " +
@@ -358,6 +359,7 @@ public class OrderDao {
                                 rs.getString("customerName"),
                                 rs.getDate("orderDate"),
                                 rs.getDouble("totalPrice"),
+                                rs.getString("phoneNumber"),
                                 rs.getString("shippingAddress"),
                                 rs.getString("status"),
                                 rs.getDouble("shippingFee"),
@@ -366,6 +368,23 @@ public class OrderDao {
                         .list()
         );
     }
+
+    public boolean updateOrder(int orderId, String shippingAddress, String phoneNumber) {
+        // Cập nhật thông tin địa chỉ và số điện thoại
+        String sql = "UPDATE orders o " +
+                "JOIN shipping s ON o.id = s.order_id " +
+                "SET s.address = :shippingAddress, s.phone_number = :phoneNumber " +
+                "WHERE o.id = :orderId";
+
+        return jdbi.withHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("shippingAddress", shippingAddress)
+                        .bind("phoneNumber", phoneNumber)
+                        .bind("orderId", orderId)
+                        .execute() > 0
+        );
+    }
+
 
     public static void main(String[] args) {
             // Tạo đối tượng OrderDao

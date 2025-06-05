@@ -17,6 +17,7 @@ public class Order {
     private String shippingMethod;
     private int accountId;
     private String note;
+    private String phoneNumber;
 
     // Constructors
     public Order() {}
@@ -36,6 +37,19 @@ public class Order {
         this.totalPrice = totalPrice;
         this.address = address;
         this.orderStatus = orderStatus;
+        this.orderDetails = orderDetails;
+    }
+
+    public Order(int id, String customerName, java.util.Date createdAt, double totalPrice, String phoneNumber,
+                 String address, String orderStatus,double ShippingFee, List<OrderDetail> orderDetails) {
+        this.id = id;
+        this.customerName = customerName;
+        this.createdAt = createdAt;
+        this.totalPrice = totalPrice;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.orderStatus = orderStatus;
+        this.shippingFee = ShippingFee;
         this.orderDetails = orderDetails;
     }
 
