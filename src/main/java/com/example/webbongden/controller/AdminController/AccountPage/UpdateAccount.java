@@ -4,19 +4,14 @@ import com.example.webbongden.dao.AccountDao;
 import com.example.webbongden.dao.model.Account;
 import com.example.webbongden.dao.model.Role;
 import com.example.webbongden.services.AccountServices;
-import com.example.webbongden.util.SessionManager; // <<< THÊM #1: Import SessionManager
+import com.example.webbongden.socket.NotificationSocket;
 import com.example.webbongden.utils.LogUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.annotation.WebServlet;
-// Sử dụng Jackson 1.x như code gốc của bạn
 import org.codehaus.jackson.map.ObjectMapper;
-// Nếu bạn muốn nâng cấp lên Jackson 2.x, các import sẽ là:
-// import com.fasterxml.jackson.databind.ObjectMapper;
-// import com.fasterxml.jackson.core.JsonParseException;
-// import com.fasterxml.jackson.databind.JsonMappingException;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.BufferedReader;
@@ -112,17 +107,12 @@ public class UpdateAccount extends HttpServlet {
 
             Account beforeUpdateAccount = accountServices.getAccountById(accountFromRequest.getId());
 
-            // <<< THÊM #2: Logic để xác định quyền có bị thay đổi hay không
             boolean roleWasChanged = false;
             String newRoleNameFromRequest = accountFromRequest.getRole();
-            // So sánh vai trò mới từ request với vai trò cũ trong DB (trước khi cập nhật)
             if (newRoleNameFromRequest != null && !newRoleNameFromRequest.trim().isEmpty() && !newRoleNameFromRequest.equalsIgnoreCase(beforeUpdateAccount.getRoleName())) {
                 roleWasChanged = true;
             }
-            // --- Kết thúc phần thêm #2 ---
 
-
-            // 1. Xử lý cập nhật vai trò (Role)
             if (newRoleNameFromRequest != null && !newRoleNameFromRequest.trim().isEmpty()) {
                 List<Role> allRoles = accountDao.getAllRoles();
                 Optional<Role> targetRoleOpt = allRoles.stream()
@@ -140,14 +130,12 @@ public class UpdateAccount extends HttpServlet {
                 }
             }
 
-            // 2. Xử lý cập nhật mật khẩu
             String plainPasswordFromRequest = accountFromRequest.getPassword();
             if (plainPasswordFromRequest != null && !plainPasswordFromRequest.trim().isEmpty()) {
                 String hashedPassword = BCrypt.hashpw(plainPasswordFromRequest, BCrypt.gensalt());
                 accountInDB.setPassword(hashedPassword);
             }
 
-            // 3. Cập nhật các thông tin khác
             if (accountFromRequest.getCusName() != null) {
                 accountInDB.setCusName(accountFromRequest.getCusName());
             }
@@ -158,7 +146,6 @@ public class UpdateAccount extends HttpServlet {
                 accountInDB.setEmail(accountFromRequest.getEmail());
             }
 
-            // 4. Gọi service để cập nhật tài khoản
             boolean isUpdated = accountServices.updateAccount(accountInDB);
 
             if (isUpdated) {
@@ -169,12 +156,16 @@ public class UpdateAccount extends HttpServlet {
                 jsonResponse.put("success", true);
                 jsonResponse.put("message", "Cập nhật tài khoản thành công!");
 
-                // <<< THÊM #3: Gọi cắt session nếu quyền đã thay đổi
                 if (roleWasChanged) {
-                    System.out.println("Role changed for user: " + accountInDB.getUsername() + ". Invalidating session.");
-                    SessionManager.invalidateUserSession(accountInDB.getUsername());
+                    String usernameToNotify = accountInDB.getUsername();
+                    System.out.println("Role changed for user: " + usernameToNotify + ". Sending notification via WebSocket.");
+
+                    String notificationMessage = String.format(
+                            "{\"type\": \"FORCE_LOGOUT\", \"message\": \"Quyền tài khoản của bạn đã được quản trị viên thay đổi. Vui lòng đăng nhập lại để cập nhật.\"}"
+                    );
+
+                    NotificationSocket.sendMessageToUser(usernameToNotify, notificationMessage);
                 }
-                // --- Kết thúc phần thêm #3 ---
 
             } else {
                 jsonResponse.put("success", false);
