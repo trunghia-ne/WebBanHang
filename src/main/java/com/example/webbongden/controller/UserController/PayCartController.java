@@ -1,6 +1,7 @@
 package com.example.webbongden.controller.UserController;
 
 import com.example.webbongden.dao.LogDao;
+import com.example.webbongden.dao.VoucherDao;
 import com.example.webbongden.dao.model.*;
 import com.example.webbongden.pay.Config;
 import com.example.webbongden.pay.ConfigMomo;
@@ -44,6 +45,9 @@ public class PayCartController extends HttpServlet {
         int shippingFee = Integer.parseInt(request.getParameter("finalShippingFee"));
         String voucherIdStr = request.getParameter("voucherId");
         int voucherId = (voucherIdStr != null && !voucherIdStr.isEmpty()) ? Integer.parseInt(voucherIdStr) : 0;
+        if (voucherId > 0) {
+            session.setAttribute("voucherId", voucherId);
+        }
 
 
         // Lấy thông tin từ session
@@ -101,6 +105,15 @@ public class PayCartController extends HttpServlet {
             if ("COD".equals(paymentMethod)) {
                 request.setAttribute("actionStatus", "success");
                 request.setAttribute("orderId", invoice.getId());
+                if (voucherId > 0) {
+                    try {
+                        VoucherDao voucherDao = new VoucherDao();
+                        voucherDao.useVoucher(voucherId);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 LogUtils.logCreateOrder(request, invoice, cart, "COD");
                 session.setAttribute("transResult", true);
                 session.removeAttribute("cart");

@@ -1,6 +1,7 @@
 package com.example.webbongden.pay;
 
 import com.example.webbongden.dao.OrderDao;
+import com.example.webbongden.dao.VoucherDao;
 import com.example.webbongden.dao.model.Invoices;
 import com.example.webbongden.dao.model.Order;
 import jakarta.servlet.*;
@@ -58,6 +59,18 @@ public class vnpayReturn extends HttpServlet {
                     //update banking system
                     invoices.setPaymentStatus("Completed");
                     transSuccess = true;
+
+                    Object voucherIdObj = session.getAttribute("voucherId");
+                    int voucherId = (voucherIdObj != null) ? (int) voucherIdObj : 0;
+                    if (voucherId > 0) {
+                        try {
+                            VoucherDao voucherDao = new VoucherDao();
+                            voucherDao.useVoucher(voucherId);
+                            session.removeAttribute("voucherId"); // Xóa sau khi dùng để tránh dùng lại
+                        } catch (Exception e) {
+                            e.printStackTrace(); // Có thể log lỗi để xử lý
+                        }
+                    }
                 } else {
                     invoices.setPaymentStatus("Pending");
                 }

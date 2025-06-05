@@ -33,6 +33,7 @@ public class ApplyVoucherController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String code = request.getParameter("discountCode");
 
+
         BigDecimal subtotalBD;
         try {
             subtotalBD = new BigDecimal(request.getParameter("subtotal"));
@@ -43,7 +44,7 @@ public class ApplyVoucherController extends HttpServlet {
 
         Voucher voucher = voucherDao.findValidVoucher(code, subtotalBD);
 
-        if (voucher == null) {
+        if (voucher == null || voucher.getUsageLimit() == 0) {
             sendJsonResponse(response, false, "Mã giảm giá không hợp lệ hoặc đã hết hạn, vui lòng kiểm tra lại.", null, null);
             return;
         }
