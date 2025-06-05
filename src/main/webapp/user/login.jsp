@@ -25,10 +25,19 @@
             href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
             rel="stylesheet"
     />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/login.css?v=2" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/login.css?v=2"/>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
+<style>
+    button:disabled,
+    button[disabled] {
+        background-color: #cccccc;
+        color: #666666;
+        cursor: not-allowed;
+        border-color: #cccccc;
+    }
+</style>
 <body>
 <div class="wrapper">
     <!-- Hiển thị thông báo lỗi nếu có -->
@@ -86,7 +95,8 @@
 
             <!-- CAPTCHA -->
             <div class="form-group">
-                <div class="g-recaptcha" data-sitekey="6LehGvYqAAAAAGyyRncgehEOw351OwCJK4fAoLL0" data-callback="onCaptchaSuccess"></div>
+                <div class="g-recaptcha" data-sitekey="6LehGvYqAAAAAGyyRncgehEOw351OwCJK4fAoLL0"
+                     data-callback="onCaptchaSuccess"></div>
                 <span class="error-message" id="error-captcha"></span>
             </div>
 
@@ -105,18 +115,21 @@
                 </button>
             </div>
 
-            <div style="width: 100%; background-color: #eee; height: 1px; border-radius: 4px; margin-top: 35px;" ></div>
+            <div style="width: 100%; background-color: #eee; height: 1px; border-radius: 4px; margin-top: 35px;"></div>
             <div class="login-by-platform">
                 <p>ĐĂNG NHẬP BẰNG ỨNG DỤNG KHÁC </p>
                 <div class="platfrom-container">
                     <div class="platform" id="login-facebook">
-                        <img src="<%= request.getContextPath() %>/assets/img/imagesWeb/facebook.png" alt="Facebook Login">
+                        <img src="<%= request.getContextPath() %>/assets/img/imagesWeb/facebook.png"
+                             alt="Facebook Login">
                         <span>Facebook</span>
                     </div>
 
                     <div class="platform" id="login-google">
-                        <a class="google-link" href="https://accounts.google.com/o/oauth2/auth?scope=email%20profile&response_type=code&client_id=625158935097-jbd22lba0t05tm01j6m2bc4n801ncnfj.apps.googleusercontent.com&redirect_uri=https://webbongden.khacthienit.click/WebBongDen_war/login-google&access_type=offline&approval_prompt=force">
-                            <img src="<%= request.getContextPath() %>/assets/img/imagesWeb/google.png" alt="Facebook Login">
+                        <a class="google-link"
+                           href="https://accounts.google.com/o/oauth2/auth?scope=email%20profile&response_type=code&client_id=625158935097-jbd22lba0t05tm01j6m2bc4n801ncnfj.apps.googleusercontent.com&redirect_uri=https://webbongden.khacthienit.click/WebBongDen_war/login-google&access_type=offline&approval_prompt=force">
+                            <img src="<%= request.getContextPath() %>/assets/img/imagesWeb/google.png"
+                                 alt="Facebook Login">
                             <span>Google</span>
                         </a>
                     </div>
@@ -167,6 +180,8 @@
                         required
                         placeholder="Nhập OTP"
                 />
+                <%-- Thêm thẻ này để hiển thị thông báo từ AJAX --%>
+                <p id="otp-message" style="color: red; margin-top: 10px;"></p>
             </div>
             <div class="group-btn">
                 <button type="submit">Xác Nhận OTP</button>
@@ -213,4 +228,81 @@
 </body>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="${pageContext.request.contextPath}/assets/Js/login.js?v=${System.currentTimeMillis()}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const verifyOtpForm = document.getElementById('verify-otp-form');
+        if (verifyOtpForm) {
+            // Lấy các element cần thiết
+            const otpInput = document.getElementById('otp');
+            const messageElement = document.getElementById('otp-message');
+            const submitButton = verifyOtpForm.querySelector('button[type="submit"]');
+
+            verifyOtpForm.addEventListener('submit', function (event) {
+                event.preventDefault(); // Ngăn form gửi đi theo cách truyền thống
+
+                // --- BƯỚC 1: KIỂM TRA KHÓA PHÍA CLIENT TRƯỚC KHI GỬI REQUEST ---
+                const lockoutEndTime = sessionStorage.getItem('otpLockoutEndTime');
+                if (lockoutEndTime && new Date().getTime() < lockoutEndTime) {
+                    const remainingTime = Math.ceil((lockoutEndTime - new Date().getTime()) / 1000);
+                    messageElement.style.color = 'red';
+                    messageElement.textContent = `Bạn đã nhập sai quá nhiều lần. Vui lòng thử lại sau ${remainingTime} giây.`;
+                    return; // Dừng lại, không gửi request
+                }
+
+                // Nếu không bị khóa, xóa trạng thái khóa cũ (nếu có) và bật lại nút
+                sessionStorage.removeItem('otpLockoutEndTime');
+                submitButton.disabled = false;
+
+                // --- BƯỚC 2: GỬI REQUEST AJAX NẾU KHÔNG BỊ KHÓA ---
+                const formData = new URLSearchParams();
+                formData.append('otp', otpInput.value);
+                messageElement.textContent = ''; // Xóa thông báo cũ
+
+                fetch('verify-otp', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // --- BƯỚC 3: XỬ LÝ PHẢN HỒI TỪ SERVER ---
+                        if (data.success) {
+                            messageElement.style.color = 'green';
+                            messageElement.textContent = data.message;
+                            setTimeout(() => {
+                                document.getElementById('otp-form').style.display = 'none';
+                                document.getElementById('new-password-form').style.display = 'block';
+                            }, 1000);
+                        } else {
+                            messageElement.style.color = 'red';
+                            messageElement.textContent = data.message;
+
+                            // Nếu server báo khóa, chúng ta sẽ kích hoạt khóa ở client
+                            // Kiểm tra chuỗi message từ server
+                            if (data.message.includes("bị tạm khóa")) {
+                                const blockDuration = 60000; // 1 phút = 60000 ms
+                                const newLockoutEndTime = new Date().getTime() + blockDuration;
+                                sessionStorage.setItem('otpLockoutEndTime', newLockoutEndTime);
+
+                                // Vô hiệu hóa nút và đặt hẹn giờ để kích hoạt lại
+                                submitButton.disabled = true;
+                                setTimeout(() => {
+                                    submitButton.disabled = false;
+                                    // Xóa thông báo sau khi hết khóa để người dùng có thể nhập lại
+                                    if (messageElement.textContent.includes("bị tạm khóa")) {
+                                        messageElement.textContent = '';
+                                    }
+                                }, blockDuration);
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        messageElement.style.color = 'red';
+                        messageElement.textContent = 'Đã xảy ra lỗi kết nối. Vui lòng thử lại.';
+                    });
+            });
+        }
+    });
+</script>
 </html>
