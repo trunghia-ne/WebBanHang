@@ -23,7 +23,6 @@ public class ReviewController extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 
         try {
-            // Đọc dữ liệu JSON từ request
             StringBuilder jsonBuilder = new StringBuilder();
             String line;
             try (BufferedReader reader = request.getReader()) {
@@ -32,7 +31,6 @@ public class ReviewController extends HttpServlet {
                 }
             }
 
-            // Parse JSON
             JsonObject jsonData = JsonParser.parseString(jsonBuilder.toString()).getAsJsonObject();
 
             int productId = jsonData.get("productId").getAsInt();
@@ -48,7 +46,6 @@ public class ReviewController extends HttpServlet {
             String reviewType = "product_review";
             boolean isSuccess = reviewService.addReview(productId, accountId, content, rating, reviewType);
 
-            // Tạo phản hồi JSON
             JsonObject jsonResponse = new JsonObject();
             jsonResponse.addProperty("success", isSuccess);
             jsonResponse.addProperty("message", isSuccess ? "Bình luận đã được gửi thành công!" : "Gửi bình luận thất bại.");

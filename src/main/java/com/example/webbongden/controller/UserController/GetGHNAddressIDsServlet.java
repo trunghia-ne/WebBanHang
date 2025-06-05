@@ -1,4 +1,4 @@
-package com.example.webbongden.controller.UserController; // Thay đổi package cho phù hợp
+package com.example.webbongden.controller.UserController;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-// import java.net.URLEncoder; // Hiện tại không dùng trong servlet này cho request parameters
 import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.util.regex.Pattern;
@@ -21,9 +20,8 @@ import java.util.regex.Pattern;
 @WebServlet(name = "GetGHNAddressIDsServlet", value = "/get-ghn-address-ids")
 public class GetGHNAddressIDsServlet extends HttpServlet {
 
-    private static final String GHN_TOKEN_FOR_MASTER_DATA = "84cec4b1-3712-11f0-8990-3a03389d049e"; // Thay token nếu API GHN yêu cầu
-    //    private static final String GHN_API_BASE_URL = "https://dev-online-gateway.ghn.vn/shiip/public-api/master-data";
-    private static final String GHN_API_BASE_URL = "https://online-gateway.ghn.vn/shiip/public-api/master-data"; // Production URL
+    private static final String GHN_TOKEN_FOR_MASTER_DATA = "84cec4b1-3712-11f0-8990-3a03389d049e";
+    private static final String GHN_API_BASE_URL = "https://online-gateway.ghn.vn/shiip/public-api/master-data";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -48,13 +46,11 @@ public class GetGHNAddressIDsServlet extends HttpServlet {
 
 
         try {
-            // 1. Lấy ProvinceID của GHN từ provinceNameInput
             int ghnProvinceID = -1;
-            String foundGhnProvinceName = null; // Để debug xem tên nào đã khớp
+            String foundGhnProvinceName = null;
             JSONArray provinces = callGHNMasterDataAPI("/province", null);
 
             if (provinces != null) {
-                // In toàn bộ danh sách tỉnh từ GHN để kiểm tra tên chính xác
                 System.out.println("[SERVLET DEBUG] Danh sách tỉnh từ GHN API:");
                 for (int i = 0; i < provinces.length(); i++) {
                     JSONObject p = provinces.getJSONObject(i);
@@ -68,7 +64,6 @@ public class GetGHNAddressIDsServlet extends HttpServlet {
                     JSONObject p = provinces.getJSONObject(i);
                     String currentGhnProvinceName = p.getString("ProvinceName");
 
-                    // Debugging chi tiết việc so khớp tên tỉnh
                     System.out.println("[SERVLET DEBUG] Comparing (Province): GHN API Name = '" + currentGhnProvinceName + "', Input Name = '" + provinceNameInput + "'");
                     boolean isMatch = flexibleNameMatch(currentGhnProvinceName, provinceNameInput, "province");
                     System.out.println("[SERVLET DEBUG] Match result: " + isMatch);
@@ -88,7 +83,6 @@ public class GetGHNAddressIDsServlet extends HttpServlet {
                 return;
             }
 
-            // 2. Lấy DistrictID của GHN từ districtNameInput và ghnProvinceID
             int ghnDistrictID = -1;
             String foundGhnDistrictName = null;
             JSONArray districts = callGHNMasterDataAPI("/district", "province_id=" + ghnProvinceID);
@@ -96,7 +90,7 @@ public class GetGHNAddressIDsServlet extends HttpServlet {
                 for (int i = 0; i < districts.length(); i++) {
                     JSONObject d = districts.getJSONObject(i);
                     String currentGhnDistrictName = d.getString("DistrictName");
-                    JSONArray nameExtensions = d.optJSONArray("NameExtension"); // GHN có thể có nhiều tên gọi
+                    JSONArray nameExtensions = d.optJSONArray("NameExtension");
 
                     System.out.println("[SERVLET DEBUG] Comparing (District): GHN API Name = '" + currentGhnDistrictName + "', Input Name = '" + districtNameInput + "'");
                     boolean isMatch = flexibleNameMatch(currentGhnDistrictName, districtNameInput, "district");
@@ -107,7 +101,7 @@ public class GetGHNAddressIDsServlet extends HttpServlet {
                             System.out.println("[SERVLET DEBUG] Comparing (District Extension): GHN Ext. Name = '" + extName + "', Input Name = '" + districtNameInput + "'");
                             if (flexibleNameMatch(extName, districtNameInput, "district_extension")) {
                                 isMatch = true;
-                                currentGhnDistrictName = extName; // Lấy tên đã khớp
+                                currentGhnDistrictName = extName;
                                 break;
                             }
                         }
@@ -129,7 +123,6 @@ public class GetGHNAddressIDsServlet extends HttpServlet {
                 return;
             }
 
-            // 3. Lấy WardCode của GHN từ wardNameInput và ghnDistrictID
             String ghnWardCode = null;
             String foundGhnWardName = null;
             JSONArray wards = callGHNMasterDataAPI("/ward", "district_id=" + ghnDistrictID);
@@ -174,7 +167,7 @@ public class GetGHNAddressIDsServlet extends HttpServlet {
 
         } catch (Exception e) {
             System.err.println("[SERVLET EXCEPTION] Lỗi nghiêm trọng: " + e.getMessage());
-            e.printStackTrace(); // In stack trace ra server log
+            e.printStackTrace();
             jsonResponse.put("error", "Lỗi hệ thống khi lấy mã địa chỉ GHN. Chi tiết: " + e.getMessage());
         }
         response.getWriter().write(jsonResponse.toString());
@@ -227,57 +220,43 @@ public class GetGHNAddressIDsServlet extends HttpServlet {
         }
     }
 
-    // Cải thiện hàm chuẩn hóa và so sánh tên
-    private boolean flexibleNameMatch(String ghnName, String inputName, String type) { // Thêm type để debug
+    private boolean flexibleNameMatch(String ghnName, String inputName, String type) {
         if (ghnName == null || inputName == null) return false;
 
         String normalizedGhnName = normalizeStringForMatching(ghnName, type);
         String normalizedInputName = normalizeStringForMatching(inputName, type);
 
-        // System.out.println("[FLEXIBLE MATCH - " + type.toUpperCase() + "] Normalized GHN: '" + normalizedGhnName + "' vs Normalized Input: '" + normalizedInputName + "'");
 
         if (normalizedGhnName.equalsIgnoreCase(normalizedInputName)) {
-            // System.out.println("[FLEXIBLE MATCH - " + type.toUpperCase() + "] Matched by equalsIgnoreCase.");
             return true;
         }
 
-        // Tăng cường kiểm tra contains
-        // Chỉ coi là khớp nếu một chuỗi chứa chuỗi kia VÀ chúng không quá khác biệt về độ dài HOẶC một trong hai bắt đầu bằng chuỗi kia
-        // Điều này giúp tránh trường hợp "An Giang" khớp với "Giang" nhưng không khớp với "Bắc Giang" (nếu input là "Giang")
         if (normalizedGhnName.contains(normalizedInputName) || normalizedInputName.contains(normalizedGhnName)) {
             int lenDiff = Math.abs(normalizedGhnName.length() - normalizedInputName.length());
             int minLen = Math.min(normalizedGhnName.length(), normalizedInputName.length());
             int maxLen = Math.max(normalizedGhnName.length(), normalizedInputName.length());
 
-            // Nếu một chuỗi là substring của chuỗi kia
             if ( (normalizedGhnName.startsWith(normalizedInputName) && minLen > 2) ||
                     (normalizedInputName.startsWith(normalizedGhnName) && minLen > 2) ||
-                    // Hoặc nếu chúng rất giống nhau về độ dài và một chứa một
-                    (lenDiff <= maxLen / 2 && minLen > 2) // Chênh lệch độ dài không quá 50% và độ dài tối thiểu > 2
+                    (lenDiff <= maxLen / 2 && minLen > 2)
             ) {
-                // System.out.println("[FLEXIBLE MATCH - " + type.toUpperCase() + "] Matched by contains with stricter checks.");
                 return true;
             }
         }
         return false;
     }
 
-    // Hàm chuẩn hóa tên để so khớp
     private String normalizeStringForMatching(String str, String type) {
         if (str == null) return "";
 
         String temp = str;
-        // 1. Bỏ dấu tiếng Việt
         temp = Normalizer.normalize(temp, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         temp = pattern.matcher(temp).replaceAll("");
 
-        // 2. Chuyển sang chữ thường
         temp = temp.toLowerCase();
 
-        // 3. Loại bỏ các tiền tố phổ biến tùy theo loại (chỉ khi không phải là phần mở rộng)
-        // Đối với NameExtension, thường không có tiền tố "Tỉnh", "Quận", "Phường"
-        if (!type.contains("extension")) { // Chỉ loại bỏ tiền tố cho tên chính, không phải NameExtension
+        if (!type.contains("extension")) {
             if (type.equals("province")) {
                 temp = temp.replaceFirst("^(thanh pho|tp|tinh)\\s+", "");
             } else if (type.equals("district")) {
@@ -287,13 +266,10 @@ public class GetGHNAddressIDsServlet extends HttpServlet {
             }
         }
 
-        // 4. Loại bỏ khoảng trắng thừa và các ký tự đặc biệt không cần thiết (ví dụ dấu gạch ngang nếu cần)
-        temp = temp.trim().replaceAll("\\s+", " ").replaceAll("[-–—]", " "); // Thay gạch ngang bằng space rồi chuẩn hóa space
-        temp = temp.replaceAll("\\s+", " "); // Chuẩn hóa lại khoảng trắng sau khi replace gạch ngang
+        temp = temp.trim().replaceAll("\\s+", " ").replaceAll("[-–—]", " ");
+        temp = temp.replaceAll("\\s+", " ");
 
         return temp;
     }
 
-    // Hàm removeCommonPrefixes cũ có thể không cần nữa nếu normalizeStringForMatching đã đủ tốt
-    // private String removeCommonPrefixes(String name) { ... }
 }
