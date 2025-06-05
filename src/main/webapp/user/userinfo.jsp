@@ -107,6 +107,39 @@
         padding: 8px;
         text-align: center;
     }
+
+    /* Căn trái các cột trong bảng */
+    #ordersTable td, #ordersTable th {
+        text-align: left !important;  /* Căn trái tất cả các cột */
+    }
+
+    /* Định dạng nút Chi tiết và Hủy */
+    button.btn-detail, button.btn-cancel {
+        background-color: #007bff;  /* Màu nền cho nút Chi tiết */
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        font-size: 14px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        margin-right: 5px;
+    }
+
+    button.btn-cancel {
+        background-color: #dc3545;  /* Màu nền cho nút Hủy */
+    }
+
+    button.btn-detail:hover, button.btn-cancel:hover {
+        opacity: 0.8;  /* Làm mờ nút khi hover */
+    }
+
+    /* Định dạng icon trong nút */
+    button i {
+        margin-right: 5px;
+    }
 </style>
 <body>
 <div class="wrapper">

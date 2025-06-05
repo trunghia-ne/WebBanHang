@@ -650,11 +650,7 @@
 
     // Hàm định dạng tiền VND
     function formatCurrency(value) {
-        return new Intl.NumberFormat('vi-VN', {
-            style: 'currency',
-            currency: 'VND',
-            minimumFractionDigits: 0
-        }).format(value);
+        return value.toLocaleString('vi-VN') + ' VND';
     }
 
     // Hàm toast thông báo
@@ -725,6 +721,9 @@
         });
     });
 
+</script>
+<script>
+    sessionStorage.removeItem("voucherInfo");
 </script>
 
 </body>

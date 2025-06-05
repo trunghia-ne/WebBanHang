@@ -9,6 +9,7 @@ public class OrderDetail {
     private double itemDiscount;  // Chiết khấu trên từng sản phẩm
     private double amount;        // Tổng tiền (sau chiết khấu)
     private String productName;
+    private String productImageUrl;
 
     // Constructors
     public OrderDetail() {}
@@ -31,7 +32,7 @@ public class OrderDetail {
         this.amount = amount;
     }
 
-    public OrderDetail(int productId, int orderId, String productName, int quantity, double unitPrice, double itemDiscount, double amount) {
+    public OrderDetail(int productId, int orderId, String productName, int quantity, double unitPrice, double itemDiscount, double amount, String productImageUrl) {
         this.productId = productId;
         this.orderId = orderId;
         this.productName = productName; // Gán giá trị tên sản phẩm
@@ -39,6 +40,7 @@ public class OrderDetail {
         this.unitPrice = unitPrice;
         this.itemDiscount = itemDiscount;
         this.amount = amount;
+        this.productImageUrl = productImageUrl;
     }
 
 

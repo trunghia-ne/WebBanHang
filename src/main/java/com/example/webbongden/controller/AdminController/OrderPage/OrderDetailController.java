@@ -35,7 +35,7 @@ public class OrderDetailController extends HttpServlet {
             int orderId = Integer.parseInt(orderIdParam);
 
             List<OrderDetail> orderDetails = orderServices.getOrderDetailsById(orderId);
-            double shippingFee = orderServices.getShippingFeeById(orderId); // THÊM HÀM NÀY TRONG service
+            double shippingFee = orderServices.getShippingFeeById(orderId);
 
             OrderDetailResponse orderDetailResponse = new OrderDetailResponse(orderDetails, shippingFee);
 
