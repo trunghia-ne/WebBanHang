@@ -287,12 +287,15 @@ public class AccountDao {
     }
 
     public boolean deleteAccountById(int accountId) {
-        String sql = "DELETE FROM accounts WHERE id = :accountId";
-        return jdbi.withHandle(handle ->
-                handle.createUpdate(sql)
-                        .bind("accountId", accountId)
-                        .execute() > 0
-        );
+        return jdbi.inTransaction(handle -> {
+            handle.createUpdate("DELETE FROM logs WHERE account_id = :accountId")
+                    .bind("accountId", accountId)
+                    .execute();
+            int rowsAffected = handle.createUpdate("DELETE FROM accounts WHERE id = :accountId")
+                    .bind("accountId", accountId)
+                    .execute();
+            return rowsAffected > 0;
+        });
     }
 
     public boolean checkEmailExists(String email) {
