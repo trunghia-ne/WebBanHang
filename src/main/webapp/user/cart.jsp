@@ -487,22 +487,18 @@
             <div class="tab-content" id="finish" style="padding: 70px 0">
                 <section style="margin-top: 50px; text-align: center;">
                     <div>
-                        <img src="https://daphongthuyvn.com/files/assets/dat-hang-thanh-cong.jpg" <%-- Nên dùng ${pageContext.request.contextPath}/assets/img/... --%>
-                             alt="Transaction Status" style="max-width: 200px; margin-bottom: 20px;"
+                        <img src="https://daphongthuyvn.com/files/assets/dat-hang-thanh-cong.jpg"
+                             alt="Transaction Status" style="margin-bottom: 20px;"
                         >
                     </div>
 
                     <c:if test="${not empty sessionScope.transResult && sessionScope.transResult == true}">
                         <div>
-                            <h3 style="font-weight: bold; color: #28a745;">
-                                Bạn đã đặt hàng thành công!
-                                <i class="fas fa-check-circle"></i>
-                            </h3>
                             <p style="font-size: 18px; margin-top: 15px;">Vui lòng để ý điện thoại, nhân viên sẽ sớm liên hệ để xác nhận đơn hàng.</p>
-                            <p style="font-size: 18px; margin-top: 5px;">Số điện thoại tư vấn (nếu cần):
+                            <p style="font-size: 18px; margin-top: 5px; margin-bottom: 20px;">Số điện thoại tư vấn (nếu cần):
                                 <strong style="color: red; font-size: 20px;">0383459560</strong>
                             </p>
-                            <a href="${pageContext.request.contextPath}/home" class="back-to-shopping-btn" style="margin-top: 20px;">Tiếp tục mua sắm</a>
+                            <a href="${pageContext.request.contextPath}/home" class="back-to-shopping-btn" style="margin-top: 20px; margin-bottom: 20px">Tiếp tục mua sắm</a>
                         </div>
                     </c:if>
 
@@ -527,7 +523,7 @@
                             </h3>
                             <p style="font-size: 18px; margin-top: 15px;">Chúng tôi đã tiếp nhận đơn hàng và sẽ sớm xử lý.</p>
                             <p style="font-size: 18px; margin-top: 5px;">Vui lòng để ý điện thoại, nhân viên sẽ sớm liên hệ để xác nhận đơn hàng.</p>
-                            <p style="font-size: 18px;">Số điện thoại tư vấn (nếu cần):
+                            <p style="font-size: 18px; margin-bottom: 20px;">Số điện thoại tư vấn (nếu cần):
                                 <strong style="color: red; font-size: 20px;">0383459560</strong>
                             </p>
                             <a href="${pageContext.request.contextPath}/home" class="back-to-shopping-btn" style="margin-top: 20px;">Tiếp tục mua sắm</a>
@@ -720,7 +716,6 @@
             }
         });
     });
-
 </script>
 <script>
     sessionStorage.removeItem("voucherInfo");
