@@ -155,22 +155,25 @@
 
 </header>
 <% if (username != null) { %>
-<%
-    String wsProtocol = request.isSecure() ? "wss://" : "ws://";
-
-    String serverName = request.getServerName();
-    int serverPort = request.getServerPort();
-    String contextPath = request.getContextPath();
-    String socketUrl = wsProtocol + serverName + ":" + serverPort + contextPath + "/ws/notification/" + username;
-%>
-
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function () {
-        const socketUrlFromServer = "<%= socketUrl %>";
+        // Lấy các biến cần thiết từ JSP
+        const contextPath = '<%= request.getContextPath() %>';
+        const loggedInUsername = '<%= username %>';
 
-        console.log("Attempting to connect to WebSocket at: " + socketUrlFromServer);
+        // Logic này hoạt động tốt cho cả localhost (http) và server thật (https)
+        // Nó sẽ tự động chọn 'wss://' khi trang web được tải qua 'https://'
+        const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
 
-        const socket = new WebSocket(socketUrlFromServer);
+        // Lấy host (bao gồm cả port nếu có, ví dụ: "localhost:8080" hoặc "webbongden.khacthienit.click")
+        const host = window.location.host;
+
+        // <<< SỬA LỖI Ở ĐÂY: Đường dẫn trên server luôn là /ws/notification/
+        const socketUrl = `${protocol}${host}${contextPath}/ws/notification/${loggedInUsername}`;
+
+        console.log("Attempting to connect to WebSocket at: " + socketUrl);
+
+        const socket = new WebSocket(socketUrl);
 
         socket.onopen = function (event) {
             console.log('WebSocket connection established successfully!');
@@ -206,7 +209,7 @@
                 allowEscapeKey: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "<%= request.getContextPath() %>/LogoutController";
+                    window.location.href = contextPath + "/LogoutController";
                 }
             });
         }
