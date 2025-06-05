@@ -37,7 +37,7 @@
                 {
                     data: null, // Dùng null vì sẽ tính toán từ nhiều trường
                     render: function (data) {
-                        const totalWithShipping = (parseInt(data.totalPrice) + parseInt(data.shippingFee || 0));
+                        const totalWithShipping = (parseInt(data.totalPrice));
                         return totalWithShipping.toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
