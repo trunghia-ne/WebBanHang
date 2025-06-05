@@ -2,8 +2,8 @@ package com.example.webbongden.controller.UserController;
 
 import com.example.webbongden.dao.AccountDao;
 import com.example.webbongden.dao.model.Account;
-import com.example.webbongden.dao.model.Order; // NEW: Import Order nếu bạn dùng
-import com.example.webbongden.dao.model.User;  // NEW: Import User nếu bạn dùng User DTO
+import com.example.webbongden.dao.model.Order;
+import com.example.webbongden.dao.model.User;
 import com.example.webbongden.services.AccountServices;
 import com.example.webbongden.services.OrderSevices;
 import com.example.webbongden.services.UserSevices;
@@ -17,7 +17,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
-import java.util.List; // NEW: Import List nếu bạn dùng
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -58,7 +58,7 @@ public class LoginGoogleServlet extends HttpServlet {
             String email = payload.getEmail();
             String name = (String) payload.get("name");
             String pictureUrl = (String) payload.get("picture");
-            String usernameForNewAccount = email; // Hoặc một username khác bạn muốn tạo
+            String usernameForNewAccount = email;
 
             Optional<Account> existingAccountOpt = accountDAO.findByEmail(email);
             Account account;
@@ -66,8 +66,8 @@ public class LoginGoogleServlet extends HttpServlet {
             if (existingAccountOpt.isPresent()) {
                 account = existingAccountOpt.get();
             } else {
-                account = new Account(email, name, pictureUrl, usernameForNewAccount, "G00gl3P@sswOrd_Placeholder"); // Mật khẩu placeholder
-                if (!accountDAO.addAccountUserFB(account)) { // addAccountUserFB đã set role_id=1, permissions_version=1 trong DB
+                account = new Account(email, name, pictureUrl, usernameForNewAccount, "G00gl3P@sswOrd_Placeholder");
+                if (!accountDAO.addAccountUserFB(account)) {
                     request.setAttribute("errorMessage", "Lỗi khi tạo tài khoản Google. Vui lòng thử lại.");
                     request.getRequestDispatcher("/user/login.jsp").forward(request, response);
                     return;

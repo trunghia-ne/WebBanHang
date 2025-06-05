@@ -49,7 +49,6 @@ public class CartItem {
         this.giftName = giftName;
     }
 
-    // Getter and Setter for productId
     public int getProductId() {
         return productId;
     }
@@ -58,7 +57,6 @@ public class CartItem {
         this.productId = productId;
     }
 
-    // Getter and Setter for productName
     public String getProductName() {
         return productName;
     }
@@ -67,7 +65,6 @@ public class CartItem {
         this.productName = productName;
     }
 
-    // Getter and Setter for quantity
     public int getQuantity() {
         return quantity;
     }
@@ -76,7 +73,6 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    // Getter and Setter for price
     public double getPrice() {
         return price;
     }
@@ -87,7 +83,6 @@ public class CartItem {
         this.price = price;
     }
 
-    // Getter and Setter for imageUrl
     public String getImageUrl() {
         return imageUrl;
     }
@@ -118,6 +113,6 @@ public class CartItem {
 
     public String getFormattedPrice() {
         DecimalFormat formatter = new DecimalFormat("#,###");
-        return formatter.format(price); // Trả về giá tiền đã định dạng, ví dụ: "1.200.000,00 ₫"
+        return formatter.format(price);
     }
 }
