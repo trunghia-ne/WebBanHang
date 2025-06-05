@@ -212,7 +212,7 @@
                         <td>${parseFloat(item.unitPrice).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</td>
                         <td>${parseFloat(item.amount).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</td>
                         <td>
-                            <a href="http://localhost:8080/WebBongDen_war/product-detail?id=${item.productId}" target="_blank">link</a>
+                            <a href="https://webbongden.khacthienit.click/product-detail?id=${item.productId}" target="_blank">link</a>
                         </td>
                     </tr>
                 `);

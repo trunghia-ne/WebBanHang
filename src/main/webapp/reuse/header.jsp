@@ -102,7 +102,7 @@
                         </div>
                         <div class="dropdown-footer">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                            <a href="${pageContext.request.contextPath}/logout">Đăng xuất</a>
+                            <a href="${pageContext.request.contextPath}/LogoutController">Đăng xuất</a>
                         </div>
                     </div>
                 </div>
@@ -154,32 +154,32 @@
     </nav>
 
 </header>
+<%-- ================= BẮT ĐẦU PHẦN JAVASCRIPT ĐƯỢC THÊM VÀO ================= --%>
+<%-- Chỉ thực thi script này khi người dùng đã đăng nhập --%>
 <% if (username != null) { %>
+
+<%-- Xây dựng URL WebSocket hoàn chỉnh trên Server --%>
+<%
+    String wsProtocol = "wss://";
+    String serverName = request.getServerName();
+    int serverPort = request.getServerPort();
+    String contextPath = request.getContextPath();
+    String portPart = (serverPort == 443 || serverPort == 80) ? "" : (":" + serverPort);
+    String socketUrl = wsProtocol + serverName + portPart + contextPath + "/ws/notification/" + username;
+%>
+
+
 <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-        // Lấy các biến cần thiết từ JSP
-        const contextPath = '<%= request.getContextPath() %>';
-        const loggedInUsername = '<%= username %>';
+    document.addEventListener('DOMContentLoaded', function() {
+        const socketUrlFromServer = "<%= socketUrl %>";
+        console.log("Attempting to connect to WebSocket at: " + socketUrlFromServer);
+        const socket = new WebSocket(socketUrlFromServer);
 
-        // Logic này hoạt động tốt cho cả localhost (http) và server thật (https)
-        // Nó sẽ tự động chọn 'wss://' khi trang web được tải qua 'https://'
-        const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-
-        // Lấy host (bao gồm cả port nếu có, ví dụ: "localhost:8080" hoặc "webbongden.khacthienit.click")
-        const host = window.location.host;
-
-        // <<< SỬA LỖI Ở ĐÂY: Đường dẫn trên server luôn là /ws/notification/
-        const socketUrl = `${protocol}${host}${contextPath}/ws/notification/${loggedInUsername}`;
-
-        console.log("Attempting to connect to WebSocket at: " + socketUrl);
-
-        const socket = new WebSocket(socketUrl);
-
-        socket.onopen = function (event) {
+        socket.onopen = function(event) {
             console.log('WebSocket connection established successfully!');
         };
 
-        socket.onmessage = function (event) {
+        socket.onmessage = function(event) {
             console.log('Message from server: ', event.data);
             try {
                 const data = JSON.parse(event.data);
@@ -191,11 +191,11 @@
             }
         };
 
-        socket.onclose = function (event) {
-            console.log('WebSocket connection closed. Code: ' + event.code + ', Reason: ' + event.reason);
+        socket.onclose = function(event) {
+            console.log('WebSocket connection closed.');
         };
 
-        socket.onerror = function (error) {
+        socket.onerror = function(error) {
             console.error('WebSocket Error: An error occurred.', error);
         };
 
@@ -209,10 +209,12 @@
                 allowEscapeKey: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = contextPath + "/LogoutController";
+                    // <<< THAY ĐỔI DUY NHẤT Ở ĐÂY: Trỏ đến đúng servlet đăng xuất của bạn
+                    window.location.href = "<%= request.getContextPath() %>/LogoutController";
                 }
             });
         }
     });
 </script>
 <% } %>
+<%-- ================= KẾT THÚC PHẦN JAVASCRIPT ĐƯỢC THÊM VÀO ================= --%>
