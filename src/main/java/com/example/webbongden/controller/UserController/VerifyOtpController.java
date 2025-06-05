@@ -15,9 +15,7 @@ public class VerifyOtpController extends HttpServlet {
         HttpSession session = request.getSession();
         String storedOtp = (String) session.getAttribute("otp");
 
-        // Kiểm tra OTP
         if (userOtp != null && userOtp.equals(storedOtp)) {
-            // Đặt attribute để hiển thị form nhập mật khẩu mới
             request.setAttribute("showNewPasswordForm", true);
             request.setAttribute("successMessageReset", "OTP hợp lệ. Vui lòng nhập mật khẩu mới.");
             request.getRequestDispatcher("/user/login.jsp").forward(request, response);

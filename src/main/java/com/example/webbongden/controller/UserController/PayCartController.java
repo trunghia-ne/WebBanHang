@@ -189,7 +189,7 @@ public class PayCartController extends HttpServlet {
             // Thanh toán momo:
         if ("momo".equals(paymentMethod)) {
             int orderId = invoice.getId();
-            long amount = (long) cart.getTotalPriceNumber();
+            long amount = (long) finalAmountWithShipping;
             System.out.println(amount);
             String requestId = UUID.randomUUID().toString();
             String uniqueOrderId = String.valueOf(System.currentTimeMillis());

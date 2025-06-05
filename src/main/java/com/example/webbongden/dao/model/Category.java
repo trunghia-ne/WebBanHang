@@ -10,11 +10,9 @@ public class Category {
     private String desc1;
     private List<SubCategory> subCategories = new ArrayList<SubCategory>();
 
-    // Constructor không tham số
     public Category() {
     }
 
-    // Constructor đầy đủ tham số
     public Category(int id, String categoryName, int stockQuantity, String desc1) {
         this.id = id;
         this.categoryName = categoryName;
@@ -22,7 +20,6 @@ public class Category {
         this.desc1 = desc1;
     }
 
-    // Getter và Setter
     public int getId() {
         return id;
     }
@@ -47,22 +44,6 @@ public class Category {
         this.stockQuantity = stockQuantity;
     }
 
-    public String getDesc1() {
-        return desc1;
-    }
-
-    public void setDesc1(String desc1) {
-        this.desc1 = desc1;
-    }
-
-    public List<SubCategory> getSubCategories() {
-        return subCategories;
-    }
-
-    public void setSubCategories(List<SubCategory> subCategories) {
-        this.subCategories = subCategories;
-    }
-    // Phương thức toString (in ra đối tượng dưới dạng chuỗi)
     @Override
     public String toString() {
         return "Category{" +

@@ -63,7 +63,7 @@ public class ActionLoggingFilter implements Filter {
 
                 // Kiểm tra nếu chưa gửi thông báo
                 if (!isNotificationSent) {
-                    NotificationUtils.notifyAllAdmins(message, "/WebBongDen_war/search-log?logId=" + logId);
+                    NotificationUtils.notifyAllAdmins(message, "/search-log?logId=" + logId);
                     isNotificationSent = true;  // Đánh dấu là đã gửi thông báo
                 }
             } catch (Exception e) {
