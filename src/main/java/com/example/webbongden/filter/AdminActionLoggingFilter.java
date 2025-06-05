@@ -17,31 +17,22 @@ import java.util.Map;
 public class AdminActionLoggingFilter implements Filter {
     private final LogDao logDao = new LogDao();
     private static final Map<String, String> actionMap = new LinkedHashMap<>();
-    // ... (phần static block giữ nguyên) ...
+
     static {
-        // Product
         actionMap.put("add-product-image", "ADD_PRODUCT_IMAGE");
         actionMap.put("add-product", "ADD_PRODUCT");
         actionMap.put("update-product", "UPDATE_PRODUCT");
         actionMap.put("edit-product-detail", "UPDATE_PRODUCT_DETAIL");
         actionMap.put("deleteproduct", "DELETE_PRODUCT");
         actionMap.put("delete-product-image", "DELETE_PRODUCT_IMAGE");
-
-        // Category
         actionMap.put("subcategories/add", "ADD_SUBCATEGORY");
         actionMap.put("subcategories/delete", "DELETE_SUBCATEGORY");
         actionMap.put("categories/add", "ADD_CATEGORY");
         actionMap.put("categories/delete", "DELETE_CATEGORY");
-
-        // Account
         actionMap.put("add-account", "ADD_ACCOUNT");
         actionMap.put("deleteaccount", "DELETE_ACCOUNT");
         actionMap.put("update-account", "UPDATE_ACCOUNT");
-
-        // Order
         actionMap.put("update-order-status", "UPDATE_ORDER_STATUS");
-
-        // Promotion
         actionMap.put("add-product-to-promotion", "ADD_PRODUCT_TO_PROMOTION");
         actionMap.put("add-promotion", "ADD_PROMOTION");
         actionMap.put("update-promotion", "UPDATE_PROMOTION");
@@ -49,35 +40,46 @@ public class AdminActionLoggingFilter implements Filter {
         actionMap.put("remove-product-from-promotion", "REMOVE_PRODUCT_FROM_PROMOTION");
     }
 
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
         HttpServletRequest req = (HttpServletRequest) request;
 
-        // UPDATED: Dùng SecurityUtils để kiểm tra quyền admin
-        // Giả sử bạn có quyền "access_admin_dashboard" cho admin
+        // Kiểm tra quyền truy cập của người dùng vào dashboard admin
         if (!SecurityUtils.hasPermission(req, "access_admin_dashboard")) {
-            // Nếu không phải admin (hoặc chưa đăng nhập), cho qua luôn và không log
-            chain.doFilter(request, response);
+            chain.doFilter(request, response);  // Nếu không có quyền, tiếp tục filter
             return;
         }
 
-        HttpSession session = req.getSession(false); // Session chắc chắn tồn tại nếu đã qua được bước trên
+        HttpSession session = req.getSession(false);
+        if (session == null) {
+            chain.doFilter(request, response);  // Không có session, tiếp tục filter
+            return;
+        }
+
         Account account = (Account) session.getAttribute("account");
+        if (account == null) {
+            chain.doFilter(request, response);  // Không có account trong session, tiếp tục filter
+            return;
+        }
 
         String uri = req.getRequestURI();
+        String action = detectAdminAction(uri);  // Xác định action
 
-        // Cho Servlet xử lý trước
+        if (action == null) {
+            chain.doFilter(request, response);  // Không có action, tiếp tục filter
+            return;
+        }
+
+        // Tiếp tục chuỗi filter sau khi xác định action
         chain.doFilter(request, response);
 
+        // Kiểm tra nếu trang là "view-only" (chỉ xem, không cần ghi log)
         String page = req.getParameter("page");
         if (page != null && isViewOnlyPage(page)) return;
 
-        String action = detectAdminAction(uri);
-        if (action == null) return;
-
+        // Kiểm tra trạng thái action (success hay failure)
         Object status = req.getAttribute("actionStatus");
         boolean isSuccess = "success".equals(status);
 
@@ -85,17 +87,21 @@ public class AdminActionLoggingFilter implements Filter {
             try {
                 Log logEntry = new Log();
                 logEntry.setAccountId(account.getId());
-                // UPDATED: Lấy tên vai trò từ đối tượng account
                 logEntry.setLevel(account.getRoleName());
                 logEntry.setAction(action);
                 logEntry.setResource(detectResourceFromAction(action));
+
+                // Lấy dữ liệu trước và sau khi thay đổi để log
                 Object beforeDataObj = request.getAttribute("beforeData");
                 Object afterDataObj = request.getAttribute("afterData");
 
                 logEntry.setBeforeData(beforeDataObj != null ? beforeDataObj.toString() : null);
                 logEntry.setAfterData(afterDataObj != null ? afterDataObj.toString() : null);
 
+                // Chèn log vào cơ sở dữ liệu một lần duy nhất
                 int logId = logDao.insertLog(logEntry);
+
+                // Gửi thông báo cho admin
                 String message = buildNotificationMessage(action, req);
                 NotificationUtils.notifyAllAdmins(message, "/WebBongDen_war/search-log?logId=" + logId);
 
@@ -105,7 +111,7 @@ public class AdminActionLoggingFilter implements Filter {
             }
         }
     }
-    // ... (các phương thức khác giữ nguyên) ...
+
     private String detectAdminAction(String uri) {
         uri = uri.toLowerCase();
 
@@ -128,17 +134,6 @@ public class AdminActionLoggingFilter implements Filter {
         if (action.contains("ORDER")) return "ORDER";
         if (action.contains("PROMOTION")) return "PROMOTION";
         return "UNKNOWN";
-    }
-
-    private boolean isViewOnlyPage(String page) {
-        if (page == null) return false;
-        page = page.toLowerCase();
-        return page.contains("statistics")
-                || page.contains("dashboard")
-                || page.contains("list")
-                || page.contains("report")
-                || page.contains("view")
-                || page.contains("detail");
     }
 
     private String buildNotificationMessage(String action, HttpServletRequest req) {
@@ -166,7 +161,7 @@ public class AdminActionLoggingFilter implements Filter {
 
             case "UPDATE_ORDER_STATUS":
                 Object orderId = req.getAttribute("orderId");
-                Object status = req.getAttribute("newStatus"); // bạn cần set thêm cái này nếu có
+                Object status = req.getAttribute("newStatus");
                 if (orderId != null && status != null) {
                     detail = " đơn hàng #" + orderId + " sang trạng thái \"" + status + "\"";
                 } else if (orderId != null) {
@@ -218,4 +213,17 @@ public class AdminActionLoggingFilter implements Filter {
         }
         return "Admin vừa " + verb + " " + resource + detail;
     }
+
+    private boolean isViewOnlyPage(String page) {
+        if (page == null) return false;
+        page = page.toLowerCase();
+        return page.contains("statistics")
+                || page.contains("dashboard")
+                || page.contains("list")
+                || page.contains("report")
+                || page.contains("view")
+                || page.contains("detail");
+    }
 }
+
+

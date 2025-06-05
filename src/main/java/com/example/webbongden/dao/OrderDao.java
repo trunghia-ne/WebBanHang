@@ -107,33 +107,37 @@ public class OrderDao {
 
 
     // Lấy danh sách chi tiết đơn hàng theo orderId
-        public List<OrderDetail> getOrderDetailsByOrderId(int orderId) {
-            String sql = "SELECT od.product_id AS productId, " +
-                    "       od.order_id AS orderId, " +
-                    "       p.product_name AS productName, " +
-                    "       od.quantity AS quantity, " +
-                    "       od.unit_price AS unitPrice, " +
-                    "       od.item_discount AS itemDiscount, " +
-                    "       od.amount AS amount " +
-                    "FROM order_details od " +
-                    "JOIN products p ON od.product_id = p.id " +
-                    "WHERE od.order_id = :orderId";
+    public List<OrderDetail> getOrderDetailsByOrderId(int orderId) {
+        String sql = "SELECT od.product_id AS productId, " +
+                "       od.order_id AS orderId, " +
+                "       p.product_name AS productName, " +
+                "       od.quantity AS quantity, " +
+                "       od.unit_price AS unitPrice, " +
+                "       od.item_discount AS itemDiscount, " +
+                "       od.amount AS amount, " +
+                "       pi.url AS productImageUrl " +  // Thêm trường URL từ bảng product_images
+                "FROM order_details od " +
+                "JOIN products p ON od.product_id = p.id " +
+                "JOIN product_images pi ON p.id = pi.product_id AND pi.main_image = 1 " +  // Lọc lấy ảnh chính (main_image = 1)
+                "WHERE od.order_id = :orderId";
 
-            return jdbi.withHandle(handle ->
-                    handle.createQuery(sql)
-                            .bind("orderId", orderId)
-                            .map((rs, ctx) -> new OrderDetail(
-                                    rs.getInt("productId"),
-                                    rs.getInt("orderId"),
-                                    rs.getString("productName"), // Lấy tên sản phẩm
-                                    rs.getInt("quantity"),
-                                    rs.getDouble("unitPrice"),
-                                    rs.getDouble("itemDiscount"),
-                                    rs.getDouble("amount")
-                            ))
-                            .list()
-            );
-        }
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("orderId", orderId)
+                        .map((rs, ctx) -> new OrderDetail(
+                                rs.getInt("productId"),
+                                rs.getInt("orderId"),
+                                rs.getString("productName"), // Lấy tên sản phẩm
+                                rs.getInt("quantity"),
+                                rs.getDouble("unitPrice"),
+                                rs.getDouble("itemDiscount"),
+                                rs.getDouble("amount"),
+                                rs.getString("productImageUrl")  // Lấy URL hình ảnh sản phẩm
+                        ))
+                        .list()
+        );
+    }
+
 
 
     public List<Order> getOrdersByKeyword(String keyword) {
@@ -343,11 +347,12 @@ public class OrderDao {
                 "JOIN accounts a ON o.account_id = a.id " +
                 "JOIN customers c ON a.customer_id = c.id " +
                 "JOIN shipping s ON o.id = s.order_id " +
-                "WHERE o.account_id = :userId";  // Thêm điều kiện lọc theo userId
+                "WHERE o.account_id = :userId " +
+                "ORDER BY o.created_at DESC";  // Thêm ORDER BY để sắp xếp theo created_at giảm dần
 
         return jdbi.withHandle(handle ->
                 handle.createQuery(sql)
-                        .bind("userId", userId)   // bind tham số userId
+                        .bind("userId", userId)  // bind tham số userId
                         .map((rs, ctx) -> new Order(
                                 rs.getInt("orderId"),
                                 rs.getString("customerName"),
@@ -362,31 +367,38 @@ public class OrderDao {
         );
     }
 
-
     public static void main(String[] args) {
-        // Tạo một đối tượng UserDao (được giả định là chứa phương thức getOrdersByUsername)
-        OrderDao userDao = new OrderDao();
+            // Tạo đối tượng OrderDao
+            OrderDao orderDao = new OrderDao();
 
-        // Nhập tên đăng nhập cần kiểm tra
-        String username = "pvp1292004";
+            // Nhập tên đăng nhập cần kiểm tra
 
-        // Gọi phương thức getOrdersByUsername
-        List<Order> orders = userDao.getOrdersByUsername(username);
+            // Giả sử có một phương thức để lấy userId từ username
+            int userId = 3;
 
-        // In thông tin kết quả
-        if (orders != null && !orders.isEmpty()) {
-            System.out.println("Danh sách đơn hàng của tài khoản username: " + username);
-            for (Order order : orders) {
-                System.out.println("ID Đơn hàng: " + order.getId());
-                System.out.println("Ngày đặt hàng: " + order.getCreatedAt());
-                System.out.println("Tổng tiền: " + order.getTotalPrice());
-                System.out.println("Trạng thái: " + order.getOrderStatus());
-                System.out.println("-----------------------------------------");
+            if (userId != -1) {  // Kiểm tra nếu tìm thấy userId hợp lệ
+                // Gọi phương thức getListOrdersByUserId
+                List<Order> orders = orderDao.getListOrdersByUserId(userId);
+
+                // In thông tin kết quả
+                if (orders != null && !orders.isEmpty()) {
+                    System.out.println("Danh sách đơn hàng của tài khoản username: " );
+                    for (Order order : orders) {
+                        System.out.println("ID Đơn hàng: " + order.getId());
+                        System.out.println("Ngày đặt hàng: " + order.getCreatedAt());
+                        System.out.println("Tổng tiền: " + order.getTotalPrice());
+                        System.out.println("Trạng thái: " + order.getOrderStatus());
+                        System.out.println("-----------------------------------------");
+                    }
+                } else {
+                    System.out.println("Không tìm thấy đơn hàng nào cho tài khoản username: " );
+                }
+            } else {
+                System.out.println("Không tìm thấy tài khoản với username: " );
             }
-        } else {
-            System.out.println("Không tìm thấy đơn hàng nào cho tài khoản username: " + username);
         }
-    }
+
+
 }
 
 
