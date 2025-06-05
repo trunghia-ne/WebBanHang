@@ -4,7 +4,7 @@
     const $notiDropdown = $('#notiDropdown');
 
     // ✅ Kết nối WebSocket
-    const socket = new WebSocket("ws://webbongden.khacthienit.click//admin/socket-notification");
+    const socket = new WebSocket("wss://webbongden.khacthienit.click/admin/socket-notification");
 
     socket.onopen = function () {
         console.log("✅ WebSocket connected");
