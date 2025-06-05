@@ -1,5 +1,6 @@
 package com.example.webbongden.controller.AdminController.OrderPage;
 
+import com.example.webbongden.dao.OrderDao;
 import com.example.webbongden.dao.model.OrderDetail;
 import com.example.webbongden.dao.model.OrderDetailResponse;
 import com.example.webbongden.services.OrderSevices;
@@ -14,9 +15,11 @@ import java.util.List;
 @WebServlet(name = "OrderDetailController", value = "/order-detail")
 public class OrderDetailController extends HttpServlet {
     private static final OrderSevices orderServices;
+    private static final OrderDao orderDao;
 
     static {
         orderServices = new OrderSevices();
+        orderDao = new OrderDao();
     }
 
     @Override
@@ -36,8 +39,9 @@ public class OrderDetailController extends HttpServlet {
 
             List<OrderDetail> orderDetails = orderServices.getOrderDetailsById(orderId);
             double shippingFee = orderServices.getShippingFeeById(orderId);
+            double totalPrice = orderDao.getTotalPrice(orderId);
 
-            OrderDetailResponse orderDetailResponse = new OrderDetailResponse(orderDetails, shippingFee);
+            OrderDetailResponse orderDetailResponse = new OrderDetailResponse(orderDetails, shippingFee, totalPrice);
 
             String jsonResponse = new Gson().toJson(orderDetailResponse);
             response.getWriter().write(jsonResponse);

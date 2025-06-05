@@ -34,7 +34,30 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/admin.css?v=1">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/admin_css/productAdmin.css">
+
 </head>
+<style>
+    button.dt-button.buttons-pdf.buttons-html5.btn.btn-danger {
+        color: white;
+        background: #007bff;
+        float: right;
+        margin-top: -58px;
+        border-radius: 4px;
+        cursor: pointer;
+        padding: 8px 15px;
+    }
+
+    .invoice-details {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        width: 90%;
+        max-width: 800px;
+        max-height: 90vh; /* giới hạn chiều cao */
+        overflow-y: auto; /* cuộn dọc khi vượt quá */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+</style>
 <body>
 <div class="wrapper">
     <%@ include file="header.jsp" %>
@@ -125,7 +148,15 @@
                             </p>
                             <p>
                                 <strong>Số điện thoại:</strong>
-                                <span id="customer-phone">0987654321</span>
+                                <span id="customer-phone"></span>
+                            </p>
+                            <p>
+                                <strong>Phương thức thanh toán:</strong>
+                                <span id="payment-method"></span>
+                            </p>
+                            <p>
+                                <strong>Tình trạng thanh toán:</strong>
+                                <span id="status-payment"></span>
                             </p>
                         </div>
 
@@ -150,7 +181,9 @@
                         </div>
 
                         <div class="total-price">
+                            <p>Tổng tiền ban đầu: <span id="total-order"></span></p>
                             <p>Phí vận chuyển: <span id="shipping-fee"></span></p>
+                            <p>Voucher giảm giá: <span id="voucher-discount"></span></p>
                             <p>Tổng cộng: <span id="total-final"></span></p>
                         </div>
                     </div>
@@ -196,16 +229,5 @@
 
 <!-- JSZip (hỗ trợ xuất Excel) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<style>
-    button.dt-button.buttons-pdf.buttons-html5.btn.btn-danger {
-        color: white;
-        background: #007bff;
-        float: right;
-        margin-top: -58px;
-        border-radius: 4px;
-        cursor: pointer;
-        padding: 8px 15px;
-    }
-</style>
 </body>
 </html>

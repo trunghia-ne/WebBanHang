@@ -108,18 +108,25 @@ public class OrderDao {
 
     // Lấy danh sách chi tiết đơn hàng theo orderId
     public List<OrderDetail> getOrderDetailsByOrderId(int orderId) {
-        String sql = "SELECT od.product_id AS productId, " +
-                "       od.order_id AS orderId, " +
-                "       p.product_name AS productName, " +
-                "       od.quantity AS quantity, " +
-                "       od.unit_price AS unitPrice, " +
-                "       od.item_discount AS itemDiscount, " +
-                "       od.amount AS amount, " +
-                "       pi.url AS productImageUrl " +  // Thêm trường URL từ bảng product_images
-                "FROM order_details od " +
-                "JOIN products p ON od.product_id = p.id " +
-                "JOIN product_images pi ON p.id = pi.product_id AND pi.main_image = 1 " +  // Lọc lấy ảnh chính (main_image = 1)
-                "WHERE od.order_id = :orderId";
+            String sql = "SELECT od.product_id AS productId, " +
+                    "       od.order_id AS orderId, " +
+                    "       p.product_name AS productName, " +
+                    "       od.quantity AS quantity, " +
+                    "       o.total_price AS totalPrice, " +
+                    "       od.unit_price AS unitPrice, " +
+                    "       od.item_discount AS itemDiscount, " +
+                    "       od.amount AS amount, " +
+                    "       inv.payment_method AS paymentMethod, " +
+                    "       inv.payment_status AS paymentStatus, " +
+                    "       s.phone_number AS phoneNumber,"+
+                    "       pi.url AS productImageUrl " +  // Thêm trường URL từ bảng product_images
+                    "FROM order_details od " +
+                    "JOIN orders o ON od.order_id = o.id " +
+                    "JOIN shipping s ON o.id = s.order_id " +
+                    "JOIN invoices inv ON inv.id = o.invoice_id " +
+                    "JOIN products p ON od.product_id = p.id " +
+                    "JOIN product_images pi ON p.id = pi.product_id AND pi.main_image = 1 " +  // Lọc lấy ảnh chính (main_image = 1)
+                    "WHERE od.order_id = :orderId";
 
         return jdbi.withHandle(handle ->
                 handle.createQuery(sql)
@@ -127,12 +134,15 @@ public class OrderDao {
                         .map((rs, ctx) -> new OrderDetail(
                                 rs.getInt("productId"),
                                 rs.getInt("orderId"),
-                                rs.getString("productName"), // Lấy tên sản phẩm
+                                rs.getString("productName"),
                                 rs.getInt("quantity"),
                                 rs.getDouble("unitPrice"),
                                 rs.getDouble("itemDiscount"),
                                 rs.getDouble("amount"),
-                                rs.getString("productImageUrl")  // Lấy URL hình ảnh sản phẩm
+                                rs.getString("productImageUrl"),
+                                rs.getString("paymentMethod"),
+                                rs.getString("paymentStatus"),
+                                rs.getString("phoneNumber")
                         ))
                         .list()
         );
@@ -337,6 +347,17 @@ public class OrderDao {
         );
     }
 
+    public Double getTotalPrice (int orderId) {
+        String sql = "SELECT total_price FROM orders WHERE id = :orderId";
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("orderId", orderId)
+                        .mapTo(Double.class)
+                        .findOne()
+                        .orElse(null)
+        );
+    }
+
     public List<Order> getListOrdersByUserId(int userId) {
         String sql = "SELECT o.id AS orderId, s.cus_name AS customerName, " +
                 "o.created_at AS orderDate, " +
@@ -387,36 +408,28 @@ public class OrderDao {
 
 
     public static void main(String[] args) {
-            // Tạo đối tượng OrderDao
-            OrderDao orderDao = new OrderDao();
 
-            // Nhập tên đăng nhập cần kiểm tra
 
-            // Giả sử có một phương thức để lấy userId từ username
-            int userId = 3;
+        // Khởi tạo DAO
+        OrderDao dao = new OrderDao(); // class chứa getOrderDetailsByOrderId
 
-            if (userId != -1) {  // Kiểm tra nếu tìm thấy userId hợp lệ
-                // Gọi phương thức getListOrdersByUserId
-                List<Order> orders = orderDao.getListOrdersByUserId(userId);
+        int testOrderId = 1; // Thay ID hợp lệ trong DB
 
-                // In thông tin kết quả
-                if (orders != null && !orders.isEmpty()) {
-                    System.out.println("Danh sách đơn hàng của tài khoản username: " );
-                    for (Order order : orders) {
-                        System.out.println("ID Đơn hàng: " + order.getId());
-                        System.out.println("Ngày đặt hàng: " + order.getCreatedAt());
-                        System.out.println("Tổng tiền: " + order.getTotalPrice());
-                        System.out.println("Trạng thái: " + order.getOrderStatus());
-                        System.out.println("-----------------------------------------");
-                    }
-                } else {
-                    System.out.println("Không tìm thấy đơn hàng nào cho tài khoản username: " );
-                }
-            } else {
-                System.out.println("Không tìm thấy tài khoản với username: " );
+        try {
+            List<OrderDetail> details = dao.getOrderDetailsByOrderId(testOrderId);
+            for (OrderDetail detail : details) {
+                System.out.println("Product ID: " + detail.getProductId());
+                System.out.println("Product Name: " + detail.getProductName());
+                System.out.println("Quantity: " + detail.getQuantity());
+                System.out.println("Unit Price: " + detail.getUnitPrice());
+                System.out.println("Discount: " + detail.getItemDiscount());
+                System.out.println("Amount: " + detail.getAmount());
+                System.out.println("--------");
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
+    }
 
 }
 
