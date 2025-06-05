@@ -202,6 +202,7 @@
                   <option value="" disabled selected>Chọn vai trò</option>
                   <option value="admin">Quản trị viên</option>
                   <option value="customer">Khách hàng</option>
+                  <option value="Saler">Người bán</option>
                 </select>
               </div>
 
