@@ -391,12 +391,12 @@ public class OrderDao {
     }
 
     public boolean updateOrder(int orderId, String shippingAddress, String phoneNumber) {
-        // Cập nhật thông tin địa chỉ và số điện thoại
-        String sql = "UPDATE orders o " +
-                "JOIN shipping s ON o.id = s.order_id " +
+        // Cập nhật thông tin địa chỉ và số điện thoại trong bảng shipping
+        String sql = "UPDATE shipping s " +
                 "SET s.address = :shippingAddress, s.phone_number = :phoneNumber " +
-                "WHERE o.id = :orderId";
+                "WHERE s.order_id = :orderId";
 
+        // Thực hiện cập nhật dữ liệu
         return jdbi.withHandle(handle ->
                 handle.createUpdate(sql)
                         .bind("shippingAddress", shippingAddress)
@@ -405,7 +405,6 @@ public class OrderDao {
                         .execute() > 0
         );
     }
-
 
     public static void main(String[] args) {
 

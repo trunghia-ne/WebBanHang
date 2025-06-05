@@ -424,14 +424,15 @@ $(document).ready(function() {
   // Sự kiện khi nhấn nút "Sửa"
   $('#ordersTable').on('click', '.btn-edit', function() {
     const rowData = table.row($(this).closest('tr')).data();  // Lấy dữ liệu của dòng đã nhấn
+    console.log("Row Data: ", rowData);  // Kiểm tra giá trị rowData
 
     // Mở SweetAlert để chỉnh sửa địa chỉ và số điện thoại
     Swal.fire({
       title: 'Chỉnh sửa thông tin',
       html: `
       <div>
-        <label for="address">Địa chỉ:</label>
-        <input type="text" id="address" class="swal2-input" value="${rowData.address}">
+        <label for="addressShipping">Địa chỉ:</label>
+        <input type="text" id="addressShipping" class="swal2-input" value="${rowData.address}">
       </div>
       <div>
         <label for="phoneNumber">Số điện thoại:</label>
@@ -442,7 +443,7 @@ $(document).ready(function() {
       confirmButtonText: 'Lưu',
       cancelButtonText: 'Hủy',
       preConfirm: () => {
-        const address = document.getElementById('address').value;
+        const addressShipping = document.getElementById('addressShipping').value;
         const phoneNumber = document.getElementById('phoneNumber').value;
 
         // Gửi yêu cầu cập nhật lên server
@@ -451,7 +452,7 @@ $(document).ready(function() {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',  // Cập nhật header cho đúng kiểu
           },
-          body: `orderId=${rowData.id}&shippingAddress=${address}&phoneNumber=${phoneNumber}`  // Gửi dữ liệu qua body
+          body: `orderId=${rowData.id}&shippingAddress=${addressShipping}&phoneNumber=${phoneNumber}`  // Gửi dữ liệu qua body
         }).then(response => response.json())  // Xử lý phản hồi trả về dưới dạng JSON
             .then(result => {
               if (result.success) {

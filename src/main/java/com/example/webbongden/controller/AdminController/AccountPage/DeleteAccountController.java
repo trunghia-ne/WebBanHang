@@ -33,6 +33,7 @@ public class DeleteAccountController extends HttpServlet {
             // 4. Xử lý phản hồi
             if (isDeleted) {
                 request.setAttribute("actionStatus", "success");
+                request.setAttribute("accountId", accountId);
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write("{\"status\": \"success\", \"message\": \"Xóa tài khoản thành công!\"}");

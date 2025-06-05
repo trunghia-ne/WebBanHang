@@ -40,6 +40,7 @@ public class AddPromotionController extends HttpServlet {
             boolean success = promotionService.addPromotion(promotion);
             if(success) {
                 request.setAttribute("actionStatus", "success");
+
                 LogUtils.logAddPromotion(request, promotion);
             }
             String message = success

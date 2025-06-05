@@ -13,7 +13,7 @@ import java.io.IOException;
 @WebFilter("/*")
 public class ActionLoggingFilter implements Filter {
     private final LogDao logDao = new LogDao();
-    private boolean isNotificationSent = false;  // Di chuyển biến ra ngoài
+    private boolean isNotificationSent = false;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -51,6 +51,7 @@ public class ActionLoggingFilter implements Filter {
             logEntry.setAction(action);
             logEntry.setResource("USER_ACTION");
 
+            // Ghi lại dữ liệu trước và sau khi cập nhật
             Object beforeDataObj = request.getAttribute("beforeData");
             Object afterDataObj = request.getAttribute("afterData");
 
@@ -64,7 +65,7 @@ public class ActionLoggingFilter implements Filter {
                 // Kiểm tra nếu chưa gửi thông báo
                 if (!isNotificationSent) {
                     NotificationUtils.notifyAllAdmins(message, "/search-log?logId=" + logId);
-                    isNotificationSent = true;  // Đánh dấu là đã gửi thông báo
+                    isNotificationSent = true;
                 }
             } catch (Exception e) {
                 System.err.println("❌ Failed to log: " + e.getMessage());
@@ -73,7 +74,7 @@ public class ActionLoggingFilter implements Filter {
         }
     }
 
-    // Các phương thức khác giữ nguyên
+    // Phương thức phát hiện action dựa trên URI
     private String detectAction(String uri) {
         if (uri == null) return null;
         if (uri.contains("register")) return "USER_REGISTER";
@@ -83,14 +84,20 @@ public class ActionLoggingFilter implements Filter {
         if (uri.contains("edit-cus-info")) return "EDIT_CUS_INFO";
         if (uri.contains("reset-password")) return "RESET_PASSWORD";
         if (uri.contains("paycartcontroller")) return "PAY_CART_CONTROLLER";
+        if (uri.contains("update-order-user")) return "UPDATE_ORDER_USER";  // Thêm action này để nhận diện
         return null;
     }
 
+    // Xây dựng thông điệp thông báo cho action
     private String buildNotificationMessage(String action, HttpServletRequest req) {
         String verb;
+        HttpSession session = req.getSession();
 
+        String username = (String) session.getAttribute("username");
         if (action.startsWith("PAY_CART")) {
             verb = "Nhận được đơn hàng mới ";
+        } else if(action.startsWith("UPDATE_ORDER_USER")) {
+            verb = " vừa thay đổi thông tin vận chuyển";  // Thêm hành động thay đổi thông tin đơn hàng
         } else {
             verb = "thực hiện hành động";
         }
@@ -101,15 +108,17 @@ public class ActionLoggingFilter implements Filter {
             case "PAY_CART_CONTROLLER":
                 Object orderIdObj = req.getAttribute("orderId");
                 if (orderIdObj != null) {
-                    detail = " - Mã đơn hàng: " + orderIdObj.toString();
+                    detail = "Nhận được đơn hàng mới - Mã đơn hàng: " + orderIdObj.toString();
                 } else {
                     detail = " - Không xác định mã đơn hàng";
                 }
                 break;
-
-            // Các trường hợp khác nếu cần xử lý thêm...
+            case "UPDATE_ORDER_USER":
+                // Xử lý thông báo khi cập nhật thông tin đơn hàng
+                detail = "Khách hàng " + username + verb;
+                break;
         }
 
-        return verb + detail;
+        return detail;
     }
 }

@@ -41,6 +41,7 @@ public class AddAccountController extends HttpServlet {
             String roleNameFromRequest = account.getRole();
 
             if (roleNameFromRequest == null || roleNameFromRequest.trim().isEmpty()) {
+
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().write("{\"status\": \"error\", \"message\": \"Vui lòng chọn một vai trò.\"}");
                 return;

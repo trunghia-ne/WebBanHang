@@ -2,6 +2,7 @@ package com.example.webbongden.controller.AdminController.VoucherPage;
 
 import com.example.webbongden.dao.VoucherDao;
 import com.example.webbongden.dao.model.Voucher;
+import com.example.webbongden.utils.LogUtils;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -11,7 +12,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
 
-@WebServlet(name = "AddVoucherController", value = "/AddVoucherController")
+@WebServlet(name = "AddVoucherController", value = "/add-voucher")
 public class AddVoucherController extends HttpServlet {
     VoucherDao voucherDao = new VoucherDao();
 
@@ -90,7 +91,8 @@ public class AddVoucherController extends HttpServlet {
             voucher.setStatus("active");
 
             voucherDao.insert(voucher);
-
+            req.setAttribute("actionStatus", "success");
+            LogUtils.logAddVoucher(req, voucher);
             resp.setContentType("application/json");
             resp.getWriter().write("{\"status\":\"success\"}");
         } catch (Exception e) {

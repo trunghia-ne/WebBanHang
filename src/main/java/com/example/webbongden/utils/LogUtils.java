@@ -227,4 +227,64 @@ public class LogUtils {
             e.printStackTrace();
         }
     }
+
+    public static void logCreateUpdateOrderUser(HttpServletRequest request, int orderId, String shippingAddress, String phoneNumber) {
+        try {
+            JSONObject beforeData = new JSONObject();
+            beforeData.put("orderId", orderId);
+
+            JSONObject afterData = new JSONObject();
+            afterData.put("orderId", orderId);
+            afterData.put("shippingAddress", shippingAddress);
+            afterData.put("phoneNumber", phoneNumber);
+
+            request.setAttribute("beforeData", beforeData.toString());
+            request.setAttribute("afterData", afterData.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void logAddVoucher(HttpServletRequest request, Voucher voucher) {
+        try {
+            JSONObject afterData = new JSONObject();
+            afterData.put("id", voucher.getId());
+            afterData.put("voucherCode", voucher.getCode());
+            afterData.put("discountType", voucher.getDiscountType());
+            afterData.put("discountValue", voucher.getDiscountValue());
+            afterData.put("startDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(voucher.getStartDate()));
+            afterData.put("endDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(voucher.getEndDate()));
+            afterData.put("minOrderValue", voucher.getMinOrderValue());
+            afterData.put("usageLimit", voucher.getUsageLimit());
+            afterData.put("usedCount", voucher.getUsedCount());
+            afterData.put("status", voucher.getStatus());
+
+            request.setAttribute("afterData", afterData.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void logUpdateVoucher(HttpServletRequest request, Voucher before, Voucher after) {
+        try {
+            JSONObject beforeData = new JSONObject();
+
+            JSONObject afterData = new JSONObject();
+            afterData.put("id", after.getId());
+            afterData.put("voucherCode", after.getCode());
+            afterData.put("discountType", after.getDiscountType());
+            afterData.put("discountValue", after.getDiscountValue());
+            afterData.put("startDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(after.getStartDate()));
+            afterData.put("endDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(after.getEndDate()));
+            afterData.put("minOrderValue", after.getMinOrderValue());
+            afterData.put("usageLimit", after.getUsageLimit());
+            afterData.put("usedCount", after.getUsedCount());
+            afterData.put("status", after.getStatus());
+
+            request.setAttribute("beforeData", beforeData.toString());
+            request.setAttribute("afterData", afterData.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
