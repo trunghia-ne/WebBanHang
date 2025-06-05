@@ -6,6 +6,7 @@ import com.example.webbongden.dao.model.Log;
 import com.example.webbongden.services.AccountServices;
 import com.example.webbongden.services.OrderSevices;
 import com.example.webbongden.services.UserSevices;
+import com.example.webbongden.util.SessionManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -29,10 +30,13 @@ public class LoginControllerr extends HttpServlet {
     private final AccountServices  accountService = new AccountServices();
     private final UserSevices userSevices = new UserSevices();
     private final OrderSevices orderSevices = new OrderSevices();
-    private static final String RECAPTCHA_SECRET_KEY = "6LehGvYqAAAAAB43BbPenYJ5tnrWU3V309hb3O6h"; // Thay bằng Secret Key của bạn
+    private static final String RECAPTCHA_SECRET_KEY = "6LehGvYqAAAAAB43BbPenYJ5tnrWU3V309hb3O6h";
     private final LogDao logDao = new LogDao();
 
     private boolean verifyRecaptcha(String captchaResponse) throws IOException {
+        if (captchaResponse == null || captchaResponse.isEmpty()) {
+            return false;
+        }
         String url = "https://www.google.com/recaptcha/api/siteverify";
         String params = "secret=" + RECAPTCHA_SECRET_KEY + "&response=" + captchaResponse;
 
@@ -62,6 +66,9 @@ public class LoginControllerr extends HttpServlet {
         JsonObject jsonObject;
         try (BufferedReader reader = request.getReader()) {
             jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
+        } catch (Exception e) {
+            sendJsonResponse(response, false, "Dữ liệu gửi lên không hợp lệ.", null);
+            return;
         }
 
         String username = jsonObject.get("username").getAsString().trim();
@@ -84,7 +91,7 @@ public class LoginControllerr extends HttpServlet {
             return;
         }
 
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(true); // Sử dụng getSession(true) để chắc chắn tạo session mới
         session.setAttribute("account", account);
 
         Set<String> permissions = accountService.getPermissionsByRoleId(account.getRoleId());
@@ -93,13 +100,16 @@ public class LoginControllerr extends HttpServlet {
         session.setAttribute("userInfo", userSevices.getBasicInfoByUsername(username));
         session.setAttribute("orders", orderSevices.getOrdersByUsername(username));
 
+        // <<< THAY ĐỔI #2: Thêm session vào trình quản lý sau khi đăng nhập thành công
+        SessionManager.addUserSession(account.getUsername(), session);
+
         Log logEntry = new Log();
         logEntry.setAccountId(account.getId());
         logEntry.setLevel(account.getRoleName());
         logEntry.setAction("USER_LOGIN");
-        logEntry.setResource("USER_LOGIN");
+        logEntry.setResource("AUTHENTICATION");
         logEntry.setBeforeData(null);
-        logEntry.setAfterData(null);
+        logEntry.setAfterData("User " + account.getUsername() + " logged in."); // Sửa nhỏ để log rõ hơn
 
         logDao.insertLog(logEntry);
 
