@@ -198,17 +198,20 @@
 
                     orderDetails.forEach((item) => {
                         $orderItemsBody.append(`
-                            <tr>
-                                <td>${item.productId}</td>
-                                <td>${item.productName}</td>
-                                <td>${item.quantity}</td>
-                                <td>${parseFloat(item.unitPrice).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</td>
-                                <td>${parseFloat(item.amount).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</td>
-                                <td>
-                                    <a href="http://localhost:8080/WebBongDen_war/product-detail?id=${item.productId}" target="_blank">link</a>
-                                </td>
-                            </tr>
-                        `);
+                    <tr>
+                        <td>${item.productId}</td>
+                        <td>${item.productName}</td>
+                         <td>
+                            <img src="${item.productImageUrl}" alt="${item.productName}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px;">
+                        </td>
+                        <td>${item.quantity}</td>
+                        <td>${parseFloat(item.unitPrice).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</td>
+                        <td>${parseFloat(item.amount).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</td>
+                        <td>
+                            <a href="http://localhost:8080/WebBongDen_war/product-detail?id=${item.productId}" target="_blank">link</a>
+                        </td>
+                    </tr>
+                `);
                     });
 
                     const totalAmount = orderDetails.reduce((total, item) => total + parseFloat(item.amount), 0);
@@ -237,6 +240,7 @@
                 },
             });
         });
+
 
         // Đóng overlay
         $("#close-invoice-details").on("click", function () {

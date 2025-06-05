@@ -136,6 +136,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Tên SP</th>
+                                    <th>Hình ảnh</th>
                                     <th>Số Lượng</th>
                                     <th>Đơn Giá</th>
                                     <th>Thành Tiền</th>

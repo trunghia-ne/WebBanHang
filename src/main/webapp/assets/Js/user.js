@@ -239,7 +239,7 @@ $(document).ready(function() {
       }
     },
     columns: [
-      { data: 'id' },
+      { data: 'id' },  // Cột Id
       {
         data: 'createdAt',
         render: function(data) {
@@ -256,15 +256,17 @@ $(document).ready(function() {
       {
         data: null,
         render: function(data, type, row) {
-          console.log(row);
           return `
-          <button class="btn-detail" data-id="${row.id}">Chi tiết</button>
-          <button class="btn-cancel" data-id="${row.id}">Hủy</button>
+          <button class="btn-detail" data-id="${row.id}">
+            <i class="fa fa-info-circle"></i> Chi tiết
+          </button>
+          <button class="btn-cancel" data-id="${row.id}">
+            <i class="fa fa-times"></i> Hủy
+          </button>
         `;
         }
       }
     ],
-    order: [[1, 'desc']], // Sắp xếp theo cột ngày tạo, giảm dần (mới nhất trước)
     language: {
       url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/vi.json'
     },
@@ -273,8 +275,10 @@ $(document).ready(function() {
     processing: true,
     responsive: true,
     searching: true,
-    ordering: true
+    ordering: true,
+    order: [[0, 'desc']]  // Thêm cấu hình để sắp xếp cột 'id' theo thứ tự giảm dần
   });
+
 
   // Đăng ký sự kiện click đúng cách trên tbody, dùng event delegation
   $('#ordersTable tbody').on('click', '.btn-detail', function() {
@@ -300,41 +304,45 @@ $(document).ready(function() {
 
           // Tạo HTML bảng chi tiết đơn hàng
           let tableHtml = `
-            <table style="width:100%; border-collapse: collapse; border: 1px solid #ccc;">
-                <thead>
-                    <tr style="background-color:#f2f2f2;">
-                        <th style="border: 1px solid #ccc; padding: 8px;">Sản phẩm</th>
-                        <th style="border: 1px solid #ccc; padding: 8px;">Số lượng</th>
-                        <th style="border: 1px solid #ccc; padding: 8px;">Đơn giá</th>
-                        <th style="border: 1px solid #ccc; padding: 8px;">Giảm giá</th>
-                        <th style="border: 1px solid #ccc; padding: 8px;">Thành tiền</th>
-                    </tr>
-                </thead>
-                <tbody>`;
+      <table style="width:100%; border-collapse: collapse; border: 1px solid #ccc;">
+        <thead>
+          <tr style="background-color:#f2f2f2;">
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Sản phẩm</th>
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Hình ảnh</th>
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Số lượng</th>
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Đơn giá</th>
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Giảm giá</th>
+            <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Thành tiền</th>
+          </tr>
+        </thead>
+        <tbody>`;
 
           products.forEach(p => {
             tableHtml += `
-                    <tr>
-                        <td style="border: 1px solid #ccc; padding: 8px;">${p.productName}</td>
-                        <td style="border: 1px solid #ccc; padding: 8px; text-align:center;">${p.quantity}</td>
-                        <td style="border: 1px solid #ccc; padding: 8px; text-align:right;">${formatVND(p.unitPrice)}</td>
-                        <td style="border: 1px solid #ccc; padding: 8px; text-align:right;">${formatVND(p.itemDiscount)}</td>
-                        <td style="border: 1px solid #ccc; padding: 8px; text-align:right;">${formatVND(p.amount)}</td>
-                    </tr>`;
+        <tr>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align: left;">${p.productName}</td>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align:center;">
+            <img src="${p.productImageUrl}" alt="${p.productName}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px;">
+          </td>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align:center;">${p.quantity}</td>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align:left;">${formatVND(p.unitPrice)}</td>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align:left;">${formatVND(p.itemDiscount)}</td>
+          <td style="border: 1px solid #ccc; padding: 8px; text-align:left;">${formatVND(p.amount)}</td>
+        </tr>`;
           });
 
           tableHtml += `
-                <tr>
-                    <td colspan="4" style="border: 1px solid #ccc; padding: 8px; text-align: right; font-weight: bold;">Phí vận chuyển:</td>
-                    <td style="border: 1px solid #ccc; padding: 8px; text-align: right;">${formatVND(shippingFee)}</td>
-                </tr>
-                </tbody>
-            </table>`;
+      <tr>
+        <td colspan="5" style="border: 1px solid #ccc; padding: 8px; text-align: left; font-weight: bold;">Phí vận chuyển:</td>
+        <td style="border: 1px solid #ccc; padding: 8px; text-align: left;">${formatVND(shippingFee)}</td>
+      </tr>
+      </tbody>
+    </table>`;
 
           Swal.fire({
             title: 'Chi tiết đơn hàng',
             html: tableHtml,
-            width: '700px',
+            width: '1000px',
             confirmButtonText: 'Đóng',
             didOpen: () => {
               const swalContent = Swal.getHtmlContainer();
@@ -348,6 +356,55 @@ $(document).ready(function() {
           });
         })
         .catch(() => Swal.fire('Lỗi', 'Lỗi khi tải chi tiết đơn hàng', 'error'));
+  });
+
+  $('#ordersTable tbody').on('click', '.btn-cancel', function() {
+    const orderId = $(this).data('id');
+
+    // Lấy dữ liệu của dòng đơn hàng hiện tại
+    const rowData = table.row($(this).parents('tr')).data();
+
+    // Kiểm tra trạng thái đơn hàng, nếu là 'Approved', không cho phép hủy
+    if (rowData.orderStatus === 'Approved') {
+      Swal.fire({
+        icon: 'error',
+        title: 'Không thể hủy đơn hàng',
+        text: 'Đơn hàng này đã được phê duyệt và không thể hủy.',
+      });
+      return;
+    }
+
+    // Nếu trạng thái là 'Pending', tiếp tục hủy đơn hàng
+    Swal.fire({
+      title: 'Xác nhận hủy đơn hàng',
+      text: `Bạn có chắc chắn muốn hủy đơn hàng #${orderId}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Hủy',
+      cancelButtonText: 'Hủy bỏ',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Gửi yêu cầu hủy đơn hàng tới server
+        $.ajax({
+          url: '/WebBongDen_war/cancel-order',
+          type: 'POST',
+          data: { orderId: orderId },
+          success: function(response) {
+            if (response.success) {
+              Swal.fire('Đã hủy!', 'Đơn hàng của bạn đã được hủy thành công.', 'success');
+
+              // Cập nhật lại bảng sau khi hủy
+              table.ajax.reload();
+            } else {
+              Swal.fire('Lỗi!', 'Không thể hủy đơn hàng. Vui lòng thử lại sau.', 'error');
+            }
+          },
+          error: function() {
+            Swal.fire('Lỗi!', 'Đã xảy ra lỗi khi hủy đơn hàng. Vui lòng thử lại.', 'error');
+          }
+        });
+      }
+    });
   });
 });
 

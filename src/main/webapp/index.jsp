@@ -1274,6 +1274,11 @@
             padding: 6px 12px;
             margin-left: 5px;
         }
+
+        body {
+            background-image: url("https://mixivivu.com/section-background.png") !important;
+        }
+
     </style>
 </head>
 <body>

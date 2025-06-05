@@ -34,7 +34,7 @@
                 { data: "username" }, // Tên người dùng
                 { data: "email" }, // Email
                 {data: "createdAt"},
-                { data: "role" }, // Vai trò
+                { data: "roleName" }, // Vai trò
                 {
                     data: null, // Hành động: Nút xem chi tiết
                     render: function (data, type, row) {
