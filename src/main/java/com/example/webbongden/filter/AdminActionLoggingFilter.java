@@ -103,7 +103,7 @@ public class AdminActionLoggingFilter implements Filter {
 
                 // Gửi thông báo cho admin
                 String message = buildNotificationMessage(action, req);
-                NotificationUtils.notifyAllAdmins(message, "/WebBongDen_war/search-log?logId=" + logId);
+                NotificationUtils.notifyAllAdmins(message, "/search-log?logId=" + logId);
 
             } catch (Exception e) {
                 System.err.println("⚠️ Logging failed: " + e.getMessage());
