@@ -3,16 +3,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="icon" href="./img/logo-fold.png" sizes="180x180">
     <title>Đăng Kí</title>
     <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
     <style>
         :root {
             --color-black: #17C24;
@@ -192,9 +192,11 @@
             color: var(--color-black);
             font-weight: 600;
         }
-        .form-header .logo img{
+
+        .form-header .logo img {
             margin-right: 10px;
         }
+
         .form-header .logo p {
             margin-left: -15px; /* Giữ lại nếu đây là cố ý cho layout logo của bạn */
             font-size: 24px;
@@ -220,12 +222,14 @@
             justify-content: space-between;
             align-items: center;
         }
+
         .form-footer label {
             font-size: 13px;
             color: var(--color-gray-darkest);
             display: flex;
             align-items: center;
         }
+
         .form-footer input[type="checkbox"] {
             margin-right: 8px;
             /* Xem xét việc style custom checkbox nếu muốn đồng bộ hơn */
@@ -241,9 +245,10 @@
             font-size: 15px;
             transition: background-color 0.25s ease, box-shadow 0.25s ease;
         }
+
         .wrapper .form-footer button#btnRegister:hover {
             background-color: #3578ce;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
 
@@ -269,8 +274,8 @@
             padding-top: 20px;
             padding-bottom: 25px;
             background-color: transparent; /* NỀN TRONG SUỐT */
-            border: none;                  /* KHÔNG VIỀN */
-            box-shadow: none;              /* KHÔNG BÓNG ĐỔ */
+            border: none; /* KHÔNG VIỀN */
+            box-shadow: none; /* KHÔNG BÓNG ĐỔ */
             text-align: center;
         }
 
@@ -332,12 +337,12 @@
             border: none;
             border-radius: 5px;
             transition: background-color 0.25s ease, box-shadow 0.25s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         #otp-section button#btnVerifyOtp.btn-primary-otp:hover {
             background-color: var(--color-yellow-dark);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
         #otp-section button#btnVerifyOtp.btn-primary-otp:disabled {
@@ -391,7 +396,7 @@
             <div class="form-group">
                 <p>TÊN KHÁCH HÀNG</p>
                 <div class="form-field">
-                    <input type="text" class="form-input" id="cusname" name="cusname" placeholder=" " required />
+                    <input type="text" class="form-input" id="cusname" name="cusname" placeholder=" " required/>
                     <label for="cusname" class="form-label">Tên khách hàng</label>
                 </div>
                 <span class="error-message"></span>
@@ -400,7 +405,7 @@
             <div class="form-group">
                 <p>TÀI KHOẢN</p>
                 <div class="form-field">
-                    <input type="text" class="form-input" id="username" name="username" placeholder=" " required />
+                    <input type="text" class="form-input" id="username" name="username" placeholder=" " required/>
                     <label for="username" class="form-label">Tài khoản</label>
                 </div>
                 <span class="error-message"></span>
@@ -409,7 +414,7 @@
             <div class="form-group">
                 <p>EMAIL</p>
                 <div class="form-field">
-                    <input type="email" class="form-input" id="email" name="email" placeholder=" " required />
+                    <input type="email" class="form-input" id="email" name="email" placeholder=" " required/>
                     <label for="email" class="form-label">Email</label>
                 </div>
                 <span class="error-message"></span>
@@ -418,17 +423,20 @@
             <div class="form-group">
                 <p>MẬT KHẨU</p>
                 <div class="form-field">
-                    <input type="password" class="form-input" id="password" name="password" placeholder=" " required />
+                    <input type="password" class="form-input" id="password" name="password" placeholder=" " required/>
                     <label for="password" class="form-label">Mật khẩu</label>
                 </div>
-                <div id="password-hint" class="password-hint">Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, số và ký tự đặc biệt.</div>
+                <div id="password-hint" class="password-hint">Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, số và
+                    ký tự đặc biệt.
+                </div>
                 <span class="error-message"></span>
             </div>
 
             <div class="form-group">
                 <p>NHẬP LẠI MẬT KHẨU</p>
                 <div class="form-field">
-                    <input type="password" class="form-input" id="rePassword" name="rePassword" placeholder=" " required />
+                    <input type="password" class="form-input" id="rePassword" name="rePassword" placeholder=" "
+                           required/>
                     <label for="rePassword" class="form-label">Nhập lại mật khẩu</label>
                 </div>
                 <span class="error-message"></span>
@@ -436,31 +444,35 @@
         </div>
         <div class="form-footer">
             <label>
-                <input type="checkbox" id="terms-checkbox" required />
+                <input type="checkbox" id="terms-checkbox" required/>
                 Tôi đã đọc rõ điều khoản
             </label>
             <button type="submit" class="btn" id="btnRegister">Đăng kí</button>
         </div>
     </form>
-        <%-- Phần nhập OTP - ban đầu ẩn đi --%>
-        <div id="otp-section" class="hidden">
-            <%-- Đổi <p> này thành h2 hoặc h3 để có ngữ nghĩa tốt hơn và thêm class --%>
-            <h3 class="otp-section-title">XÁC THỰC OTP</h3>
-            <div id="otp-message" style="margin-bottom:10px; font-weight: normal; line-height: 1.6;">Một mã OTP đã được gửi đến email [email_cua_nguoi_dung]. Vui lòng nhập mã đó vào ô bên dưới.</div>
-            <form id="otp-form" action="${pageContext.request.contextPath}/VerifyOtpRegisterServlet" method="post">
-                <div class="form-group">
-                    <%-- Bỏ <p> này nếu tiêu đề field không cần thiết, hoặc style riêng --%>
-                    <%-- <p>NHẬP MÃ OTP</p> --%>
-                    <div class="form-field">
-                        <input type="number" class="form-input" id="otp" name="otp" placeholder=" " required />
-                        <label for="otp" class="form-label">Mã OTP (6 chữ số)</label>
-                    </div>
-                    <span class="error-message" id="otp-error-message"></span>
-                </div>
-                <button type="submit" class="btn btn-primary-otp" id="btnVerifyOtp">Xác nhận OTP</button>
-                <button type="button" class="btn btn-secondary-otp" id="btnResendOtp" style="display: none; margin-top: 10px;">Gửi lại OTP</button>
-            </form>
+    <%-- Phần nhập OTP - ban đầu ẩn đi --%>
+    <div id="otp-section" class="hidden">
+        <%-- Đổi <p> này thành h2 hoặc h3 để có ngữ nghĩa tốt hơn và thêm class --%>
+        <h3 class="otp-section-title">XÁC THỰC OTP</h3>
+        <div id="otp-message" style="margin-bottom:10px; font-weight: normal; line-height: 1.6;">Một mã OTP đã được gửi
+            đến email [email_cua_nguoi_dung]. Vui lòng nhập mã đó vào ô bên dưới.
         </div>
+        <form id="otp-form" action="${pageContext.request.contextPath}/VerifyOtpRegisterServlet" method="post">
+            <div class="form-group">
+                <%-- Bỏ <p> này nếu tiêu đề field không cần thiết, hoặc style riêng --%>
+                <%-- <p>NHẬP MÃ OTP</p> --%>
+                <div class="form-field">
+                    <input type="number" class="form-input" id="otp" name="otp" placeholder=" " required/>
+                    <label for="otp" class="form-label">Mã OTP (6 chữ số)</label>
+                </div>
+                <span class="error-message" id="otp-error-message"></span>
+            </div>
+            <button type="submit" class="btn btn-primary-otp" id="btnVerifyOtp">Xác nhận OTP</button>
+            <button type="button" class="btn btn-secondary-otp" id="btnResendOtp"
+                    style="display: none; margin-top: 10px;">Gửi lại OTP
+            </button>
+        </form>
+    </div>
 
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -473,23 +485,23 @@
         const inputs = signupForm.querySelectorAll(".form-input");
         const termsCheckbox = document.getElementById("terms-checkbox");
 
+        // Biến toàn cục để lưu trữ interval của đồng hồ đếm ngược
+        let otpCountdownInterval;
+
+        // --- PHẦN VALIDATE FORM ĐĂNG KÝ (GIỮ NGUYÊN) ---
         function validateInput(input) {
             const value = input.value.trim();
             const formGroup = input.closest(".form-group");
             const errorMessage = formGroup.querySelector(".error-message");
             let isValid = true;
-
             if (value === "") {
                 input.style.borderColor = "red";
                 errorMessage.textContent = "Trường này không được để trống.";
                 isValid = false;
             } else {
-                // Xóa lỗi nếu người dùng bắt đầu nhập
-                input.style.borderColor = "#ccc"; // Reset border
+                input.style.borderColor = "#ccc";
                 errorMessage.textContent = "";
             }
-
-
             if (input.type === "email") {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (value !== "" && !emailRegex.test(value)) {
@@ -498,27 +510,10 @@
                     isValid = false;
                 }
             }
-
-            if (input.id === "password" && value !== "") { // Chỉ validate password nếu không rỗng
-                if (value.length < 8) {
+            if (input.id === "password" && value !== "") {
+                if (value.length < 8 || !/[A-Z]/.test(value) || !/[a-z]/.test(value) || !/\d/.test(value) || !/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
                     input.style.borderColor = "red";
-                    errorMessage.textContent = "Mật khẩu phải có ít nhất 8 ký tự.";
-                    isValid = false;
-                } else if (!/[A-Z]/.test(value)) {
-                    input.style.borderColor = "red";
-                    errorMessage.textContent = "Mật khẩu phải có ít nhất 1 chữ cái viết hoa.";
-                    isValid = false;
-                } else if (!/[a-z]/.test(value)) {
-                    input.style.borderColor = "red";
-                    errorMessage.textContent = "Mật khẩu phải có ít nhất 1 chữ cái viết thường.";
-                    isValid = false;
-                } else if (!/\d/.test(value)) {
-                    input.style.borderColor = "red";
-                    errorMessage.textContent = "Mật khẩu phải có ít nhất 1 chữ số.";
-                    isValid = false;
-                } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
-                    input.style.borderColor = "red";
-                    errorMessage.textContent = "Mật khẩu phải có ít nhất 1 ký tự đặc biệt.";
+                    errorMessage.textContent = "Mật khẩu chưa đủ mạnh.";
                     isValid = false;
                 }
             }
@@ -530,8 +525,6 @@
                     isValid = false;
                 }
             }
-
-
             if (isValid && value !== "") {
                 input.style.borderColor = "green";
                 errorMessage.textContent = "";
@@ -544,66 +537,47 @@
                 validateInput(this);
             });
             input.addEventListener("input", function () {
-                // Xóa thông báo lỗi ngay khi người dùng nhập để UX tốt hơn
                 const formGroup = this.closest(".form-group");
                 const errorMessage = formGroup.querySelector(".error-message");
-                this.style.borderColor = "#ccc"; // Reset border
+                this.style.borderColor = "#ccc";
                 errorMessage.textContent = "";
-                // Có thể gọi validateInput(this) ở đây nếu muốn validate real-time
             });
         });
 
         signupForm.addEventListener("submit", function (e) {
-            e.preventDefault(); // Ngăn submit form truyền thống
+            e.preventDefault();
             let isFormValid = true;
-
             inputs.forEach(input => {
-                if (!validateInput(input)) {
-                    isFormValid = false;
-                }
+                if (!validateInput(input)) isFormValid = false;
             });
-
-            // Kiểm tra checkbox điều khoản
             if (!termsCheckbox.checked) {
                 toastr.error("Bạn phải đồng ý với điều khoản dịch vụ.");
                 isFormValid = false;
             }
-
             if (!isFormValid) {
                 toastr.error("Vui lòng kiểm tra lại các thông tin đã nhập.");
                 return;
             }
-
-            // Nếu form hợp lệ, gửi dữ liệu đến Servlet đăng ký
             const formData = new FormData(signupForm);
             const jsonData = {};
             formData.forEach((value, key) => {
                 jsonData[key] = value;
             });
-
-            // Vô hiệu hóa nút đăng ký để tránh click nhiều lần
             const btnRegister = document.getElementById('btnRegister');
             btnRegister.disabled = true;
             btnRegister.textContent = 'Đang xử lý...';
-
-
             fetch(signupForm.action, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
+                headers: {"Content-Type": "application/json", "Accept": "application/json"},
                 body: JSON.stringify(jsonData),
             })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         toastr.success(data.message || "Mã OTP đã được gửi. Vui lòng kiểm tra email.");
-                        // Ẩn form đăng ký, hiển thị form OTP
                         signupForm.classList.add("hidden");
                         otpSection.classList.remove("hidden");
                         document.getElementById("otp-message").textContent = "Một mã OTP đã được gửi đến email " + jsonData.email + ". Vui lòng nhập mã đó vào ô bên dưới.";
-                        // Focus vào ô nhập OTP
                         document.getElementById("otp").focus();
                     } else {
                         toastr.error(data.message || "Đăng ký thất bại. Vui lòng thử lại!");
@@ -614,18 +588,20 @@
                     toastr.error("Lỗi kết nối đến server. Vui lòng thử lại!");
                 })
                 .finally(() => {
-                    // Kích hoạt lại nút đăng ký
                     btnRegister.disabled = false;
                     btnRegister.textContent = 'Đăng kí';
                 });
         });
 
-
-        otpForm.addEventListener("submit", function(e) {
+        otpForm.addEventListener("submit", function (e) {
             e.preventDefault();
             const otpInput = document.getElementById("otp");
             const otpValue = otpInput.value.trim();
             const otpErrorMessage = document.getElementById("otp-error-message");
+
+            if (otpCountdownInterval) {
+                clearInterval(otpCountdownInterval);
+            }
 
             if (otpValue === "" || !/^\d{6}$/.test(otpValue)) {
                 otpInput.style.borderColor = "red";
@@ -641,18 +617,11 @@
             btnVerifyOtp.disabled = true;
             btnVerifyOtp.textContent = 'Đang xác thực...';
 
-            // Gửi OTP đến servlet xác thực
-            const formData = new FormData(otpForm);
-            // fetch(otpForm.action, { // action đã được set trong HTML
-            //     method: "POST",
-            //     body: formData // Gửi dưới dạng form-data vì servlet đang đọc bằng request.getParameter
-            // })
-            // Nếu muốn gửi JSON thì cần chỉnh servlet đọc JSON
-            fetch(otpForm.action + "?otp=" + encodeURIComponent(otpValue) , { // Gửi OTP qua query parameter cho đơn giản
-                method: "POST", // Giữ method POST theo servlet
-                headers: {
-                    "Accept": "application/json"
-                }
+            let isLockedOut = false;
+
+            fetch(otpForm.action + "?otp=" + encodeURIComponent(otpValue), {
+                method: "POST",
+                headers: {"Accept": "application/json"}
             })
                 .then(response => response.json())
                 .then(data => {
@@ -664,7 +633,37 @@
                     } else {
                         toastr.error(data.message || "Xác thực OTP thất bại.");
                         otpInput.style.borderColor = "red";
-                        otpErrorMessage.textContent = data.message || "Mã OTP không chính xác hoặc đã hết hạn.";
+
+                        if (data.message && data.message.includes("Vui lòng thử lại sau")) {
+                            isLockedOut = true;
+
+                            const matches = data.message.match(/\d+/);
+                            let seconds = matches ? parseInt(matches[0], 10) : 60;
+
+                            const updateCountdown = () => {
+                                otpErrorMessage.textContent = `Bạn đã nhập sai quá nhiều lần. Vui lòng thử lại sau ${seconds} giây.`;
+                                otpErrorMessage.style.color = "#ff4d4f";
+                            };
+
+                            updateCountdown();
+
+                            otpCountdownInterval = setInterval(() => {
+                                seconds--;
+                                if (seconds > 0) {
+                                    updateCountdown();
+                                } else {
+                                    clearInterval(otpCountdownInterval);
+                                    otpErrorMessage.textContent = "Bạn có thể thử lại ngay bây giờ.";
+                                    otpErrorMessage.style.color = "green";
+                                    otpInput.style.borderColor = "#ccc";
+                                    btnVerifyOtp.disabled = false;
+                                    btnVerifyOtp.textContent = 'Xác nhận OTP';
+                                }
+                            }, 1000);
+
+                        } else {
+                            otpErrorMessage.textContent = data.message || "Mã OTP không chính xác hoặc đã hết hạn.";
+                        }
                     }
                 })
                 .catch(error => {
@@ -672,21 +671,23 @@
                     toastr.error("Lỗi khi xác thực OTP. Vui lòng thử lại.");
                 })
                 .finally(() => {
-                    btnVerifyOtp.disabled = false;
-                    btnVerifyOtp.textContent = 'Xác nhận OTP';
+                    if (!isLockedOut) {
+                        btnVerifyOtp.disabled = false;
+                        btnVerifyOtp.textContent = 'Xác nhận OTP';
+                    }
                 });
         });
 
-
-        // Ngăn copy/paste mật khẩu (giữ nguyên)
         const passwordInput = document.getElementById("password");
         const rePasswordInput = document.getElementById("rePassword");
+
         function preventCopyPaste(input) {
             input.addEventListener("paste", e => e.preventDefault());
             input.addEventListener("copy", e => e.preventDefault());
             input.addEventListener("cut", e => e.preventDefault());
             input.addEventListener("contextmenu", e => e.preventDefault());
         }
+
         preventCopyPaste(passwordInput);
         preventCopyPaste(rePasswordInput);
     });
