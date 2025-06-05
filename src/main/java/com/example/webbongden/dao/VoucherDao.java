@@ -92,4 +92,23 @@ public class VoucherDao {
                         .orElse(null)
         );
     }
+
+    // Giảm usage_limit (nếu > 0) và tăng used_count
+    public void useVoucher(int voucherId) {
+        jdbi.useHandle(handle ->
+                handle.createUpdate("""
+            UPDATE vouchers
+            SET 
+                used_count = used_count + 1,
+                usage_limit = CASE 
+                    WHEN usage_limit > 0 THEN usage_limit - 1 
+                    ELSE 0 
+                END
+            WHERE id = :id
+        """)
+                        .bind("id", voucherId)
+                        .execute()
+        );
+    }
+
 }
