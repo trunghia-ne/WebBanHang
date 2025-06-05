@@ -114,7 +114,7 @@
     }
 
     /* Định dạng nút Chi tiết và Hủy */
-    button.btn-detail, button.btn-cancel {
+    button.btn-detail, button.btn-cancel, button.btn-edit {
         background-color: #007bff;  /* Màu nền cho nút Chi tiết */
         color: white;
         border: none;
@@ -132,6 +132,10 @@
         background-color: #dc3545;  /* Màu nền cho nút Hủy */
     }
 
+    button.btn-edit {
+        background-color: #007bff;
+    }
+
     button.btn-detail:hover, button.btn-cancel:hover {
         opacity: 0.8;  /* Làm mờ nút khi hover */
     }
@@ -140,6 +144,30 @@
     button i {
         margin-right: 5px;
     }
+
+    #ordersTable_wrapper {
+        width: 100%;
+        overflow-x: auto;  /* Allow horizontal scroll */
+        display: block; /* Ensures it is scrollable */
+    }
+
+    /* Ensure the table itself doesn't exceed its container */
+    #ordersTable {
+        width: 100%;
+        table-layout: auto;  /* Helps in expanding content properly */
+    }
+
+    /* Prevent text wrapping in the table cells */
+    #ordersTable th, #ordersTable td {
+        white-space: nowrap;
+    }
+
+    /* Optional: Style the button group */
+    #ordersTable td button {
+        margin-right: 10px;
+        display: inline-block;
+    }
+
 </style>
 <body>
 <div class="wrapper">
@@ -257,20 +285,24 @@
                         <h2>ĐƠN HÀNG ĐÃ ĐẶT</h2>
                     </div>
 
-                    <table id="ordersTable" class="display" style="width:100%">
-                        <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>Ngày đặt</th>
-                            <th>Tổng tiền</th>
-                            <th>Trạng thái</th>
-                            <th>Thao tác</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <!-- Dữ liệu sẽ được load tự động -->
-                        </tbody>
-                    </table>
+                    <div id="ordersTable_wrapper">
+                        <table id="ordersTable" class="display" style="width:100%">
+                            <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Địa chỉ</th>
+                                <th>SDT</th>
+                                <th>Ngày đặt</th>
+                                <th>Tổng tiền</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!-- Dữ liệu sẽ được load tự động -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- đổi mật khẩu -->
