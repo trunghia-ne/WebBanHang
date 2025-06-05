@@ -7,7 +7,7 @@ import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
 
-@WebServlet(name = "DeleteVoucherController ", value = "/DeleteVoucherController")
+@WebServlet(name = "DeleteVoucherController ", value = "/delete-voucher")
 public class DeleteVoucherController extends HttpServlet {
     VoucherDao voucherDao = new VoucherDao();
     @Override
@@ -19,6 +19,8 @@ public class DeleteVoucherController extends HttpServlet {
         try {
             int id = Integer.parseInt(request.getParameter("id"));
             voucherDao.delete(id);
+            request.setAttribute("voucherId", id);
+            request.setAttribute("actionStatus", "success");
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

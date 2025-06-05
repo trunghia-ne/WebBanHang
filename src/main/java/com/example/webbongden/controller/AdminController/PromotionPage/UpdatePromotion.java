@@ -2,6 +2,7 @@ package com.example.webbongden.controller.AdminController.PromotionPage;
 
 import com.example.webbongden.dao.PromotionDao;
 import com.example.webbongden.dao.model.Promotion;
+import com.example.webbongden.utils.LogUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;
@@ -41,6 +42,9 @@ public class UpdatePromotion extends HttpServlet {
             boolean updated = promotionDao.updatePromotion(promotion);
 
             if (updated) {
+                request.setAttribute("actionStatus", "success");
+                request.setAttribute("promotionId", promotion.getId());
+                LogUtils.logAddPromotion(request, promotion);
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write("{\"success\":true, \"message\":\"Cập nhật thành công.\"}");
             } else {

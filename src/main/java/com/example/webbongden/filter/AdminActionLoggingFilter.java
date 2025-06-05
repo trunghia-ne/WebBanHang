@@ -38,6 +38,9 @@ public class AdminActionLoggingFilter implements Filter {
         actionMap.put("update-promotion", "UPDATE_PROMOTION");
         actionMap.put("delete-promotion", "DELETE_PROMOTION");
         actionMap.put("remove-product-from-promotion", "REMOVE_PRODUCT_FROM_PROMOTION");
+        actionMap.put("add-voucher", "ADD_VOUCHER");
+        actionMap.put("delete-voucher", "DELETE_VOUCHER");
+        actionMap.put("edit-voucher", "UPDATE_VOUCHER");
     }
 
     @Override
@@ -133,13 +136,14 @@ public class AdminActionLoggingFilter implements Filter {
         if (action.contains("ACCOUNT")) return "ACCOUNT";
         if (action.contains("ORDER")) return "ORDER";
         if (action.contains("PROMOTION")) return "PROMOTION";
+        if(action.contains("VOUCHER")) return "VOUCHER";
         return "UNKNOWN";
     }
 
     private String buildNotificationMessage(String action, HttpServletRequest req) {
         String verb;
         if (action.startsWith("ADD")) {
-            verb = "thêm mới";
+            verb = "thêm";
         } else if (action.startsWith("UPDATE")) {
             verb = "cập nhật";
         } else if (action.startsWith("DELETE") || action.startsWith("REMOVE")) {
@@ -172,7 +176,7 @@ public class AdminActionLoggingFilter implements Filter {
             case "ADD_ACCOUNT":
                 Object username = req.getAttribute("username");
                 if (username != null) {
-                    detail = " \"" + username + "\"";
+                    detail = " them moi tai khoan: \"" + username + "\"";
                 }
                 break;
 
@@ -193,7 +197,7 @@ public class AdminActionLoggingFilter implements Filter {
             case "UPDATE_PRODUCT_DETAIL":
                 Object productId = req.getAttribute("productId");
                 if (productId != null) {
-                    detail = " sản phẩm \"" + productId + "\"";
+                    detail = " sản phẩm ID:  \"" + productId + "\"";
                 }
                 break;
 
@@ -210,8 +214,52 @@ public class AdminActionLoggingFilter implements Filter {
                     detail = " ảnh của sản phẩm có ID \"" + deletedImgProductId + "\"";
                 }
                 break;
+
+            case "ADD_PROMOTION":
+                Object promotionIdAdd = req.getAttribute("promotionId");
+                detail = " chương trình khuyen mai mới";
+
+                break;
+
+            case "UPDATE_PROMOTION":
+                Object promotionId = req.getAttribute("promotionId");
+                if (promotionId != null) {
+                    detail = " cap nhap chuong trinh  khuyen mai voi ID " + promotionId;
+                }
+                break;
+
+            case "DELETE_PROMOTION":
+                Object promotionIdDelete = req.getAttribute("promotionId");
+                if (promotionIdDelete != null) {
+                    detail = " chuong trinh khuyen mai voi ID " + promotionIdDelete;
+                }
+                break;
+
+            case "DELETE_ACCOUNT":
+                Object accountId = req.getAttribute("accountId");
+                if (accountId != null) {
+                    detail = " xoa tai khoan voi ID " + accountId;
+                }
+                break;
+
+            case "ADD_VOUCHER":
+                detail = " vua them ma giam gia moi";
+                break;
+
+            case "UPDATE_VOUCHER":
+                Object voucherId = req.getAttribute("voucherId");
+                if (voucherId != null) {
+                    detail = " voucher voi ID " + voucherId;
+                }
+                break;
+            case "DELETE_VOUCHER":
+                Object voucherIdDelete = req.getAttribute("voucherId");
+                if (voucherIdDelete != null) {
+                    detail = " voucher voi ID " + voucherIdDelete;
+                }
+                break;
         }
-        return "Admin vừa " + verb + " " + resource + detail;
+        return "Admin vừa " + verb + " "  + detail;
     }
 
     private boolean isViewOnlyPage(String page) {

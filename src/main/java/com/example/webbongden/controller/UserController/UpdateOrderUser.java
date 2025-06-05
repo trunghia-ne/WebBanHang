@@ -1,6 +1,7 @@
 package com.example.webbongden.controller.UserController;
 
 import com.example.webbongden.dao.OrderDao;
+import com.example.webbongden.utils.LogUtils;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -27,6 +28,9 @@ public class UpdateOrderUser extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         if (isUpdated) {
+            request.setAttribute("actionStatus", "success");
+            request.setAttribute("orderId", orderId);
+            LogUtils.logCreateUpdateOrderUser(request, orderId, shippingAddress, phoneNumber);
             // Trả về kết quả thành công
             out.write("{\"success\": true}");
         } else {

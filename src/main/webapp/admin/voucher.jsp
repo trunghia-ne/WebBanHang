@@ -354,7 +354,7 @@
             var formData = $(this).serialize();
 
             $.ajax({
-                url: 'AddVoucherController',
+                url: '/WebBongDen_war/add-voucher',
                 method: 'POST',
                 data: formData,
                 success: function(response) {
@@ -394,7 +394,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: 'DeleteVoucherController',
+                        url: '/WebBongDen_war/delete-voucher',
                         method: 'POST',
                         data: { id: id },
                         success: function () {
@@ -414,7 +414,7 @@
     // Hàm load lại danh sách voucher bằng ajax GET
     function loadVoucherList() {
         $.ajax({
-            url: 'AddVoucherController',
+            url: '/WebBongDen_war/add-voucher',
             method: 'GET',
             success: function(html) {
                 var newTbody = $(html).find('#voucher-table tbody').html();
@@ -472,7 +472,7 @@
         var formData = $(this).serialize();
 
         $.ajax({
-            url: 'EditVoucherController',
+            url: '/WebBongDen_war/edit-voucher',
             method: 'POST',
             data: formData,
             success: function() {

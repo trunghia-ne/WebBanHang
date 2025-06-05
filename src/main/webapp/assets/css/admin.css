@@ -1475,7 +1475,7 @@ table {
   justify-content: end;
   align-items: center;
   gap: 20px;
-  margin-top: 50px;
+  margin-top: 20px;
 }
 
 .invoice-details .total-price strong {

@@ -1,5 +1,6 @@
 package com.example.webbongden.controller.AdminController.VoucherPage; import com.example.webbongden.dao.VoucherDao;
 import com.example.webbongden.dao.model.Voucher;
+import com.example.webbongden.utils.LogUtils;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -7,7 +8,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Date;
 
-@WebServlet(name = "EditVoucherController", value = "/EditVoucherController") 
+@WebServlet(name = "EditVoucherController", value = "/edit-voucher")
 public class EditVoucherController extends HttpServlet { 
 
 @Override protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { }
@@ -78,6 +79,9 @@ public class EditVoucherController extends HttpServlet {
             voucher.setStatus(status);
 
             voucherDao.update(voucher);
+            req.setAttribute("actionStatus", "success");
+            req.setAttribute("voucherId", voucher.getId());
+            LogUtils.logUpdateVoucher(req, existingVoucher, voucher);
 
             resp.setContentType("application/json");
             resp.getWriter().write("{\"status\":\"success\"}");
