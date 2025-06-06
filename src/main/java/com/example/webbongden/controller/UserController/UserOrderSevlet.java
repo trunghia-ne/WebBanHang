@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import org.jdbi.v3.core.Jdbi;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,11 +14,11 @@ import java.util.List;
 @WebServlet(name = "UserOrderSevlet", value = "/user-orders")
 public class UserOrderSevlet extends HttpServlet {
     private OrderDao orderDao = new OrderDao();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Lấy userId từ tham số request (ví dụ: /user-orders?userId=123)
         String userIdParam = request.getParameter("userId");
-
         if (userIdParam == null) {
             // Thiếu tham số userId -> trả lỗi
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -34,8 +35,16 @@ public class UserOrderSevlet extends HttpServlet {
             return;
         }
 
-        // Lấy danh sách đơn hàng từ database qua DAO theo userId
-        List<Order> orders = orderDao.getListOrdersByUserId(userId);
+        // Lấy accountId từ userId (customer_id)
+        int accountId = orderDao.getAccountIdByUserId(userId);
+        if (accountId == -1) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.getWriter().write("{\"error\":\"Account not found for userId\"}");
+            return;
+        }
+
+        // Lấy danh sách đơn hàng từ database qua accountId
+        List<Order> orders = orderDao.getListOrdersByUserId(accountId);
 
         // Chuyển list sang JSON
         Gson gson = new Gson();
@@ -48,5 +57,6 @@ public class UserOrderSevlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Xử lý POST nếu cần
     }
 }
