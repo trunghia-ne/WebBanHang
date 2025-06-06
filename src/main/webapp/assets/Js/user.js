@@ -226,7 +226,6 @@ $('#avatarInput').on('change', async function () {
 
 $(document).ready(function() {
   const userId = $('#userInfo').data('customer-id'); // hoặc document.getElementById(...).getAttribute(...)
-
   const table = $('#ordersTable').DataTable({
     ajax: {
       url: '/WebBongDen_war/user-orders',

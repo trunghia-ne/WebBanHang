@@ -406,6 +406,17 @@ public class OrderDao {
         );
     }
 
+    public int getAccountIdByUserId(int userId) {
+        return jdbi.withHandle(handle ->
+                handle.createQuery("SELECT id FROM accounts WHERE customer_id = :userId")
+                        .bind("userId", userId)
+                        .mapTo(Integer.class)
+                        .findFirst()  // Thay vì findOnly(), sử dụng findFirst() để lấy kết quả đầu tiên
+                        .orElse(-1)   // Trả về -1 nếu không tìm thấy
+        );
+    }
+
+
     public static void main(String[] args) {
 
 
